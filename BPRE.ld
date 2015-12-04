@@ -33,11 +33,12 @@ megas = 0x0;
  */
 
 c2_exit_to_overworld_1_continue_scripts_and_music = 0x080568C4|1;
- 
+
 script_env_2_enable = 0x08069940|1;
 overworld_free_bgmaps = 0x080563F0|1;
 lcd_io_set = 0x08000A38|1;
-vblank_hander_set = 0x080006F4|1;
+vblank_handler_set = 0x080006F4|1;
+hblank_handler_set = 0x08000700|1;
 gpu_tile_bg_drop_all_sets = 0x08001618|1;
 bg_positions_reset = 0x0812D594|1;
 callback_clear_and_init = 0x080F4E24|1;
@@ -47,6 +48,7 @@ c2_exit_to_overworld_2_switch = 0x080567DC|1;
 gpu_sprites_upload = 0x08007320|1;
 copy_queue_process = 0x08007610|1;
 gpu_pal_upload = 0x08070474|1;
+pal_decompress_slice_to_faded_and_unfaded = 0x080703A8|1;
 
 load_var_value = 0x0806E568|1;
 var_set_value = 0x0806E584|1;
@@ -66,6 +68,7 @@ gpu_copy_to_tileset = 0x080017D0|1;
 gpu_copy_tilemap = 0x08002040|1;
 bgid_send_tilemap = 0x080020BC|1;
 gpu_pal_apply = 0x080703EC|1;
+lz77_uncomp_vram = 0x081E3B6C|1;
 
 task_exec = 0x08077578|1;
 textbox_something = 0x08002DE8|1;
