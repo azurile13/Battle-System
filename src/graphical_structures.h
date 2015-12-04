@@ -8,6 +8,16 @@ typedef enum
   OTHER
 } bs_animation_t;
 
+//Battlescreen elements used to draw the screen
+typedef struct
+{
+    void *background_set;
+    void *background_map;
+    void *grass_set;
+    void *grass_map;
+    void *palette;
+} bs_elements_t;
+
 //Wrapper enumeration for the gba window feature
 typedef enum
 {
