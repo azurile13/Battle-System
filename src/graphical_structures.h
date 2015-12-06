@@ -1,11 +1,13 @@
 #ifndef GRAPHICAL_STRUCTS
 #define GRAPHICAL_STRUCTS
 
+#include "types.h"
+
 //How should the screen be "faded" in
 typedef enum
 {
   BOTTOM_TOP,
-  OTHER
+  FADE_IN
 } bs_animation_t;
 
 //Battlescreen elements used to draw the screen
@@ -17,6 +19,11 @@ typedef struct
     void *grass_map;
     void *palette;
 } bs_elements_t;
+
+typedef struct
+{
+    u8 battle_load_state;
+} bs_load_var_t;
 
 //Wrapper enumeration for the gba window feature
 typedef enum
@@ -37,6 +44,19 @@ typedef enum
     W1_OBJ = 1 << 12,
     W1_SFX = 1 << 13
 } window_enable_t;
+
+typedef struct
+{
+    u16 bg_bitfield;
+    u16 obj_bitfield;
+    u16 scale;
+    u16 mix_color;
+
+    u8 done;
+    u8 field9;
+    u8 fieldA;
+    u8 fieldB;
+} fade_control_t;
 
 //graphic compound
 typedef struct
