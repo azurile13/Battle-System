@@ -21,9 +21,9 @@ u8 get_ability(struct battle_field *battle_field, struct battler *attacker, stru
 	}
 	if (attacker->gastro_acid) {
 		switch (attacker->ability) {
-			case MULTITYPE:
-			case STANCE_CHANGE:
-			case MAGIC_BOUNCE:
+			case ABILITY_MULTITYPE:
+			case ABILITY_STANCE_CHANGE:
+			case ABILITY_MAGIC_BOUNCE:
 				return attacker->ability;
 				break;
 			default:
@@ -74,66 +74,67 @@ u8 apply_mold_breaker(struct battle_field *battle_field, struct battler *defende
 		return defender->ability;
 	}
 	
-	if ((ability == MOLD_BREAKER) || (ability == TERAVOLT) || (ability == TURBOBLAZE)) {
+	if ((ability == ABILITY_MOLD_BREAKER) || (ability == ABILITY_TERAVOLT) ||
+	(ability == ABILITY_TURBOBLAZE)) {
 			switch (defender->ability) {
-				case BATTLE_ARMOR:
-				case CLEAR_BODY:
-				case DAMP:
-				case DRY_SKIN:
-				case FILTER:
-				case FLASH_FIRE:
-				case FLOWER_GIFT:
-				case HEATPROOF:
-				case HYPER_CUTTER:
-				case IMMUNITY:
-				case INNER_FOCUS:
-				case INSOMNIA:
-				case KEEN_EYE:
-				case LEAF_GUARD:
-				case LEVITATE:
-				case LIGHTNING_ROD:
-				case LIMBER:
-				case MAGMA_ARMOR:
-				case MARVEL_SCALE:
-				case MOTOR_DRIVE:
-				case OBLIVIOUS:
-				case OWN_TEMPO:
-				case SAND_VEIL:
-				case SHELL_ARMOR:
-				case SHIELD_DUST:
-				case SIMPLE:
-				case SNOW_CLOAK:
-				case SOLID_ROCK:
-				case SOUNDPROOF:
-				case STICKY_HOLD:
-				case STORM_DRAIN:
-				case STURDY:
-				case SUCTION_CUPS:
-				case TANGLED_FEET:
-				case THICK_FAT:
-				case UNAWARE:
-				case VITAL_SPIRIT:
-				case VOLT_ABSORB:
-				case WATER_ABSORB:
-				case WATER_VEIL:
-				case WHITE_SMOKE:
-				case WONDER_GUARD:
-				case BIG_PECKS:
-				case CONTRARY:
-				case FRIEND_GUARD:
-				case HEAVY_METAL:
-				case LIGHT_METAL:
-				case MAGIC_BOUNCE:
-				case MULTISCALE:
-				case SAP_SIPPER:
-				case TELEPATHY:
-				case WONDER_SKIN:
-				case AROMA_VEIL:
-				case BULLETPROOF:
-				case FLOWER_VEIL:
-				case FUR_COAT:
-				case OVERCOAT:
-				case SWEET_VEIL:
+				case ABILITY_BATTLE_ARMOR:
+				case ABILITY_CLEAR_BODY:
+				case ABILITY_DAMP:
+				case ABILITY_DRY_SKIN:
+				case ABILITY_FILTER:
+				case ABILITY_FLASH_FIRE:
+				case ABILITY_FLOWER_GIFT:
+				case ABILITY_HEATPROOF:
+				case ABILITY_HYPER_CUTTER:
+				case ABILITY_IMMUNITY:
+				case ABILITY_INNER_FOCUS:
+				case ABILITY_INSOMNIA:
+				case ABILITY_KEEN_EYE:
+				case ABILITY_LEAF_GUARD:
+				case ABILITY_LEVITATE:
+				case ABILITY_LIGHTNING_ROD:
+				case ABILITY_LIMBER:
+				case ABILITY_MAGMA_ARMOR:
+				case ABILITY_MARVEL_SCALE:
+				case ABILITY_MOTOR_DRIVE:
+				case ABILITY_OBLIVIOUS:
+				case ABILITY_OWN_TEMPO:
+				case ABILITY_SAND_VEIL:
+				case ABILITY_SHELL_ARMOR:
+				case ABILITY_SHIELD_DUST:
+				case ABILITY_SIMPLE:
+				case ABILITY_SNOW_CLOAK:
+				case ABILITY_SOLID_ROCK:
+				case ABILITY_SOUNDPROOF:
+				case ABILITY_STICKY_HOLD:
+				case ABILITY_STORM_DRAIN:
+				case ABILITY_STURDY:
+				case ABILITY_SUCTION_CUPS:
+				case ABILITY_TANGLED_FEET:
+				case ABILITY_THICK_FAT:
+				case ABILITY_UNAWARE:
+				case ABILITY_VITAL_SPIRIT:
+				case ABILITY_VOLT_ABSORB:
+				case ABILITY_WATER_ABSORB:
+				case ABILITY_WATER_VEIL:
+				case ABILITY_WHITE_SMOKE:
+				case ABILITY_WONDER_GUARD:
+				case ABILITY_BIG_PECKS:
+				case ABILITY_CONTRARY:
+				case ABILITY_FRIEND_GUARD:
+				case ABILITY_HEAVY_METAL:
+				case ABILITY_LIGHT_METAL:
+				case ABILITY_MAGIC_BOUNCE:
+				case ABILITY_MULTISCALE:
+				case ABILITY_SAP_SIPPER:
+				case ABILITY_TELEPATHY:
+				case ABILITY_WONDER_SKIN:
+				case ABILITY_AROMA_VEIL:
+				case ABILITY_BULLETPROOF:
+				case ABILITY_FLOWER_VEIL:
+				case ABILITY_FUR_COAT:
+				case ABILITY_OVERCOAT:
+				case ABILITY_SWEET_VEIL:
 					return false;
 					break;
 				default:
@@ -175,35 +176,35 @@ u16 get_item(struct battle_field *battle_field, struct battler *attacker, struct
 		return item;
 	}
 	
-	if (ability_present(battle_field, UNNERVE, flags)) {
+	if (ability_present(battle_field, ABILITY_UNNERVE, flags)) {
 		// can't use berry
 		u16 i;
 		for (i = 0; i < sizeof(berries_t); i++) {
 			if (attacker->item == berries_t[i].item_id) {
-				return NONE;
+				return ITEM_NONE;
 			}
 		}
 	}
 	
 	if (battle_field->modifiers.trick_room[0]) {
-		return NONE;
+		return ITEM_NONE;
 	}
 	
 	// items in battle not effected by klutz 
 	switch (attacker->item) {
-		case AMULET_COIN:
-		case LUCKY_EGG:
-		case POWER_WEIGHT:
-		case IRON_BALL:
+		case ITEM_AMULET_COIN:
+		case ITEM_LUCKY_EGG:
+		case ITEM_POWER_WEIGHT:
+		case ITEM_IRON_BALL:
 			return attacker->item;
 		default:
 			break;
 	};
 	
-	if (get_ability(battle_field, attacker, flags) != KLUTZ) {
+	if (get_ability(battle_field, attacker, flags) != ABILITY_KLUTZ) {
 		return attacker->item;
 	}
-	return NONE;
+	return ITEM_NONE;
 }
 
 u16 get_def(struct battler *attacker, u8 is_special) {
@@ -288,241 +289,241 @@ u8 get_item_modifier(struct battle_field *battle_field, struct battler *attacker
 	u16 species = get_species(attacker);
 	
 	switch (item) {
-		case LUSTROUS_ORB:
+		case ITEM_LUSTROUS_ORB:
 			if ((atk_type == TYPE_WATER) || (atk_type == TYPE_DRAGON)){
-				if (species == PALKIA) {
+				if (species == POKE_PALKIA) {
 					item_boost = 20;
 				}
 			}
 			break;
-		case ADAMANT_ORB:
+		case ITEM_ADAMANT_ORB:
 			if ((atk_type == TYPE_STEEL) || (atk_type == TYPE_DRAGON)){
-				if (species == DIALGA) {
+				if (species == POKE_DIALGA) {
 					item_boost = 20;
 				}
 			}
 			break;
-		case GRISEOUS_ORB:
+		case ITEM_GRISEOUS_ORB:
 			if ((atk_type == TYPE_GHOST) || (atk_type == TYPE_DRAGON)){
-				if ((species == GIRATINA) || (species == GIRATINA_O)) {
+				if ((species == POKE_GIRATINA) || (species == POKE_GIRATINA_O)) {
 					item_boost = 20;
 				}
 			}
 			break;
-		case LIFE_ORB:
+		case ITEM_LIFE_ORB:
 			item_boost = 30;
 			break;
-		case METRONOME:
+		case ITEM_METRONOME_item:
 			item_boost = (attacker->metronome) * 20;
 			break;
-		case MUSCLE_BAND:
+		case ITEM_MUSCLE_BAND:
 			if (!physical) {
 				item_boost = 10;
 			}
 			break;
-		case WISE_GLASSES:
+		case ITEM_WISE_GLASSES:
 			if (physical) {
 				item_boost = 10;
 			}
 			break;
-		case DRAGON_GEM:
+		case ITEM_DRAGON_GEM:
 			if (atk_type == TYPE_DRAGON) {
 				item_boost = 30;
 			}
 			break;
-		case DRACO_PLATE:
-		case DRAGON_FANG:
+		case ITEM_DRACO_PLATE:
+		case ITEM_DRAGON_FANG:
 			if (atk_type == TYPE_DRAGON) {
 				item_boost = 20;
 			}
 			break;
-		case DARK_GEM:
+		case ITEM_DARK_GEM:
 			if (atk_type == TYPE_DARK) {
 				item_boost = 30;
 			}
 			break;
-		case DREAD_PLATE:
-		case BLACK_BELT:
-		case BLACK_GLASSES:
+		case ITEM_DREAD_PLATE:
+		case ITEM_BLACK_BELT:
+		case ITEM_BLACK_GLASSES:
 			if (atk_type == TYPE_DARK) {
 				item_boost = 20;
 			}
 			break;
-		case GROUND_GEM:
+		case ITEM_GROUND_GEM:
 			if (atk_type == TYPE_GROUND) {
 				item_boost = 30;
 			}
 			break;
-		case EARTH_PLATE:
-		case SOFT_SAND:
+		case ITEM_EARTH_PLATE:
+		case ITEM_SOFT_SAND:
 			if (atk_type == TYPE_GROUND) {
 				item_boost = 20;
 			}
 			break;
-		case FIGHTING_GEM:
+		case ITEM_FIGHTING_GEM:
 			if (atk_type == TYPE_FIGHTING) {
 				item_boost = 30;
 			}
 			break;
-		case FIST_PLATE:
+		case ITEM_FIST_PLATE:
 			if (atk_type == TYPE_FIGHTING) {
 				item_boost = 20;
 			}
 			break;
-		case FIRE_GEM:
+		case ITEM_FIRE_GEM:
 			if (atk_type == TYPE_FIRE) {
 				item_boost = 30;
 			}
 			break;
-		case FLAME_PLATE:
-		case CHARCOAL:
+		case ITEM_FLAME_PLATE:
+		case ITEM_CHARCOAL:
 			if (atk_type == TYPE_FIRE) {
 				item_boost = 20;
 			}
 			break;
-		case ICE_GEM:
+		case ITEM_ICE_GEM:
 			if (atk_type == TYPE_ICE) {
 				item_boost = 30;
 			}
 			break;
-		case ICICLE_PLATE:
-		case NEVER_MELT_ICE:
+		case ITEM_ICICLE_PLATE:
+		case ITEM_NEVER_MELT_ICE:
 			if (atk_type == TYPE_ICE) {
 				item_boost = 20;
 			}
 			break;
-		case BUG_GEM:
+		case ITEM_BUG_GEM:
 			if (atk_type == TYPE_BUG) {
 				item_boost = 30;
 			}
 			break;
-		case INSECT_PLATE:
-		case SILVER_POWDER:
+		case ITEM_INSECT_PLATE:
+		case ITEM_SILVER_POWDER:
 			if (atk_type == TYPE_BUG) {
 				item_boost = 20;
 			}
 			break;
-		case STEEL_GEM:
+		case ITEM_STEEL_GEM:
 			if (atk_type == TYPE_STEEL) {
 				item_boost = 30;
 			}
 			break;
-		case IRON_PLATE:
-		case METAL_COAT:
+		case ITEM_IRON_PLATE:
+		case ITEM_METAL_COAT:
 			if (atk_type == TYPE_STEEL) {
 				item_boost = 20;
 			}
 			break;
-		case GRASS_GEM:
+		case ITEM_GRASS_GEM:
 			if (atk_type == TYPE_GRASS) {
 				item_boost = 30;
 			}
 			break;
-		case MEADOW_PLATE:
-		case MIRACLE_SEED:
-		case ROSE_INCENSE:
+		case ITEM_MEADOW_PLATE:
+		case ITEM_MIRACLE_SEED:
+		case ITEM_ROSE_INCENSE:
 			if (atk_type == TYPE_GRASS) {
 				item_boost = 20;
 			}
 			break;
-		case PSYCHIC_GEM:
+		case ITEM_PSYCHIC_GEM:
 			if (atk_type == TYPE_PSYCHIC) {
 				item_boost = 30;
 			}
 			break;
-		case MIND_PLATE:
-		case TWISTED_SPOON:
-		case ODD_INCENSE:
+		case ITEM_MIND_PLATE:
+		case ITEM_TWISTED_SPOON:
+		case ITEM_ODD_INCENSE:
 			if (atk_type == TYPE_PSYCHIC) {
 				item_boost = 20;
 			}
 			break;
-		case FAIRY_GEM:
+		case ITEM_FAIRY_GEM:
 			if (atk_type == TYPE_FAIRY) {
 				item_boost = 30;
 			}
 			break;
-		case PIXIE_PLATE:
+		case ITEM_PIXIE_PLATE:
 			if (atk_type == TYPE_FAIRY) {
 				item_boost = 20;
 			}
 			break;
-		case FLYING_GEM:
+		case ITEM_FLYING_GEM:
 			if (atk_type == TYPE_FLYING) {
 				item_boost = 30;
 			}
 			break;
-		case SKY_PLATE:
-		case SHARP_BEAK:
+		case ITEM_SKY_PLATE:
+		case ITEM_SHARP_BEAK:
 			if (atk_type == TYPE_FLYING) {
 				item_boost = 20;
 			}
 			break;
-		case WATER_GEM:
+		case ITEM_WATER_GEM:
 			if (atk_type == TYPE_WATER) {
 				item_boost = 30;
 			}
 			break;
-		case SPLASH_PLATE:
-		case MYSTIC_WATER:
-		case SEA_INCENSE:
-		case WAVE_INCENSE:
+		case ITEM_SPLASH_PLATE:
+		case ITEM_MYSTIC_WATER:
+		case ITEM_SEA_INCENSE:
+		case ITEM_WAVE_INCENSE:
 			if (atk_type == TYPE_WATER) {
 				item_boost = 20;
 			}
 			break;
-		case GHOST_GEM:
+		case ITEM_GHOST_GEM:
 			if (atk_type == TYPE_DRAGON) {
 				item_boost = 30;
 			}
 			break;
-		case SPOOKY_PLATE:
-		case SPELL_TAG:
+		case ITEM_SPOOKY_PLATE:
+		case ITEM_SPELL_TAG:
 			if (atk_type == TYPE_GHOST) {
 				item_boost = 20;
 			}
 			break;
-		case ROCK_GEM:
+		case ITEM_ROCK_GEM:
 			if (atk_type == TYPE_ROCK) {
 				item_boost = 30;
 			}
 			break;
-		case STONE_PLATE:
-		case HARD_STONE:
-		case ROCK_INCENSE:
+		case ITEM_STONE_PLATE:
+		case ITEM_HARD_STONE:
+		case ITEM_ROCK_INCENSE:
 			if (atk_type == TYPE_ROCK) {
 				item_boost = 20;
 			}
 			break;
-		case POISON_GEM:
+		case ITEM_POISON_GEM:
 			if (atk_type == TYPE_POISON) {
 				item_boost = 30;
 			}
 			break;
-		case TOXIC_PLATE:
-		case POISON_BARB:
+		case ITEM_TOXIC_PLATE:
+		case ITEM_POISON_BARB:
 			if (atk_type == TYPE_POISON) {
 				item_boost = 20;
 			}
 			break;
-		case ELECTRIC_GEM:
+		case ITEM_ELECTRIC_GEM:
 			if (atk_type == TYPE_ELECTRIC) {
 				item_boost = 30;
 			}
 			break;
-		case ZAP_PLATE:
-		case MAGNET:
+		case ITEM_ZAP_PLATE:
+		case ITEM_MAGNET:
 			if (atk_type == TYPE_ELECTRIC) {
 				item_boost = 20;
 			}
 			break;
-		case NORMAL_GEM:
+		case ITEM_NORMAL_GEM:
 			if (atk_type == TYPE_NORMAL) {
 				item_boost = 30;
 			}
 			break;
 		// case PINK_BOW: - removed after gen 2
-		case SILK_SCARF:
+		case ITEM_SILK_SCARF:
 			if (atk_type == TYPE_NORMAL) {
 				item_boost = 20;
 			}
@@ -566,7 +567,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 	}
 	
 	switch (attack->move_id) {
-		case KNOCK_OFF:
+		case MOVE_KNOCK_OFF:
 			if (defender->item) {
 				u8 i;
 				for (i = 0; i < mega_items_table_size; i++) {
@@ -582,26 +583,26 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case FRUSTRATION:
+		case MOVE_FRUSTRATION:
 		{
-			atk_base_power = get_attr(&pokemon_bank[attacker_id], HAPPINESS);
+			atk_base_power = get_attr(&pokemon_bank[attacker_id], ATTR_HAPPINESS);
 			atk_base_power = ((255 - atk_base_power) * 10) / 25;
 			break;
 		}
-		case PAYBACK:
+		case MOVE_PAYBACK:
 			if (defender->damage_done > 0) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case RETURN:
+		case MOVE_RETURN:
 		{
-			atk_base_power = get_attr(&pokemon_bank[attacker->pokemon_bank_id], HAPPINESS);
+			atk_base_power = get_attr(&pokemon_bank[attacker->pokemon_bank_id], ATTR_HAPPINESS);
 			atk_base_power = (atk_base_power * 10) / 25;
 			break;
 		}
-		case ELECTRO_BALL:
+		case MOVE_ELECTRO_BALL:
 			if (user_spd < target_spd) {
 				atk_base_power = 40;
 			} else {
@@ -623,14 +624,14 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 				}	
 			}
 			break;
-		case AVALANCHE:
+		case MOVE_AVALANCHE:
 			if (defender->last_move_target == attacker_id) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case GYRO_BALL:
+		case MOVE_GYRO_BALL:
 		{
 			atk_base_power = (target_spd * 25) / user_spd;
 			if (atk_base_power > 150) {
@@ -638,14 +639,14 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case ERUPTION:
-		case WATER_SPOUT:
+		case MOVE_ERUPTION:
+		case MOVE_WATER_SPOUT:
 		{
 			atk_base_power = (attacker->current_hp) * 150;
 			atk_base_power = atk_base_power / attacker->total_hp;
 			break;
 		}
-		case PUNISHMENT:
+		case MOVE_PUNISHMENT:
 		{
 			atk_base_power = defender->attack_multiplier + defender->defense_multiplier
 			+ defender->special_attack_multiplier + defender->speed_multiplier + 
@@ -657,7 +658,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case FURY_CUTTER:
+		case MOVE_FURY_CUTTER:
 		{
 			atk_base_power = attack->base_power;
 			switch (attacker->furry_cutter) {
@@ -675,8 +676,8 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 					break;
 			};
 		}
-		case GRASS_KNOT:
-		case LOW_KICK:
+		case MOVE_GRASS_KNOT:
+		case MOVE_LOW_KICK:
 			if (defender->weight >= 200) {
 				atk_base_power = 120;
 				break;
@@ -699,7 +700,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			atk_base_power = 20;
 			break;
-		case ECHOED_VOICE:
+		case MOVE_ECHOED_VOICE:
 		{
 			atk_base_power = battle_field->modifiers.echoed_voice[attacker->battle_side];
 			switch (atk_base_power) {
@@ -717,7 +718,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 					break;
 			};
 		}
-		case HEX:
+		case MOVE_HEX:
 		{
 			atk_base_power = defender->ailment;
 			if (atk_base_power) {
@@ -727,8 +728,8 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case WRING_OUT:
-		case CRUSH_GRIP:
+		case MOVE_WRING_OUT:
+		case MOVE_CRUSH_GRIP:
 		{
 			u8 c_hp = defender->current_hp * 100;
 			u8 t_hp = defender->total_hp;
@@ -736,15 +737,15 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			atk_base_power = atk_base_power / 100;
 			break;
 		}
-		case ASSURANCE:
+		case MOVE_ASSURANCE:
 			if (defender->damage_taken) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case HEAVY_SLAM:
-		case HEAT_CRASH:
+		case MOVE_HEAVY_SLAM:
+		case MOVE_HEAT_CRASH:
 		{
 			atk_base_power = (attacker->weight * 100) / defender->weight;
 			if (atk_base_power >= 500) {
@@ -766,7 +767,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			atk_base_power = 40;
 			break;
 		}
-		case STORED_POWER:
+		case MOVE_STORED_POWER:
 			atk_base_power = attacker->attack_multiplier + 
 			attacker->defense_multiplier + 
 			attacker->special_attack_multiplier +
@@ -776,7 +777,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			attacker->accuracy_multiplier + attacker->crit_multiplier;
 			atk_base_power = 20 + (20 * atk_base_power);
 			break;
-		case ACROBATICS:
+		case MOVE_ACROBATICS:
 			// can directly check since no ability/status grants items
 			if (!attacker->item) {
 				atk_base_power = attack->base_power * 2;
@@ -784,8 +785,8 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case FLAIL:
-		case REVERSAL:
+		case MOVE_FLAIL:
+		case MOVE_REVERSAL:
 		{
 			atk_base_power = attacker->current_hp * 48;
 			u16 temp = attacker->total_hp;
@@ -813,21 +814,21 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			atk_base_power = 20;
 			break;
 		}
-		case TRUMP_CARD:
+		case MOVE_TRUMP_CARD:
 			// get PP of move
 			{
 			struct pokemon pkmn = pokemon_bank[attacker_id];
-			if (get_attr(&pkmn, ATTACK_1) == TRUMP_CARD) {
-				atk_base_power = get_attr(&pkmn, PP_1);
+			if (get_attr(&pkmn, ATTR_ATTACK_1) == MOVE_TRUMP_CARD) {
+				atk_base_power = get_attr(&pkmn, ATTR_PP_1);
 			}
-			if (get_attr(&pkmn, ATTACK_2) == TRUMP_CARD) {
-				atk_base_power = get_attr(&pkmn, PP_2);
+			if (get_attr(&pkmn, ATTR_ATTACK_2) == MOVE_TRUMP_CARD) {
+				atk_base_power = get_attr(&pkmn, ATTR_PP_2);
 			}
-			if (get_attr(&pkmn, ATTACK_3) == TRUMP_CARD) {
-				atk_base_power = get_attr(&pkmn, PP_3);
+			if (get_attr(&pkmn, ATTR_ATTACK_3) == MOVE_TRUMP_CARD) {
+				atk_base_power = get_attr(&pkmn, ATTR_PP_3);
 			}
-			if (get_attr(&pkmn, ATTACK_4) == TRUMP_CARD) {
-				atk_base_power = get_attr(&pkmn, PP_4);
+			if (get_attr(&pkmn, ATTR_ATTACK_4) == MOVE_TRUMP_CARD) {
+				atk_base_power = get_attr(&pkmn, ATTR_PP_4);
 			}
 			switch (atk_base_power) {
 				case 1:
@@ -858,7 +859,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			};
 			break;
 		}
-		case ROUND:
+		case MOVE_ROUND:
 		{
 			atk_base_power = battle_field->modifiers.round[attacker->battle_side];
 			if (atk_base_power) {
@@ -868,7 +869,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case TRIPLE_KICK:
+		case MOVE_TRIPLE_KICK:
 			switch (attacker->multi_hit) {
 				case 1:
 					atk_base_power = attack->base_power;
@@ -880,21 +881,21 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 					atk_base_power = attack->base_power * 3;
 					break;
 			};
-		case WAKEUP_SLAP:
+		case MOVE_WAKEUP_SLAP:
 			if (defender->ailment == SLEEP) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case SMELLING_SALTS:
+		case MOVE_SMELLING_SALTS:
 			if (defender->ailment == PARALYZE) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case WEATHER_BALL:
+		case MOVE_WEATHER_BALL:
 		{
 			u8 weather = get_weather(battle_field);
 			if (weather) {
@@ -904,34 +905,34 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case GUST:
-		case TWISTER:
+		case MOVE_GUST:
+		case MOVE_TWISTER:
 			if (defender->bounce || defender->fly || defender->sky_drop) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case BEAT_UP:
+		case MOVE_BEAT_UP:
 		{
 			u8 temp = attacker->multi_hit;
 			atk_base_power = pokemon_bank[6 + temp].attack;
 			atk_base_power = (atk_base_power / 10) + 5;
 			break;
 		}
-		case SPIT_UP:
+		case MOVE_SPIT_UP:
 		{
 			atk_base_power = attacker->stock_pile * 100;
 			break;
 		}
-		case PURSUIT:
+		case MOVE_PURSUIT:
 			if (flags->pursuit_flag) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case PRESENT:
+		case MOVE_PRESENT:
 		{
 			atk_base_power = random(100);
 			if (atk_base_power < 40) {
@@ -945,89 +946,17 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			atk_base_power = 120;
 			break;
 		}
-		case NATURAL_GIFT:
+		case MOVE_NATURAL_GIFT:
 		{
 			u16 item = get_item(battle_field, attacker, flags);
 			switch (item) {
-				case CHERI_BERRY:
-				case CHESTO_BERRY:
-				case PECHA_BERRY:
-				case RAWST_BERRY:
-				case ASPEAR_BERRY:
-				case LEPPA_BERRY:
-				case ORAN_BERRY:
-				case PERSIM_BERRY:
-				case LUM_BERRY:
-				case SITRUS_BERRY:
-				case FIGY_BERRY:
-				case WIKI_BERRY:
-				case MAGO_BERRY:
-				case AGUAV_BERRY:
-				case IAPAPA_BERRY:
-				case RAZZ_BERRY:
-				case OCCA_BERRY:
-				case PASSHO_BERRY:
-				case WACAN_BERRY:
-				case RINDO_BERRY:
-				case YACHE_BERRY:
-				case CHOPLE_BERRY:
-				case KEBIA_BERRY:
-				case SHUCA_BERRY:
-				case COBA_BERRY:
-				case PAYAPA_BERRY:
-				case TANGA_BERRY:
-				case CHARTI_BERRY:
-				case KASIB_BERRY:
-				case HABAN_BERRY:
-				case COLBUR_BERRY:
-				case BABIRI_BERRY:
-				case CHILAN_BERRY:
-				case ROSELI_BERRY:
-					atk_base_power = 80;
-					break;
-				case BLUK_BERRY:
-				case NANAB_BERRY:
-				case WEPEAR_BERRY:
-				case PINAP_BERRY:
-				case POMEG_BERRY:
-				case KELPSY_BERRY:
-				case QUALOT_BERRY:
-				case HONDEW_BERRY:
-				case GREPA_BERRY:
-				case TAMATO_BERRY:
-				case CORNN_BERRY:
-				case MAGOST_BERRY:
-				case RABUTA_BERRY:
-				case NOMEL_BERRY:
-				case SPELON_BERRY:
-				case PAMTRE_BERRY:
-					atk_base_power = 90;
-					break;
-				case KEE_BERRY:
-				case MARANGA_BERRY:
-				case WATMEL_BERRY:
-				case DURIN_BERRY:
-				case BELUE_BERRY:
-				case LIECHI_BERRY:
-				case GANLON_BERRY:
-				case SALAC_BERRY:
-				case PETAYA_BERRY:
-				case APICOT_BERRY:
-				case LANSAT_BERRY:
-				case STARF_BERRY:
-				case ENIGMA_BERRY:
-				case MICLE_BERRY:
-				case CUSTAP_BERRY:
-				case JABOCA_BERRY:
-				case ROWAP_BERRY:
-					atk_base_power = 100;
-					break;
+				// to rework into table soon
 				default:
 					atk_base_power = 0;
 					break;
 			};
 		}
-		case MAGNITUDE:
+		case MOVE_MAGNITUDE:
 		{
 			atk_base_power = random(100);
 			if (atk_base_power < 5) {
@@ -1057,8 +986,8 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			atk_base_power = 10 + 20 * 7;
 			break;
 		}
-		case ROLLOUT:
-		case ICE_BALL:
+		case MOVE_ROLLOUT:
+		case MOVE_ICE_BALL:
 			atk_base_power = attacker->rollout_iceball + attacker->defense_curl;
 			switch (atk_base_power) {
 				case 1:
@@ -1081,21 +1010,21 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 					break;
 			};
 			break;
-		case FLING:
+		case MOVE_FLING:
 			//todo : make table. god damn fling...
 			atk_base_power = 40;
 			break;
-		case GRASS_PLEDGE:
-		case FIRE_PLEDGE:
-		case WATER_PLEDGE:
+		case MOVE_GRASS_PLEDGE:
+		case MOVE_FIRE_PLEDGE:
+		case MOVE_WATER_PLEDGE:
 		{
 			u16 i;
 			atk_base_power = attack->base_power;
 			for (i = 0; i < 6; i++) {
 				if ((!battle_field->ally[i]) && (i != attacker_id)) {
-					if ((battle_field->battlers[i].queued_move == GRASS_PLEDGE) ||
-						(battle_field->battlers[i].queued_move == FIRE_PLEDGE) ||
-						(battle_field->battlers[i].queued_move == WATER_PLEDGE)) {
+					if ((battle_field->battlers[i].queued_move == MOVE_GRASS_PLEDGE) ||
+						(battle_field->battlers[i].queued_move == MOVE_FIRE_PLEDGE) ||
+						(battle_field->battlers[i].queued_move == MOVE_WATER_PLEDGE)) {
 						atk_base_power = 150;
 						battle_field->battlers[i].turn_skip = 1;
 						break;
@@ -1104,7 +1033,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case FACADE:
+		case MOVE_FACADE:
 		{
 			u8 ailment = attacker->ailment;
 			if ((ailment == POISONNED) || (ailment == BURN) || (ailment == PARALYZE)) {
@@ -1114,34 +1043,34 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case BRINE:
+		case MOVE_BRINE:
 			if ((defender->current_hp * 2) <= defender->total_hp) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
-		case VENOSHOCK:
+		case MOVE_VENOSHOCK:
 			if (defender->ailment == POISONNED) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
 			break;
-		case RETALIATE:
+		case MOVE_RETALIATE:
 			if (battle_field->modifiers.fainted[attacker->battle_side]) {
 				atk_base_power = attack->base_power * 2;
 			} else {
 				atk_base_power = attack->base_power;
 			}
-		case FUSION_BOLT:
+		case MOVE_FUSION_BOLT:
 		{
 			atk_base_power = 0;
 			u16 i, last_move;
 			for (i = 0; i < 6; i++) {
 				last_move = battle_field->moves_used[i];
 				switch (last_move) {
-					case FUSION_FLARE:
-					case BLUE_FLARE:	
+					case MOVE_FUSION_FLARE:
+					case MOVE_BLUE_FLARE:	
 						atk_base_power = attack->base_power * 2;
 						break;
 					default:
@@ -1153,15 +1082,15 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case FUSION_FLARE:
+		case MOVE_FUSION_FLARE:
 		{
 			atk_base_power = 0;
 			u16 i, last_move;
 			for (i = 0; i < 6; i++) {
 				last_move = battle_field->moves_used[i];
 				switch (last_move) {
-					case FUSION_BOLT:
-					case BOLT_STRIKE:
+					case MOVE_FUSION_BOLT:
+					case MOVE_BOLT_STRIKE:
 					{
 						atk_base_power = attack->base_power * 2;
 						break;
@@ -1175,7 +1104,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case SOLAR_BEAM:
+		case MOVE_SOLAR_BEAM:
 		{
 			u8 weather = get_weather(battle_field);
 			if ((weather == WEATHER_SANDSTORM) || (weather == WEATHER_RAIN) || 
@@ -1193,81 +1122,81 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 
 
 	switch (get_ability(battle_field, attacker, flags)) {
-		case TECHNICIAN:
+		case ABILITY_TECHNICIAN:
 			if (atk_base_power <= 60) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 50, 1);
 			}
 			break;
-		case FLARE_BOOST:
+		case ABILITY_FLARE_BOOST:
 			if (attack->is_special || (attacker->ailment == BURN)) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 50, 1);
 			}
 			break;
-		case ANALYTIC:
+		case ABILITY_ANALYTIC:
 			if (defender->attacked) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 30, 1);
 			}
 			break;
-		case RECKLESS:
+		case ABILITY_RECKLESS:
 		{
 			u16 attack_id = attack->move_id;
 			switch (attack_id) {
-				case BRAVE_BIRD:
-				case DOUBLEEDGE:
-				case FLARE_BLITZ:
-				case HEAD_CHARGE:
-				case HEAD_SMASH:
-				case HIGH_JUMP_KICK:
-				case JUMP_KICK:
-				case LIGHT_OF_RUIN:
-				case SUBMISSION:
-				case TAKE_DOWN:
-				case VOLT_TACKLE:
-				case WOOD_HAMMER:
-				case WILD_CHARGE:
+				case MOVE_BRAVE_BIRD:
+				case MOVE_DOUBLEEDGE:
+				case MOVE_FLARE_BLITZ:
+				case MOVE_HEAD_CHARGE:
+				case MOVE_HEAD_SMASH:
+				case MOVE_HIGH_JUMP_KICK:
+				case MOVE_JUMP_KICK:
+				case MOVE_LIGHT_OF_RUIN:
+				case MOVE_SUBMISSION:
+				case MOVE_TAKE_DOWN:
+				case MOVE_VOLT_TACKLE:
+				case MOVE_WOOD_HAMMER:
+				case MOVE_WILD_CHARGE:
 					atk_base_power = apply_dmg_mod(atk_base_power, 20, 1);
 				default:
 					break;
 			};
 			break;
 		}
-		case IRON_FIST:
+		case ABILITY_IRON_FIST:
 		{
 			u16 attack_id = attack->move_id;
 			switch (attack_id) {
-				case BULLET_PUNCH:
-				case COMET_PUNCH:
-				case DIZZY_PUNCH:
-				case DRAIN_PUNCH:
-				case DYNAMIC_PUNCH:
-				case FIRE_PUNCH:
-				case FOCUS_PUNCH:
-				case HAMMER_ARM:
-				case ICE_PUNCH:
-				case MACH_PUNCH:
-				case MEGA_PUNCH:
-				case METEOR_MASH:
-				case POWERUP_PUNCH:
-				case SHADOW_PUNCH:
-				case SKY_UPPERCUT:
-				case THUNDER_PUNCH:
+				case MOVE_BULLET_PUNCH:
+				case MOVE_COMET_PUNCH:
+				case MOVE_DIZZY_PUNCH:
+				case MOVE_DRAIN_PUNCH:
+				case MOVE_DYNAMIC_PUNCH:
+				case MOVE_FIRE_PUNCH:
+				case MOVE_FOCUS_PUNCH:
+				case MOVE_HAMMER_ARM:
+				case MOVE_ICE_PUNCH:
+				case MOVE_MACH_PUNCH:
+				case MOVE_MEGA_PUNCH:
+				case MOVE_METEOR_MASH:
+				case MOVE_POWERUP_PUNCH:
+				case MOVE_SHADOW_PUNCH:
+				case MOVE_SKY_UPPERCUT:
+				case MOVE_THUNDER_PUNCH:
 					atk_base_power = apply_dmg_mod(atk_base_power, 20, 1);
 				default:
 					break;
 			};
 			break;
 		}
-		case TOXIC_BOOST:
+		case ABILITY_TOXIC_BOOST:
 			if (attacker->ailment == POISONNED) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 50, 1);
 			}
 			break;
-		case RIVALRY:
+		case ABILITY_RIVALRY:
 			if (attacker->gender == defender->gender) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 25, 1);
 			}
 			break;
-		case SAND_FORCE:
+		case ABILITY_SAND_FORCE:
 		{
 			u8 weather = get_weather(battle_field);
 			if ((weather == WEATHER_SANDSTORM) && ((attack->type == TYPE_STEEL)
@@ -1276,17 +1205,17 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			}
 			break;
 		}
-		case HEATPROOF:
+		case ABILITY_HEATPROOF:
 			if (attack->type == TYPE_FIRE) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 50, 0);
 			}
 			break;
-		case DRY_SKIN:
+		case ABILITY_DRY_SKIN:
 			if (attack->type == TYPE_FIRE) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 25, 1);
 			}
 			break;
-		case SHEER_FORCE:
+		case ABILITY_SHEER_FORCE:
 		{
 			u16 i;
 			for (i = 0; i < sheer_force_table_size; i++) {
@@ -1334,12 +1263,12 @@ u32 get_base_attack(struct battle_field *battle_field, u8 attacker_id, u8 defend
 	}
 	
 	// foul play uses opponent's attack stat
-	if (attack->move_id == FOUL_PLAY) {
+	if (attack->move_id == MOVE_FOUL_PLAY) {
 		ad_dmg = defender->attack;
 	}
 	
-	if ((get_ability(battle_field, attacker, flags) != UNAWARE) && 
-	(get_ability(battle_field, defender, flags) != UNAWARE)) {
+	if ((get_ability(battle_field, attacker, flags) != ABILITY_UNAWARE) && 
+	(get_ability(battle_field, defender, flags) != ABILITY_UNAWARE)) {
 		// apply stat multipliers
 		if (!attack->is_special) {
 			ad_dmg = apply_dmg_mod(ad_dmg, ((attacker->attack_multiplier) * 50), 1);
@@ -1356,38 +1285,38 @@ u32 get_base_attack(struct battle_field *battle_field, u8 attacker_id, u8 defend
 	u8 weather = get_weather(battle_field);
 	
 	// thick fat
-	if (get_ability(battle_field, defender, flags) == THICK_FAT) {
+	if (get_ability(battle_field, defender, flags) == ABILITY_THICK_FAT) {
 		if ((attack->type == TYPE_FIRE) || (attack->type == TYPE_ICE)) {
 			ad_dmg = apply_dmg_mod(ad_dmg, 50, 0);
 		}
 	}
 	
 	switch (get_ability(battle_field, attacker, flags)) {
-		case TORRENT:
+		case ABILITY_TORRENT:
 			if (((c_hp * 3) <= t_hp) && (attack->type == TYPE_WATER)) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 			}
 			break;
-		case GUTS:
+		case ABILITY_GUTS:
 			if (attacker->ailment) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 			}
 			break;
-		case SWARM:
+		case ABILITY_SWARM:
 			if (((c_hp * 3) <= t_hp) && (attack->type == TYPE_BUG)) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 			}
 			break;
-		case OVERGROW:
+		case ABILITY_OVERGROW:
 			if (((c_hp * 3) <= t_hp) && (attack->type == TYPE_GRASS)) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 			}
 			break;
-		case PLUS:
+		case ABILITY_PLUS:
 		{
 			u16 i;
 			for (i = 0; i < 6; i++) {
-				if ((battle_field->battlers[i].ability == MINUS) &&
+				if ((battle_field->battlers[i].ability == ABILITY_MINUS) &&
 				(i != attacker_id)) {
 					if (attack->is_special) {
 						ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
@@ -1396,11 +1325,11 @@ u32 get_base_attack(struct battle_field *battle_field, u8 attacker_id, u8 defend
 			}
 			break;
 		}
-		case MINUS:
+		case ABILITY_MINUS:
 		{
 			u16 i;
 			for (i = 0; i < 6; i++) {
-				if ((battle_field->battlers[i].ability == PLUS) &&
+				if ((battle_field->battlers[i].ability == ABILITY_PLUS) &&
 				(i != attacker_id)) {
 					if (attack->is_special) {
 						ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
@@ -1409,40 +1338,40 @@ u32 get_base_attack(struct battle_field *battle_field, u8 attacker_id, u8 defend
 			}
 			break;
 		}
-		case BLAZE:
+		case ABILITY_BLAZE:
 			if (((c_hp * 3) <= t_hp) && (attack->type == TYPE_FIRE)) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 			}
 			break;
-		case DEFEATIST:
+		case ABILITY_DEFEATIST:
 			if ((c_hp * 2) <= t_hp) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 0);
 			}
 			break;
-		case PURE_POWER:
+		case ABILITY_PURE_POWER:
 			if (!attack->is_special) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 100, 1);
 			}
 			break;
-		case SOLAR_POWER:
+		case ABILITY_SOLAR_POWER:
 			if ((weather == WEATHER_SUNNY) || (weather == WEATHER_HARSH_SUNLIGHT)) {
 				if (attack->is_special == 1) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 				}
 			}
 			break;
-		case HUSTLE:
+		case ABILITY_HUSTLE:
 			if (!attack->is_special) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 			}
 			break;
-		case SLOW_START:
+		case ABILITY_SLOW_START:
 			if ((attacker->turns_in_battle <= 5) && (!attack->is_special)) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 50, 0);
 			}
 			break;
-		case FLOWER_GIFT:
-			if ((get_species(attacker) == CHERRIM) && 
+		case ABILITY_FLOWER_GIFT:
+			if ((get_species(attacker) == POKE_CHERRIM) && 
 			((weather == WEATHER_SUNNY) || (weather == WEATHER_HARSH_SUNLIGHT))) {
 				if (!attack->is_special == 1) {
 					ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
@@ -1454,7 +1383,7 @@ u32 get_base_attack(struct battle_field *battle_field, u8 attacker_id, u8 defend
 	};
 	
 	// flower gift also works for ally cherrim with the ability
-	u8 ability = ability_present_ally(battle_field, FLOWER_GIFT, flags);
+	u8 ability = ability_present_ally(battle_field, ABILITY_FLOWER_GIFT, flags);
 	if ((ability == (attacker->battle_side + 1)) && 
 	((weather == WEATHER_SUNNY) || (weather == WEATHER_HARSH_SUNLIGHT))) {
 		// so only cherrim can have flower guard. I don't bother checking :C 
@@ -1469,38 +1398,39 @@ u32 get_base_attack(struct battle_field *battle_field, u8 attacker_id, u8 defend
 	u16 species = get_species(attacker);
 	
 	// thick club
-	if (((species == CUBONE) || (species == MAROWAK)) && (item == THICK_CLUB)) {
+	if (((species == POKE_CUBONE) || (species == POKE_MAROWAK)) &&
+	(item == ITEM_THICK_CLUB)) {
 		if (!attack->is_special) {
 			ad_dmg = apply_dmg_mod(ad_dmg, 100, 1);
 		}
 	}
 
 	// deep sea tooth
-	if ((species == CLAMPERL) && (item == DEEP_SEA_TOOTH)) {
+	if ((species == POKE_CLAMPERL) && (item == ITEM_DEEP_SEA_TOOTH)) {
 		if (attack->is_special) {
 			ad_dmg = apply_dmg_mod(ad_dmg, 100, 1);
 		}
 	}
 	
 	// light ball
-	if ((species == PIKACHU) && (item == LIGHT_BALL)) {
+	if ((species == POKE_PIKACHU) && (item == ITEM_LIGHT_BALL)) {
 		ad_dmg = apply_dmg_mod(ad_dmg, 100, 1);
 	}
 	
 	// soul dew
-	if ((species == LATIOS) || (species == LATIAS)) {
-		if ((attack->is_special) && (attacker->item == SOUL_DEW)) {
+	if ((species == POKE_LATIOS) || (species == POKE_LATIAS)) {
+		if ((attack->is_special) && (attacker->item == ITEM_SOUL_DEW)) {
 			ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 		}
 	}
 	
 	// choice band
-	if ((item == CHOICE_BAND) && (!attack->is_special)) {
+	if ((item == ITEM_CHOICE_BAND) && (!attack->is_special)) {
 		ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 	}
 
 	// choice specs
-	if ((item == CHOICE_SPECS) && (attack->is_special)) {
+	if ((item == ITEM_CHOICE_SPECS) && (attack->is_special)) {
 		ad_dmg = apply_dmg_mod(ad_dmg, 50, 1);
 	}
 	
@@ -1516,9 +1446,9 @@ u32 get_base_defense(struct battle_field *battle_field, u8 attacker_id, u8 defen
 	u8 special_move = 0;
 	
 	switch (attack->move_id) {
-		case PSYSHOCK:
-		case SECRET_SWORD:
-		case PSYSTRIKE:
+		case MOVE_PSYSHOCK:
+		case MOVE_SECRET_SWORD:
+		case MOVE_PSYSTRIKE:
 			defense = get_def(attacker, 0);
 			special_move = 1;
 			break;
@@ -1532,7 +1462,8 @@ u32 get_base_defense(struct battle_field *battle_field, u8 attacker_id, u8 defen
 	};
 	
 	u8 ability = apply_mold_breaker(battle_field, defender, attacker, flags);
-	if ((get_ability(battle_field, defender, flags) != UNAWARE) || (attack->move_id != CHIP_AWAY)) {
+	if ((get_ability(battle_field, defender, flags) != ABILITY_UNAWARE) ||
+	(attack->move_id != MOVE_CHIP_AWAY)) {
 		// calc stat boosts
 		if ((!attack->is_special) || (special_move)) {
 			defense = apply_dmg_mod(defense, ((attacker->defense_multiplier) * 50), 1);
@@ -1551,35 +1482,35 @@ u32 get_base_defense(struct battle_field *battle_field, u8 attacker_id, u8 defen
 	}
 	
 	// MARVEL scale
-	if ((!attack->is_special) && (ability == MARVEL_SCALE)) {
+	if ((!attack->is_special) && (ability == ABILITY_MARVEL_SCALE)) {
 		defense = apply_dmg_mod(defense, 50, 1);
 	}
 	
 	// cherrim's flower gift
-	if ((attack->is_special) && (ability == FLOWER_GIFT)) {
+	if ((attack->is_special) && (ability == ABILITY_FLOWER_GIFT)) {
 		defense = apply_dmg_mod(defense, 50, 1);
 	}
 	
 	// deep sea scale
-	if ((species == CLAMPERL) && (item == DEEP_SEA_SCALE)) {
+	if ((species == POKE_CLAMPERL) && (item == ITEM_DEEP_SEA_SCALE)) {
 		if (attack->is_special) {
 			defense = apply_dmg_mod(defense, 100, 1);
 		}
 	}
 	
 	// Metal poweder Ditto is such a snowflake
-	if ((species == DITTO) && (item == METAL_POWDER) &&
+	if ((species == POKE_DITTO) && (item == ITEM_METAL_POWDER) &&
 	(!attacker->transformed)) {
 		defense = apply_dmg_mod(defense, 100, 1);
 	}
 	
 	// eviolite
-	if ((!evolution_table[species].method) && (item == EVIOLITE)) {
+	if ((!evolution_table[species].method) && (item == ITEM_EVIOLITE)) {
 		defense = apply_dmg_mod(defense, 100, 1);
 	}
 	
 	// Soul dew
-	if (((species == LATIOS) || (species == LATIAS)) && (item == SOUL_DEW)) {
+	if (((species == POKE_LATIOS) || (species == POKE_LATIAS)) && (item == ITEM_SOUL_DEW)) {
 		if (attack->is_special) {
 			defense = apply_dmg_mod(defense, 100, 1);
 		}
@@ -1644,8 +1575,8 @@ u8 weather_dmg_increase(struct battle_field *battle_field, struct battler *attac
 
 u8 get_crit_dmg(struct battle_field *battle_field, struct battler *attacker, struct move_table *attack, struct flags *flags) {
 	// crit immunities: shell armor, battle armor, safeguard-type moves
-	if (((get_ability(battle_field, attacker, flags) == SHELL_ARMOR) ||
-	(get_ability(battle_field, attacker, flags) == BATTLE_ARMOR)) ||
+	if (((get_ability(battle_field, attacker, flags) == ABILITY_SHELL_ARMOR) ||
+	(get_ability(battle_field, attacker, flags) == ABILITY_BATTLE_ARMOR)) ||
 	(battle_field->modifiers.safeguard[2 * attacker->battle_side])) {
 		return 100;
 	} else {
@@ -1660,17 +1591,17 @@ u8 get_crit_dmg(struct battle_field *battle_field, struct battler *attacker, str
 		u16 item = get_item(battle_field, attacker, flags);
 		u16 species = get_species(attacker);
 		switch (item) {
-			case SCOPE_LENS:
-			case RAZOR_CLAW:
+			case ITEM_SCOPE_LENS:
+			case ITEM_RAZOR_CLAW:
 				crit_modifier ++;
 				break;
-			case STICK:
-				if (species == FARFETCHD) {
+			case ITEM_STICK:
+				if (species == POKE_FARFETCHD) {
 					crit_modifier += 2;
 				} 
 				break;
-			case LUCKY_PUNCH:
-				if (species == CHANSEY) {
+			case ITEM_LUCKY_PUNCH:
+				if (species == POKE_CHANSEY) {
 					crit_modifier += 2;
 				}
 				break;
@@ -1706,7 +1637,7 @@ u8 get_STAB(struct battle_field *battle_field, struct battler *attacker, struct 
 	u16 i;
 	for (i = 0; i < 3; i++) {
 		if ((attack->type) == attacker->types[i]){
-			if (get_ability(battle_field, attacker, flags) == ADAPTABILITY) {
+			if (get_ability(battle_field, attacker, flags) == ABILITY_ADAPTABILITY) {
 				return 100; 
 			} else {
 				return 50; 
@@ -1733,87 +1664,87 @@ u8 light_screen_dmg(struct battle_field *battle_field, struct battler *defender,
 u8 berry_reduction(struct battle_field *battle_field, struct battler *attacker, struct move_table *attack, struct flags *flags) {
 	u16 item = get_item(battle_field, attacker, flags);
 	switch (item) {
-		case OCCA_BERRY:
+		case ITEM_OCCA_BERRY:
 			if (attack->type == TYPE_FIRE) {
 				return 50;
 			}
 			break;
-		case PASSHO_BERRY:
+		case ITEM_PASSHO_BERRY:
 			if (attack->type == TYPE_WATER) {
 				return 50;
 			}
 			break;
-		case WACAN_BERRY:
+		case ITEM_WACAN_BERRY:
 			if (attack->type == TYPE_ELECTRIC) {
 				return 50;
 			}
 			break;
-		case RINDO_BERRY:
+		case ITEM_RINDO_BERRY:
 			if (attack->type == TYPE_GRASS) {
 				return 50;
 			}
 			break;
-		case YACHE_BERRY:
+		case ITEM_YACHE_BERRY:
 			if (attack->type == TYPE_ICE) {
 				return 50;
 			}
 			break;
-		case CHOPLE_BERRY:
+		case ITEM_CHOPLE_BERRY:
 			if (attack->type == TYPE_FIGHTING) {
 				return 50;
 			}
 			break;
-		case KEBIA_BERRY:
+		case ITEM_KEBIA_BERRY:
 			if (attack->type == TYPE_POISON) {
 				return 50;
 			}
 			break;
-		case SHUCA_BERRY:
+		case ITEM_SHUCA_BERRY:
 			if (attack->type == TYPE_GROUND) {
 				return 50;
 			}
 			break;
-		case COBA_BERRY:
+		case ITEM_COBA_BERRY:
 			if (attack->type == TYPE_FLYING) {
 				return 50;
 			}
 			break;
-		case PAYAPA_BERRY:
+		case ITEM_PAYAPA_BERRY:
 			if (attack->type == TYPE_PSYCHIC) {
 				return 50;
 			}
 			break;
-		case TANGA_BERRY:
+		case ITEM_TANGA_BERRY:
 			if (attack->type == TYPE_BUG) {
 				return 50;
 			}
 			break;
-		case CHARTI_BERRY:
+		case ITEM_CHARTI_BERRY:
 			if (attack->type == TYPE_ROCK) {
 				return 50;
 			}
 			break;
-		case KASIB_BERRY:
+		case ITEM_KASIB_BERRY:
 			if (attack->type == TYPE_GHOST) {
 				return 50;
 			}
 			break;
-		case HABAN_BERRY:
+		case ITEM_HABAN_BERRY:
 			if (attack->type == TYPE_DRAGON) {
 				return 50;
 			}
 			break;
-		case COLBUR_BERRY:
+		case ITEM_COLBUR_BERRY:
 			if (attack->type == TYPE_DARK) {
 				return 50;
 			}
 			break;
-		case BABIRI_BERRY:
+		case ITEM_BABIRI_BERRY:
 			if (attack->type == TYPE_STEEL) {
 				return 50;
 			}
 			break;
-		case ROSELI_BERRY:
+		case ITEM_ROSELI_BERRY:
 			if (attack->type == TYPE_FAIRY) {
 				return 50;
 			}
@@ -1839,42 +1770,42 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 
 	/* Check if special case dmg move*/
 	switch (attack->move_id) {
-		case PSYWAVE:
+		case MOVE_PSYWAVE:
 			if (not_immune(defender, attack->type)) {
 				// (x + 50) * level st. 0<= x <= 100
 				return ((random(100) + 50) / 100) * attacker->level;
 			} else {
 				return 0;
 			}
-		case NIGHT_SHADE:
+		case MOVE_NIGHT_SHADE:
 			if (not_immune(defender, attack->type)) {
 				// does attacker's level in dmg
 				return attacker->level;
 			} else {
 				return 0;
 			}
-		case SONIC_BOOM:
+		case MOVE_SONIC_BOOM:
 			if (not_immune(defender, attack->type)) {
 				// always 20 dmg
 				return 20;
 			} else {
 				return 0;
 			}
-		case SUPER_FANG:
+		case MOVE_SUPER_FANG:
 			if (not_immune(defender, attack->type)) {
 				// half the defender's HP
 				return apply_dmg_mod(defender->current_hp, 50, 0);
 			} else {
 				return 0;
 			}
-		case DRAGON_RAGE:
+		case MOVE_DRAGON_RAGE:
 			if (not_immune(defender, attack->type)) {
 				// always 40 dmg
 				return 40;
 			} else {
 				return 0;
 			}
-		case ENDEAVOR:
+		case MOVE_ENDEAVOR:
 			if (not_immune(defender, attack->type)) {
 				// do difference between attackers HP and Defenders HP.
 				u16 attacker_hp_current = attacker->current_hp;
@@ -1887,14 +1818,14 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 			} else {
 				return 0;
 			}
-		case FINAL_GAMBIT:
+		case MOVE_FINAL_GAMBIT:
 			if (not_immune(defender, attack->type)) {
 				// do amount of health of attacker
 				return attacker->current_hp;
 			} else {
 				return 0;
 			}
-		case COUNTER:
+		case MOVE_COUNTER:
 			if (not_immune(defender, attack->type)) {
 				// do double damage of hit by attack
 				if ((!attacker->damage_taken_type) && 
@@ -1906,7 +1837,7 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 			} else {
 				return 0;
 			}
-		case MIRROR_COAT:
+		case MOVE_MIRROR_COAT:
 			if (not_immune(defender, attack->type)) {
 				// do double damage of hit by special attack
 				if ((attacker->damage_taken_type) && (attacker->damage_taken)) {
@@ -1917,7 +1848,7 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 			} else {
 				return 0;
 			}
-		case METAL_BURST:
+		case MOVE_METAL_BURST:
 			if (not_immune(defender, attack->type)) {
 				// fails if user took no dmg, or is faster
 				if (!attacker->damage_taken) {
@@ -1929,7 +1860,7 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 			} else {
 				return 0;
 			}
-		case BIDE:
+		case MOVE_BIDE:
 			if (not_immune(defender, attack->type)) {
 				switch (attacker->bide) {
 				case 1:
@@ -2039,7 +1970,7 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 	
 	// check burn
 	if ((attacker->ailment == BURN) || (!attack->is_special)) {
-		if ((attack->move_id != FACADE) && (attacker->ability != GUTS)) {
+		if ((attack->move_id != MOVE_FACADE) && (attacker->ability != ABILITY_GUTS)) {
 			current_dmg = apply_dmg_mod(current_dmg, 50, 0);
 		}
 	}
@@ -2052,7 +1983,7 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 	/* Calculate and apply final modifier */
 	
 	// get reflect/light screen reduction
-	if ((flags->crit_flag) && (get_ability(battle_field, attacker, flags) == INFILTRATOR)) {
+	if ((flags->crit_flag) && (get_ability(battle_field, attacker, flags) == ABILITY_INFILTRATOR)) {
 		u8 screen = reflect_dmg(battle_field, defender, attack);
 		if (screen) {
 			current_dmg = apply_dmg_mod(current_dmg, screen, 0);
@@ -2065,59 +1996,60 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 	}
 	
 	// get multiscale reduction
-	if ((flags->health_was_full) && (get_ability(battle_field, defender, flags) == MULTISCALE)) {
+	if ((flags->health_was_full) && (get_ability(battle_field, defender, flags) == ABILITY_MULTISCALE)) {
 		current_dmg = apply_dmg_mod(current_dmg, 50, 0);
 	}
 	
 	// tinted lens boost
-	if ((get_ability(battle_field, attacker, flags) == TINTED_LENS) && (flags->effectiveness)) {
+	if ((get_ability(battle_field, attacker, flags) == ABILITY_TINTED_LENS) && (flags->effectiveness)) {
 		current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 	}
 	
 	// friend guard
 	if (((battle_field->ally[defender_id]) + 1) == 
-	(ability_present_ally(battle_field, FRIEND_GUARD, flags))) {
+	(ability_present_ally(battle_field, ABILITY_FRIEND_GUARD, flags))) {
 		current_dmg = apply_dmg_mod(current_dmg, 25, 0);
 	}
 	
 	// sniper ability
-	if ((get_ability(battle_field, attacker, flags) == SNIPER) && (flags->crit_flag)) {
+	if ((get_ability(battle_field, attacker, flags) == ABILITY_SNIPER) && 
+	(flags->crit_flag)) {
 		current_dmg = apply_dmg_mod(current_dmg, 50, 1);
 	}
 	
 	// solid rock & filter
 	if (flags->effectiveness == 2) {
 		u8 ability = get_ability(battle_field, defender, flags);
-		if ((ability == FILTER) || (ability == SOLID_ROCK)) {
+		if ((ability == ABILITY_FILTER) || (ability == ABILITY_SOLID_ROCK)) {
 			current_dmg = apply_dmg_mod(current_dmg, 75, 0);
 		}
 	}
 	
 	u16 item = get_item(battle_field, attacker, flags);
 	// Metronome item
-	if (item == METRONOME_item) {
+	if (item == ITEM_METRONOME_item) {
 		current_dmg = apply_dmg_mod(current_dmg, ((attacker->metronome) * 20), 1);
 	}
 	
 	// Expert belt item
-	if ((item == EXPERT_BELT) && (flags->effectiveness == 2)) {
+	if ((item == ITEM_EXPERT_BELT) && (flags->effectiveness == 2)) {
 		current_dmg = apply_dmg_mod(current_dmg, 20, 1);
 	}	
 	// Life orb
-	if (item == LIFE_ORB) {
+	if (item == ITEM_LIFE_ORB) {
 		current_dmg = apply_dmg_mod(current_dmg, 30, 1);
 	}
 	
 	// Berries which reduce super-effective dmg
-	if ((get_ability(battle_field, defender, flags) != KLUTZ) &&
-	(get_ability(battle_field, attacker, flags) != UNNERVE)) {
+	if ((get_ability(battle_field, defender, flags) != ABILITY_KLUTZ) &&
+	(get_ability(battle_field, attacker, flags) != ABILITY_UNNERVE)) {
 		if (flags->effectiveness == 2) {
 			// can eat the berry
 			if (berry_reduction(battle_field, attacker, attack, flags)) {
 				current_dmg = apply_dmg_mod(current_dmg, 50, 0);
 			}
 		} else {
-			if ((attack->type == TYPE_NORMAL) && (get_item(battle_field, defender, flags) == CHILAN_BERRY)) {
+			if ((attack->type == TYPE_NORMAL) && (get_item(battle_field, defender, flags) == ITEM_CHILAN_BERRY)) {
 				current_dmg = apply_dmg_mod(current_dmg, 50, 0);
 			}
 		}
@@ -2125,18 +2057,18 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 	
 	// Move used with double power trigger
 	switch (attack->move_id) {
-		case EARTHQUAKE:
+		case MOVE_EARTHQUAKE:
 			if (defender->dig) {
 				current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 			}
 			break;
-		case SURF:
+		case MOVE_SURF:
 			if (defender->dive) {
 				current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 			}
 			break;
-		case STOMP:
-		case STEAMROLLER:
+		case MOVE_STOMP:
+		case MOVE_STEAMROLLER:
 			if (defender->minimize) {
 				current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 			}

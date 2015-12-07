@@ -1,5 +1,6 @@
 #include "ROM_tables.h"
 #include "battle_engine_resource.h"
+#include "./engine/callback.h"
 
 u16 rand(void);
 u32 divmod_remainder(u32, u32);

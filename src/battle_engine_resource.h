@@ -32,6 +32,7 @@ struct battle_config {
 	u8 ai_control_ally_count;
 	u8 ally_backsprites[3];
 	struct flags *flags;
+	u16 opponent_id;
 };
 
 struct battler {
@@ -182,6 +183,7 @@ struct field_modifiers {
 };
 
 struct battle_field {
+	u16 trainer_flag_or_species;
 	struct battle_config *b_config;
 	u8 battle_type;
 	u8 turn_counter;
@@ -194,37 +196,6 @@ struct battle_field {
 	u8 active_battler_count_max;
 };
 
-struct pokemon {
-	u32 PID;
-	u32 OTID;
-	u8 name[10];
-	u16 language;
-	u8 OT_name[7];
-	u8 markings;
-	u16 checksum;
-	u16 padding_maybe;
-	u8 data[48];
-	u32 ailment;
-	u8 level;
-	u8 pokerus;
-	u16 current_hp;
-	u16 total_hp;
-	u16 attack;
-	u16 defense;
-	u16 speed;
-	u16 sp_attack;
-	u16 sp_defense;
-};
-
-struct evolution_entry {
-	u8 method;
-	u16 condition;
-	u16 species;
-	u8 padding[3];
-};
-
-extern struct evolution_entry evolution_table[species_count];
-extern struct pokemon pokemon_bank[12];
 extern struct battle_field battle_field;
 
 #endif /* BATTLE_LOCAL_RESOURCES */

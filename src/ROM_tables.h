@@ -17,6 +17,62 @@
 #define mega_table_size 20
 #define species_count 721
 
+struct trainer {
+	u8 custom_items : 1;
+	u8 custom_attacks : 1;
+	u8 padding1 : 6; // unknown, maybe padding.
+	u8 trainer_class;
+	u8 gender : 1;
+	u8 intro_music : 7;
+	u8 trainer_pic;
+	u8 trainer_name[13];
+	u16 trainer_items[4];
+	u8 unk1;
+	u8 double_battle;
+	u8 unk2[3]; // maybe padding - doubtful though
+	u8 trainer_AI_difficulty;
+	u8 unk3[3]; // maybe padding - doubtful though
+	u8 poke_count;
+	u8 padding[3];
+	union {
+		struct pokemon_battle_template_3 *pkmn; // fully customized
+		struct pokemon_battle_template_2 *pkmn1; // moves customized
+		struct pokemon_battle_template_1 *pkmn2; // items customized
+		struct pokemon_battle_template_0 *pkmn3; // no customizations
+	};
+	
+	
+};
+
+struct pokemon {
+	u32 PID;
+	u32 OTID;
+	u8 name[10];
+	u16 language;
+	u8 OT_name[7];
+	u8 markings;
+	u16 checksum;
+	u16 padding_maybe;
+	u8 data[48];
+	u32 ailment;
+	u8 level;
+	u8 pokerus;
+	u16 current_hp;
+	u16 total_hp;
+	u16 attack;
+	u16 defense;
+	u16 speed;
+	u16 sp_attack;
+	u16 sp_defense;
+};
+
+struct evolution_entry {
+	u8 method;
+	u16 condition;
+	u16 species;
+	u8 padding[3];
+};
+
 struct dex_entry_data {
 	u8 name[12];
 	u16 height;
@@ -146,4 +202,6 @@ extern struct berries_table berries_t[berries_table_size];
 extern struct mega_table megas[mega_items_table_size];
 extern struct base_stat_entry base_stats[species_count];
 extern struct dex_entry_data dex_data[species_count];
+extern struct evolution_entry evolution_table[species_count];
+extern struct pokemon pokemon_bank[12];
 #endif /* ROM_TABLES_H */
