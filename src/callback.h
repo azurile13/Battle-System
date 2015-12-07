@@ -13,4 +13,4 @@ void task_exec(void);
 void objc_exec(void);
 void obj_sync_something(void);
 void fade_and_return_progress_probably(void);
-#endif
+#endif /* CALLBACK_H */
