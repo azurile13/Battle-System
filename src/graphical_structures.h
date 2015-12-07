@@ -18,7 +18,7 @@ struct bs_elements_t {
     void *palette;
 };
 
-struct bs_load_var_t;
+struct bs_load_var_t
 {
     u8 battle_load_state;
 };
