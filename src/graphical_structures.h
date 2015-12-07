@@ -4,30 +4,27 @@
 #include "types.h"
 
 //How should the screen be "faded" in
-typedef enum
-{
+enum bs_animation_t {
   BOTTOM_TOP,
   FADE_IN
-} bs_animation_t;
+};
 
 //Battlescreen elements used to draw the screen
-typedef struct
-{
+struct bs_elements_t {
     void *background_set;
     void *background_map;
     void *grass_set;
     void *grass_map;
     void *palette;
-} bs_elements_t;
+};
 
-typedef struct
+struct bs_load_var_t;
 {
     u8 battle_load_state;
-} bs_load_var_t;
+};
 
 //Wrapper enumeration for the gba window feature
-typedef enum
-{
+enum window_enable_t {
     W0_BG0 = 1 << 0,
     W0_BG1 = 1 << 1,
     W0_BG2 = 1 << 2,
@@ -43,10 +40,9 @@ typedef enum
 
     W1_OBJ = 1 << 12,
     W1_SFX = 1 << 13
-} window_enable_t;
+};
 
-typedef struct
-{
+struct fade_control_t {
     u16 bg_bitfield;
     u16 obj_bitfield;
     u16 scale;
@@ -56,15 +52,14 @@ typedef struct
     u8 field9;
     u8 fieldA;
     u8 fieldB;
-} fade_control_t;
+};
 
 //graphic compound
-typedef struct
-{
+struct graphic_t {
   void *tileset;
   void *tilemap;
   void *palette;
-} graphic_t;
+};
 
 
-#endif
+#endif /* GRAPHICAL_STRUCTS */
