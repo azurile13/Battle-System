@@ -14,4 +14,6 @@ void gpu_sprites_upload(void);
 u16 lcd_io_get(u8 io_register);
 u8 fade_screen(u32 bitmask, s8 speed, u8 to, u8 from, u16 color);
 void fade_and_return_progress_probably(void);
-#endif
+
+
+#endif /* LCD_H */
