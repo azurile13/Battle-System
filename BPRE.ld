@@ -17,7 +17,9 @@ evolution_table = 0x08259754;
 pokemon_bank = 0x0202402C;
 base_stats = 0x08254784;
 dex_data = 0x0844E850;
-
+temp_vars = 0x020370B8;
+battle_data_ptrs = 0x0203C000;
+superstate = 0x030030F0;
 
 /*
 * Place holder data

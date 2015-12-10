@@ -39,9 +39,7 @@ struct trainer {
 		struct pokemon_battle_template_2 *pkmn1; // moves customized
 		struct pokemon_battle_template_1 *pkmn2; // items customized
 		struct pokemon_battle_template_0 *pkmn3; // no customizations
-	};
-	
-	
+	};	
 };
 
 struct pokemon {
@@ -112,8 +110,6 @@ struct base_stat_entry {
 	u16 padding;
 };
 
-
-
 struct move_table {
 	u8 script_id;
 	u8 base_power;
@@ -122,7 +118,7 @@ struct move_table {
 	u8 PP;
 	u8 effect_accuracy;
 	u8 affected_targets;
-	u8 priority;
+	s8 priority;
 	u8 contact : 1;
 	u8 protect : 1;
 	u8 magic_coat : 1;
@@ -178,6 +174,27 @@ struct mega_table {
 	u16 item;
 };
 
+struct temp_vars {
+	// Only 0x8000s here
+	u16 var_8000;
+	u16 var_8001;
+	u16 var_8002;
+	u16 var_8003;
+	u16 var_8004;
+	u16 var_8005;
+	u16 var_8006;
+	u16 var_8007;
+	u16 var_8008;
+	u16 var_8009;
+	u16 var_800A;
+	u16 var_800B;
+	u16 var_800D;
+	u16 var_800F;
+	u16 var_800C;
+	u16 var_8010;
+	u16 var_8011;
+};
+
 /* 
 0 = immune
 1 = 1/2
@@ -204,4 +221,6 @@ extern struct base_stat_entry base_stats[species_count];
 extern struct dex_entry_data dex_data[species_count];
 extern struct evolution_entry evolution_table[species_count];
 extern struct pokemon pokemon_bank[12];
+extern struct temp_vars temp_vars;
+
 #endif /* ROM_TABLES_H */
