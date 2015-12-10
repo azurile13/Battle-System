@@ -1,15 +1,8 @@
 #include "battle_engine_resource.h"
 #include "ROM_tables.h"
 #include "multipurpose_resources.c"
-#include "./Defines/abilities.h"
-#include "./Defines/moves.h"
-#include "./Defines/get_attr.h"
 #include "types.h"
-#include "./Defines/weather.h"
-#include "./Defines/items.h"
-#include "./Defines/type_ids.h"
-#include "./Defines/ailments.h"
-#include "./Defines/pokemon.h"
+#include "defines.h"
 
 #define SINGLE 1
 #define HORDE 5
@@ -343,7 +336,6 @@ u8 get_item_modifier(struct battle_field *battle_field, struct battler *attacker
 			}
 			break;
 		case ITEM_DREAD_PLATE:
-		case ITEM_BLACK_BELT:
 		case ITEM_BLACK_GLASSES:
 			if (atk_type == TYPE_DARK) {
 				item_boost = 20;
@@ -366,6 +358,7 @@ u8 get_item_modifier(struct battle_field *battle_field, struct battler *attacker
 			}
 			break;
 		case ITEM_FIST_PLATE:
+		case ITEM_BLACK_BELT:
 			if (atk_type == TYPE_FIGHTING) {
 				item_boost = 20;
 			}
@@ -1049,6 +1042,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			} else {
 				atk_base_power = attack->base_power;
 			}
+			break;
 		case MOVE_VENOSHOCK:
 			if (defender->ailment == POISONNED) {
 				atk_base_power = attack->base_power * 2;
@@ -1062,6 +1056,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			} else {
 				atk_base_power = attack->base_power;
 			}
+			break;
 		case MOVE_FUSION_BOLT:
 		{
 			atk_base_power = 0;
