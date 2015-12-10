@@ -6,6 +6,17 @@
 #include "types.h"
 #include "ROM_tables.h"
 
+enum battle_result {
+	RESULT_WIN,
+	RESULT_LOSS,
+	RESULT_TIE, // Low priority. Case of double wipeout.
+	RESULT_RUN,
+	RESULT_CAPTURED,
+	RESULT_FORFEIT, // Low priority. Forfeit trainer battles
+	RESULT_ON_GOING,
+	RESULT_TO_CONTINUE, // exit to OW, don't free structs
+};
+
 struct flags {
 	u8 effectiveness; // 1 Not effective, 2 super, 0 normal
 	u8 crit_flag : 1;
@@ -194,8 +205,17 @@ struct battle_field {
 	u8 ally[6];
 	u8 active_battler_count;
 	u8 active_battler_count_max;
+	enum battle_result battle_result;
+};
+
+struct battle_data_ptrs {
+	struct battle_field *field_ptr;
+	u8 task_id;
+	// more to come maybe...
 };
 
 extern struct battle_field battle_field;
+extern struct battle_data_ptrs battle_data_ptrs;
+extern enum battle_result battle_result;
 
 #endif /* BATTLE_LOCAL_RESOURCES */
