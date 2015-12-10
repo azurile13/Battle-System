@@ -1,15 +1,11 @@
+#include "types.h"
 #include "battle_engine_resource.h"
 #include "ROM_tables.h"
 #include "multipurpose_resources.c"
-#include "./Defines/get_attr.h"
-#include "types.h"
-#include "./Defines/type_ids.h"
-#include "./Defines/battle_types.h"
+#include "defines.h"
 
-void c2_exit_to_overworld_1_continue_scripts_and_music (void) {
-	return;
-}
 
+/* Reserved these 3 functions for SBird. */
 u8 get_environment() {
 	// tile standing on & map & table look up
 	return 0;
@@ -20,8 +16,7 @@ u8 set_up_oam_sliding() {
 	return 0;
 }
 
-
-void battle_graphics_setup (struct battle_field *battle_field) {
+void battle_graphics_slide (struct battle_field *battle_field) {
 	return;
 }
 
@@ -50,22 +45,104 @@ void set_types(struct battler *battler, struct pokemon *pokemon) {
 }
 
 void battler_init(struct battler *battler, struct pokemon *pokemon, u8 bank) {
-		battler->species = get_attr(pokemon, ATTR_SPECIES);
-		battler->ability = get_ability_from_bit(pokemon);
-		battler->weight = get_weight(pokemon);
-		battler->level = get_attr(pokemon, ATTR_LEVEL);
-		set_types(battler, pokemon);
-		battler->item = get_attr(pokemon, ATTR_HELD_ITEM);
-		battler->current_hp = pokemon->current_hp;
-		battler->total_hp = pokemon->total_hp;
-		battler->attack = pokemon->attack;
-		battler->defense = pokemon->defense;
-		battler->speed = pokemon->speed;
-		battler->ailment = pokemon->ailment;
-		battler->pokemon_bank_id = bank;
+	battler->species = get_attr(pokemon, ATTR_SPECIES);
+	battler->ability = get_ability_from_bit(pokemon);
+	battler->weight = get_weight(pokemon);
+	battler->level = get_attr(pokemon, ATTR_LEVEL);
+	set_types(battler, pokemon);
+	battler->item = get_attr(pokemon, ATTR_HELD_ITEM);
+	battler->current_hp = pokemon->current_hp;
+	battler->total_hp = pokemon->total_hp;
+	battler->attack = pokemon->attack;
+	battler->defense = pokemon->defense;
+	battler->speed = pokemon->speed;
+	battler->ailment = pokemon->ailment;
+	battler->pokemon_bank_id = bank;
 	return;
 }
 
+void battle_end (struct battle_field *battle_field) {
+	// store battle outcome
+	temp_vars.var_8000 = battle_field->battle_result;
+	if (battle_field->battle_result != RESULT_TO_CONTINUE) {
+		free (battle_field);
+	}
+	c2_exit_to_overworld_1_continue_scripts_and_music();
+	return;
+}
+
+
+void do_battle (u8 task_id) {
+	//struct battle_field *battle_field = &battle_data_ptrs->field_ptr;
+	struct battle_field *battle_field = battle_data_ptrs.field_ptr;
+	u8 counter = superstate.multi_purpose_state_tracker;
+	switch (counter) {
+		case 0:
+			// increment turn counter
+			battle_field->turn_counter ++;
+			counter ++;
+			break;
+		case 1:
+			// do text things
+			// send out parties
+			break;
+		case 2:
+			// check ability activations
+			break;
+		case 3:
+			// player pick moves
+		case 4:
+			// ai pick moves
+		case 5:
+			// execute pre-move abilities
+		case 6:
+			// execute moves
+		case 7:
+			// update battle field. HP bars, clear dead, ect.
+		case 8:
+			// check battle is over -> end (captured, frontier mode loss, dex, money, revert forms, ect)
+			break;
+		case 9:
+			// loop
+			counter = 0;
+			break;
+		default:
+			// battle is over 
+			task_del(task_id);
+			battle_end(battle_field);
+			break;
+	};
+	return;
+}
+/*
+Battle (task):
+	- Turn counter ++
+	- Trainer was challenged/run send out anims for each side (BS)
+	- player pick move to use
+	- AIs pick move to use
+	- execute moves -> Run "battle script" tasks for move
+	- update battle field
+	- check battle is over -> end (captured, frontier mode loss, dex, money, revert forms, ect)
+	- give exp, learn move, evolve checks
+	Back to turn counter ++
+}
+*/
+
+void update(u8 task_id) {
+	task_exec();
+	textbox_something();
+	objc_exec();
+	obj_sync_something();
+	fade_and_return_progress_probably();
+	do_battle(task_id);
+	return;
+}
+
+void setup (void) {
+	superstate.multi_purpose_state_tracker = 0;
+	battle_data_ptrs.task_id = task_add(update, 0x1);
+	return;
+}
 
 void battle_init(struct battle_config *b_config) {
 	void c2_exit_to_overworld_1_continue_scripts_and_music(void);
@@ -127,31 +204,9 @@ void battle_init(struct battle_config *b_config) {
 			c2_exit_to_overworld_1_continue_scripts_and_music();
 			break;		
 	};
-	battle_graphics_setup(battle_field);
+	battle_graphics_slide(battle_field);
+	setup();
 	return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
