@@ -196,14 +196,33 @@ struct temp_vars {
 };
 
 /* 
-0 = immune
-1 = 1/2
-2 = 1
-3 = 2	
-
-
-u8 type_chart = [2, 2, 2, 2, 2, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 1, 1, 2, 3, 1, 0, 3, 2, 2, 2, 2, 2, 1, 3, 2, 3, 1, 2, 3, 2, 2, 2, 1, 3, 2, 1, 2, 2, 2, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 0, 2, 2, 2, 3, 2, 2, 2, 2, 2, 3, 2, 2, 0, 3, 2, 3, 1, 2, 3, 2, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 1, 3, 2, 1, 2, 3, 2, 1, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1, 2, 3, 2, 3, 2, 2, 3, 1, 0, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 1, 2, 2, 2, 2, 2, 2, 3, 1, 2, 1, 2, 1, 1, 2, 1, 2, 3, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 2, 3, 2, 1, 1, 3, 2, 2, 3, 1, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 3, 1, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 1, 3, 3, 1, 2, 1, 2, 1, 3, 1, 2, 2, 2, 1, 2, 2, 2, 2, 3, 2, 0, 2, 2, 2, 2, 2, 2, 3, 1, 1, 2, 2, 1, 2, 2, 2, 3, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 3, 2, 3, 2, 2, 2, 1, 2, 1, 1, 3, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 0, 2, 1, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 1, 1, 2, 3, 2, 1, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 3, 3, 2];
+0 = normal effective
+1 = super effective
+2 = not effective
+3 = immune
 */
+
+struct type_chart {
+	u8 normal_weakness;
+	u8 fighting_weakness;
+	u8 flying_weakness;
+	u8 poison_weakness;
+	u8 ground_weakness;
+	u8 rock_weakness;
+	u8 bug_weakness;
+	u8 ghost_weakness;
+	u8 steel_weakness;
+	u8 egg_weakness;
+	u8 fire_weakness;
+	u8 water_weakness;
+	u8 grass_weakness;
+	u8 electric_weakness;
+	u8 psychic_weakness;
+	u8 ice_weakness;
+	u8 dragon_weakness;
+	u8 dark_weakness;
+	u8 fairy_weakness;
+};
 
 
 u16 species_to_dex_index(u16);
@@ -222,5 +241,6 @@ extern struct dex_entry_data dex_data[species_count];
 extern struct evolution_entry evolution_table[species_count];
 extern struct pokemon pokemon_bank[12];
 extern struct temp_vars temp_vars;
+extern type_chart type_chart[19];
 
 #endif /* ROM_TABLES_H */
