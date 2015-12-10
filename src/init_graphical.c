@@ -4,16 +4,16 @@
 #include "lcd.h"
 #include "callback.h"
 
-void load_screen(void); //__attribute__ ((section (".init")));;
+void load_screen(void) /*__attribute__ ((section (".init")))*/ ;
 void pre_init(void);
 void wait_init(void);
 void clear_video(void);
-void init_battle_screen(bs_elements_t screen_graphic, bs_animation_t animation);
+void init_battle_screen(struct bs_elements_t screen_graphic, enum bs_animation_t animation);
 void load_screen_open_bottom_top(void);
 void load_screen_fade(void);
 
-bs_load_var_t* bs_globals = (bs_load_var_t*)((void*)0x0203F000);
-fade_control_t* fade_control = (fade_control_t*)((void*)0x02037AB8);
+struct bs_load_var_t* bs_globals = ((struct bs_load_var_t*)(0x0203F000));
+struct fade_control_t* fade_control = ((struct fade_control_t*)(0x02037AB8));
 
 void load_screen()
 {
@@ -32,7 +32,7 @@ void pre_init()
     lcd_io_set(0x00, 0x7F60);
 
     //TODO: Load bs_elements_t from environment
-    bs_elements_t elements = (*((bs_elements_t*)(0x0824EE34)));
+    struct bs_elements_t elements = (*((struct bs_elements_t*)(0x0824EE34)));
     init_battle_screen(elements, FADE_IN);
     vblank_handler_set(wait_init);
 }
@@ -104,7 +104,7 @@ void wait_init()
     fade_and_return_progress_probably();
 }
 
-void init_battle_screen(bs_elements_t screen_graphic, bs_animation_t animation)
+void init_battle_screen(struct bs_elements_t screen_graphic, enum bs_animation_t animation)
 {
     //Just load screen elements
     lz77_uncomp_vram(screen_graphic.background_set, (void*)0x06008000);
