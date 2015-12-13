@@ -3,12 +3,21 @@
 #include "ROM_tables.h"
 #include "multipurpose_resources.c"
 #include "defines.h"
+#include "engine/battle.h"
+#include "engine/variables.h"
+#include "lcd.h"
 
+void load_screen_fade(void);
+void load_screen_bottom_top(void);
+void battle_graphics_slide (struct battle_field *battle_field);
+void test_gfx(void);
+void setup(void);
+void dp12_fuel(u16 current);
 
 /* Reserved these 3 functions for SBird. */
-u8 get_environment() {
-	// tile standing on & map & table look up
-	return 0;
+u16 get_environment() {
+	u16 custom_environment = load_var_value(VAR_BATTLE_BG_CUSTOM);
+	return custom_environment > 0 ? custom_environment : get_bs_elem_env_index();
 }
 
 u8 set_up_oam_sliding() {
@@ -16,9 +25,172 @@ u8 set_up_oam_sliding() {
 	return 0;
 }
 
-void battle_graphics_slide (struct battle_field *battle_field) {
-	return;
+void clear_video()
+{
+    overworld_free_bgmaps();
+    gpu_tile_bg_drop_all_sets(0);
+	  bg_positions_reset();
+    callback_clear_and_init();
+
+    //TODO: Use DMA or memcopy instead of hacky for loops
+    int i = 0;
+    for(i = 0x06000000; i < 0x06010000; i+=4)
+    {
+        *((u32*)(i)) = 0x00000000;
+    }
+    for(i = 0; i < 512; i+=4)
+    {
+        *((u32*)(0x020371F8 + i)) = 0x00000000;
+        *((u32*)(0x020375F8 + i)) = 0x00000000;
+    }
 }
+
+void battle_graphics_slide (struct battle_field *battle_field) {
+	clear_video();
+	//Some window stuff todo
+	/*lcd_io_set(0x4C, 0x00);
+	lcd_io_set(0x40, 0xF0);
+	lcd_io_set(0x44, 0x5051);
+	lcd_io_set(0x48, 0x00);
+	lcd_io_set(0x4A, 0x00);
+	vblank_cb_battle_WIN0H = 0xF0;
+	vblank_cb_battle_WIN0V = 0x5051;*/
+
+
+
+
+
+	lcd_io_set(0x08, 0x9800);
+	lcd_io_set(0x0A, 0x9C04);
+	lcd_io_set(0x0C, 0x5E00);
+	lcd_io_set(0x0E, 0x5A0B);
+	lcd_io_set(0x00, 0x7F60);
+	battle_load_global.battle_environment = get_environment();
+
+	battle_load_global.animation = BOTTOM_TOP;
+	battle_load_global.battle_load_state = 0;
+	switch(battle_load_global.animation)
+	{
+		case FADE_IN:
+			set_callback2(load_screen_fade);
+			break;
+		case BOTTOM_TOP:
+			set_callback2(load_screen_bottom_top);
+		  break;
+	}
+}
+
+void dp12_fuel(u16 current)
+{
+	u16* dp12_8700_p;
+	for(dp12_8700_p = &dp12_8700; dp12_8700_p < (&dp12_8700 + 0x50); dp12_8700_p++)
+	{
+		*(dp12_8700_p) = (u16)current;
+		*(dp12_8700_p + 0x3C0) = (u16)current;
+		*(dp12_8700_p + 0x50) = (u16)(0xFFFF - current + 1);
+		*(dp12_8700_p + 0x410) = (u16)(0xFFFF - current + 1);
+	}
+}
+
+void load_battle_background(struct bs_elements_t screen_graphic)
+{
+	lz77_uncomp_vram(screen_graphic.background_set, (void*)0x06008000);
+	lz77_uncomp_vram(screen_graphic.background_map, (void*)0x0600d000);
+
+	pal_decompress_slice_to_faded_and_unfaded(screen_graphic.palette, 0x20, 0x60);
+}
+
+void load_battle_accessories(struct bs_elements_t screen_graphic)
+{
+	lz77_uncomp_vram(screen_graphic.grass_set, (void*)0x06004000);
+	lz77_uncomp_vram(screen_graphic.grass_map, (void*)0x0600E000);
+}
+
+void load_screen_bottom_top()
+{
+	switch(battle_load_global.battle_load_state)
+	{
+		case 0:
+		{
+			/*Honestly no idea what this is, but i'm copying the games setup for now*/
+			dp12_reset_something();
+			dp12_something(&BG3HOFS, (&BG3HOFS) + 4, (&BG3HOFS) + 8);
+
+			vblank_cb_battle_BG0HOFS = 0;
+			vblank_cb_battle_BG0VOFS = 0;
+			vblank_cb_battle_BG1HOFS = 0;
+			vblank_cb_battle_BG1VOFS = 0;
+			vblank_cb_battle_BG2HOFS = 0;
+			vblank_cb_battle_BG2VOFS = 0;
+			vblank_cb_battle_BG3HOFS = 0xF0;
+			vblank_cb_battle_BG3VOFS = 0;
+			battle_load_global.revert_screen = 1;
+
+			load_battle_background(battle_env_table[battle_load_global.battle_environment]);
+			dp12_config.source_one = &dp12_8700 + 1;
+			dp12_config.source_two = &dp12_8700 + 0x3C1;
+			dp12_config.callback = dp12_b_callback;
+			dp12_config.enable = 0x1;
+			dp12_config.length = 0x1;
+			dp12_config.config = 0xA260;
+			battle_load_global.battle_load_state++;
+		}
+		break;
+		case 1:
+		{
+			dp12_fuel(vblank_cb_battle_BG3HOFS);
+			if(dp12_config.revert == 1)
+			{
+				dp12_config.revert = 0;
+			}
+			else
+			{
+				dp12_config.revert = 1;
+			}
+			(vblank_cb_battle_BG3HOFS)--;
+			if(vblank_cb_battle_BG3HOFS == 0)
+			{
+				battle_load_global.battle_load_state++;
+			}
+
+		}
+		break;
+		case 2:
+		{
+			//finished loading, disengage dp12
+			dp12_abort();
+		}
+	}
+}
+
+void load_screen_fade()
+{
+	switch(battle_load_global.battle_load_state)
+	{
+		case 0:
+		{
+			int i = 0;
+			//kill the faded palettes
+			for(i = 0; i < 512; i+=4)
+			{
+					*((u32*)(0x020375F8 + i)) = 0x00000000;
+			}
+			//Load gfx
+			load_battle_background(battle_env_table[battle_load_global.battle_environment]);
+			fade_screen(0xFFFFFFFF,0x6,0x10,0x0,0x0000);
+
+			battle_load_global.battle_load_state = 1;
+		}
+		break;
+		case 1:
+			if(pal_fade_control.done == 0)
+				battle_load_global.battle_load_state = 2;
+		break;
+
+	}
+}
+
+
 
 u8 get_ability_from_bit(struct pokemon *pokemon) {
 	u8 ability = get_attr(pokemon, ATTR_ABILITY_BIT);
@@ -107,7 +279,7 @@ void do_battle (u8 task_id) {
 			counter = 0;
 			break;
 		default:
-			// battle is over 
+			// battle is over
 			task_del(task_id);
 			battle_end(battle_field);
 			break;
@@ -128,30 +300,35 @@ Battle (task):
 }
 */
 
-void update(u8 task_id) {
+void update() {
 	task_exec();
 	textbox_something();
 	objc_exec();
 	obj_sync_something();
+	gpu_pal_upload();
+	gpu_sprites_upload();
 	fade_and_return_progress_probably();
-	do_battle(task_id);
-	return;
+
+	lcd_io_set(0x1C, vblank_cb_battle_BG3HOFS);
+	dp12_update();
 }
 
 void setup (void) {
 	superstate.multi_purpose_state_tracker = 0;
-	battle_data_ptrs.task_id = task_add(update, 0x1);
+	battle_data_ptrs.task_id = task_add(do_battle, 0x1);
+
+	vblank_handler_set(update);
 	return;
 }
 
 void battle_init(struct battle_config *b_config) {
 	void c2_exit_to_overworld_1_continue_scripts_and_music(void);
-	
+
 	// malloc resources and set up
 	struct battle_field *battle_field = (struct battle_field*) malloc(sizeof(struct battle_field));
 	battle_field->b_config = b_config;
 	battle_field->battle_type = b_config->type;
-	
+
 	// set up battlers by battle type
 	switch (battle_field->battle_type) {
 		case SINGLE_WILD:
@@ -202,11 +379,9 @@ void battle_init(struct battle_config *b_config) {
 			free(battle_field);
 			// call back, return to overworld -> safe exit
 			c2_exit_to_overworld_1_continue_scripts_and_music();
-			break;		
+			break;
 	};
 	battle_graphics_slide(battle_field);
 	setup();
 	return;
 }
-
-

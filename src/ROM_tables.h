@@ -39,7 +39,7 @@ struct trainer {
 		struct pokemon_battle_template_2 *pkmn1; // moves customized
 		struct pokemon_battle_template_1 *pkmn2; // items customized
 		struct pokemon_battle_template_0 *pkmn3; // no customizations
-	};	
+	};
 };
 
 struct pokemon {
@@ -195,11 +195,11 @@ struct temp_vars {
 	u16 var_8011;
 };
 
-/* 
+/*
 0 = immune
 1 = 1/2
 2 = 1
-3 = 2	
+3 = 2
 
 
 u8 type_chart = [2, 2, 2, 2, 2, 1, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 1, 1, 2, 3, 1, 0, 3, 2, 2, 2, 2, 2, 1, 3, 2, 3, 1, 2, 3, 2, 2, 2, 1, 3, 2, 1, 2, 2, 2, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 1, 0, 2, 2, 2, 3, 2, 2, 2, 2, 2, 3, 2, 2, 0, 3, 2, 3, 1, 2, 3, 2, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 1, 3, 2, 1, 2, 3, 2, 1, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1, 2, 3, 2, 3, 2, 2, 3, 1, 0, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 1, 2, 2, 2, 2, 2, 2, 3, 1, 2, 1, 2, 1, 1, 2, 1, 2, 3, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 2, 3, 2, 1, 1, 3, 2, 2, 3, 1, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 3, 1, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 1, 3, 3, 1, 2, 1, 2, 1, 3, 1, 2, 2, 2, 1, 2, 2, 2, 2, 3, 2, 0, 2, 2, 2, 2, 2, 2, 3, 1, 1, 2, 2, 1, 2, 2, 2, 3, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 3, 2, 3, 2, 2, 2, 1, 2, 1, 1, 3, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3, 2, 0, 2, 1, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 1, 1, 2, 3, 2, 1, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 3, 3, 2];
@@ -214,8 +214,8 @@ extern struct sheer_force_table sheer_force_t[sheer_force_table_size];
 extern struct mega_items_table mega_items_t[mega_items_table_size];
 extern struct iron_fist_table iron_fist_t[iron_fist_table_size];
 extern struct reckless_table reckless_t[reckless_table_size];
-extern struct types type_chart[19];
 extern struct berries_table berries_t[berries_table_size];
+extern struct types type_chart[19];
 extern struct mega_table megas[mega_items_table_size];
 extern struct base_stat_entry base_stats[species_count];
 extern struct dex_entry_data dex_data[species_count];

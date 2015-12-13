@@ -2,6 +2,21 @@
  * Data
  */
 
+
+vblank_cb_battle_BG0HOFS = 0x02022974;
+vblank_cb_battle_BG0VOFS = 0x02022976;
+vblank_cb_battle_BG1HOFS = 0x02022978;
+vblank_cb_battle_BG1VOFS = 0x0202297A;
+vblank_cb_battle_BG2HOFS = 0x0202297C;
+vblank_cb_battle_BG2VOFS = 0x0202297E;
+vblank_cb_battle_BG3HOFS = 0x02022980;
+vblank_cb_battle_BG3VOFS = 0x02022982;
+vblank_cb_battle_WIN0H = 0x02022984;
+vblank_cb_battle_WIN0V = 0x02022986;
+vblank_cb_battle_WIN1H = 0x02022988;
+vblank_cb_battle_WIN1V = 0x0202298A;
+dp12_8700 = 0x02038700;
+dp12_config = 0x02039600;
 script_env_1 = 0x03000EB0;
 script_env_2 = 0x03000F28;
 pal_fade_control = 0x02037AB8;
@@ -17,14 +32,17 @@ evolution_table = 0x08259754;
 pokemon_bank = 0x0202402C;
 base_stats = 0x08254784;
 dex_data = 0x0844E850;
+battle_env_table = 0x0824EE34;
 temp_vars = 0x020370B8;
 battle_data_ptrs = 0x0203C000;
+battle_load_global = 0x0203F000; /*Free RAM space*/
 superstate = 0x030030F0;
 
 /*
 * Place holder data
 */
 
+berries_t = 0x0;
 sheer_force_t = 0x0;
 mega_items_t = 0x0;
 megas = 0x0;
@@ -51,7 +69,14 @@ c2_exit_to_overworld_2_switch = 0x080567DC|1;
 gpu_sprites_upload = 0x08007320|1;
 copy_queue_process = 0x08007610|1;
 gpu_pal_upload = 0x08070474|1;
+bg_scroll_invert = 0x08087F54|1;
+dp12_reset_something = 0x08087EA4|1;
+dp12_something = 0x08087EE4|1;
+dp12_update = 0x08087F54|1;
+dp12_b_callback = 0x08087FE0|1;
+dp12_abort = 0x08087E64|1;
 pal_decompress_slice_to_faded_and_unfaded = 0x080703A8|1;
+get_bs_elem_env_index = 0x0800FC2C|1;
 
 load_var_value = 0x0806E568|1;
 var_set_value = 0x0806E584|1;
@@ -97,6 +122,16 @@ __aeabi_idiv = 0x081E4684|1;
 __aeabi_uidiv = 0x081E4684|1;
 
 species_to_dex_index = 0x08043298|1;
+
+/*
+ * IO
+ */
+
+BG3HOFS = 0x0400001C;
+DMA0_SRC = 0x040000B0;
+DMA0_DST = 0x040000B4;
+DMA0_CNT_L = 0x040000B8;
+DMA0_CNT_H = 0x040000BA;
 
 /*
  * Custom Data

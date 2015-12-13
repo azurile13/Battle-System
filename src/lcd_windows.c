@@ -1,5 +1,5 @@
 #include "types.h"
-#include "graphical_structures.h"
+#include "lcd_windows.h"
 #include "lcd.h"
 
 void set_window(u8 window_number, u8 x, u8 y, u8 width, u8 height) {
@@ -16,7 +16,7 @@ void set_window(u8 window_number, u8 x, u8 y, u8 width, u8 height) {
     }
 }
 
-void set_window_enable_io(window_enable_t flags_in, window_enable_t flags_out) {
+void set_window_enable_io(enum window_enable_t flags_in, enum window_enable_t flags_out) {
     lcd_io_set(0x48, flags_in);
     lcd_io_set(0x4A, flags_out);
 }
