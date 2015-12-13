@@ -767,7 +767,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 			attacker->speed_multiplier + 
 			attacker->special_defense_multiplier + 
 			attacker->evasion_multiplier +
-			attacker->accuracy_multiplier + attacker->crit_multiplier;
+			attacker->accuracy_multiplier;
 			atk_base_power = 20 + (20 * atk_base_power);
 			break;
 		case MOVE_ACROBATICS:
@@ -900,6 +900,7 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 		}
 		case MOVE_GUST:
 		case MOVE_TWISTER:
+		case MOVE_THUNDER:
 			if (defender->bounce || defender->fly || defender->sky_drop) {
 				atk_base_power = attack->base_power * 2;
 			} else {
@@ -1189,7 +1190,12 @@ u16 get_base_power(struct battle_field *battle_field, u8 attacker_id, u8 defende
 		case ABILITY_RIVALRY:
 			if (attacker->gender == defender->gender) {
 				atk_base_power = apply_dmg_mod(atk_base_power, 25, 1);
+				break;
+			} 
+			if (defender->gender == GENDERLESS) {
+				break;
 			}
+			atk_base_power = apply_dmg_mod(atk_base_power, 25, 0);
 			break;
 		case ABILITY_SAND_FORCE:
 		{
@@ -1344,6 +1350,7 @@ u32 get_base_attack(struct battle_field *battle_field, u8 attacker_id, u8 defend
 			}
 			break;
 		case ABILITY_PURE_POWER:
+		case ABILITY_HUGE_POWER:
 			if (!attack->is_special) {
 				ad_dmg = apply_dmg_mod(ad_dmg, 100, 1);
 			}
@@ -1449,9 +1456,9 @@ u32 get_base_defense(struct battle_field *battle_field, u8 attacker_id, u8 defen
 			break;
 		default:
 			if (attack->is_special) {
-				defense = get_def(attacker, 0);
-			} else {
 				defense = get_def(attacker, 1);
+			} else {
+				defense = get_def(attacker, 0);
 			}
 			break;
 	};
@@ -1773,6 +1780,7 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 				return 0;
 			}
 		case MOVE_NIGHT_SHADE:
+		case MOVE_SEISMIC_TOSS:
 			if (not_immune(defender, attack->type)) {
 				// does attacker's level in dmg
 				return attacker->level;
@@ -2053,17 +2061,23 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 	// Move used with double power trigger
 	switch (attack->move_id) {
 		case MOVE_EARTHQUAKE:
+		case MOVE_MAGNITUDE:
 			if (defender->dig) {
 				current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 			}
 			break;
 		case MOVE_SURF:
+		case MOVE_WHIRLPOOL:
 			if (defender->dive) {
 				current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 			}
 			break;
 		case MOVE_STOMP:
 		case MOVE_STEAMROLLER:
+		case MOVE_BODY_SLAM:
+		case MOVE_DRAGON_RUSH:
+		case MOVE_FLYING_PRESS:
+		case MOVE_PHANTOM_FORCE:
 			if (defender->minimize) {
 				current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 			}
