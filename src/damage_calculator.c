@@ -1975,7 +1975,7 @@ u32 damage_calculator(struct battle_field *battle_field, u8 attacker_id, u8 defe
 	}
 	
 	// tinted lens boost
-	if ((get_ability(battle_field, attacker, flags) == ABILITY_TINTED_LENS) && (flags->effectiveness)) {
+	if ((get_ability(battle_field, attacker, flags) == ABILITY_TINTED_LENS) && (flags->effectiveness == 1)) {
 		current_dmg = apply_dmg_mod(current_dmg, 100, 1);
 	}
 	
