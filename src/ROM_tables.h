@@ -204,6 +204,7 @@ struct temp_vars {
 */
 
 struct types_chart {
+	/*
 	u8 normal_weakness;
 	u8 fighting_weakness;
 	u8 flying_weakness;
@@ -223,6 +224,8 @@ struct types_chart {
 	u8 dragon_weakness;
 	u8 dark_weakness;
 	u8 fairy_weakness;
+	*/
+	u8 weakness[19];
 };
 
 
