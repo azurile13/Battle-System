@@ -1,5 +1,5 @@
 #include "types.h"
-#include "graphical_structures.h"
+#include "lcd_windows.h"
 #include "lcd.h"
 
 void set_window(u8 window_number, u8 x, u8 y, u8 width, u8 height) {
