@@ -202,7 +202,7 @@ struct temp_vars {
 3 = immune
 */
 
-struct type_chart {
+struct types_chart {
 	u8 normal_weakness;
 	u8 fighting_weakness;
 	u8 flying_weakness;
@@ -233,7 +233,6 @@ extern struct sheer_force_table sheer_force_t[sheer_force_table_size];
 extern struct mega_items_table mega_items_t[mega_items_table_size];
 extern struct iron_fist_table iron_fist_t[iron_fist_table_size];
 extern struct reckless_table reckless_t[reckless_table_size];
-extern struct types type_chart[19];
 extern struct berries_table berries_t[berries_table_size];
 extern struct mega_table megas[mega_items_table_size];
 extern struct base_stat_entry base_stats[species_count];
@@ -241,6 +240,6 @@ extern struct dex_entry_data dex_data[species_count];
 extern struct evolution_entry evolution_table[species_count];
 extern struct pokemon pokemon_bank[12];
 extern struct temp_vars temp_vars;
-extern type_chart type_chart[19];
+extern struct types_chart type_chart[19];
 
 #endif /* ROM_TABLES_H */
