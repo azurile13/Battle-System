@@ -237,12 +237,12 @@ u8 not_immune(struct battler *defender, u8 type) {
 	u8 effectiveness = 100;
 	u8 i;
 	for (i = 0; i < 3; i++) {
-		switch (type_chart[defender->types[i]].[type]) {
+		switch (type_chart[defender->types[i]].weakness[type]) {
 			case 1:
 				effectiveness *= 2;
 				break;
 			case 2:
-				effectivenss = apply_dmg_mod(effectiveness, 50, 0);
+				effectiveness = apply_dmg_mod(effectiveness, 50, 0);
 				break;
 			case 3:
 				return 0;

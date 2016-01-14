@@ -237,7 +237,7 @@ void battle_end (struct battle_field *battle_field) {
 	// store battle outcome
 	temp_vars.var_8000 = battle_field->battle_result;
 	if (battle_field->battle_result != RESULT_TO_CONTINUE) {
-		free (battle_field);
+		free(battle_field);
 	}
 	c2_exit_to_overworld_1_continue_scripts_and_music();
 	return;
