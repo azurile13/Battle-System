@@ -107,19 +107,19 @@ with open(args.output, 'rb+') as rom:
                 table[entry] += where
 
         # Read hooks from a file
-        with open('hooks', 'r') as hooklist:
-                for line in hooklist:
-                        if line.strip().startswith('#'): continue
-                        
-                        symbol, address, register = line.split()
-                        offset = int(address, 16) - 0x08000000
-                        try:
-                                code = table[symbol]
-                        except KeyError:
-                                print('Symbol missing:', symbol)
-                                continue
+        #with open('hooks', 'r') as hooklist:
+        #        for line in hooklist:
+        #                if line.strip().startswith('#'): continue
+        #                
+        #                symbol, address, register = line.split()
+        #                offset = int(address, 16) - 0x08000000
+        #                try:
+        #                        code = table[symbol]
+        #                except KeyError:
+        #                        print('Symbol missing:', symbol)
+        #                        continue
 
-                        hook(rom, code, offset, int(register))
+                       # hook(rom, code, offset, int(register))
                                 
         if args.debug:
                 width = max(map(len, table.keys())) + 1
