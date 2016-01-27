@@ -70,6 +70,15 @@ void fade_and_return_progress_probably(void);
 void obj_sync_something(void);
 void objc_exec(void);
 void textbox_something();
+void rboxid_clear_pixels(u8, u8);
+void rboxid_08003FA0(u8);
+void rboxid_to_vram(u8, u8);
+void something_08050DE1(void);
+void gpu_tile_obj_alloc_tag_and_upload(u32);
+void gpu_tile_obj_alloc_tag_and_apply(u32);
+void gpu_sync_bg_show(u8);
+void something_08050969(u8);
+void battle_show_message_maybe(u32, u8);
 
 extern struct super superstate;
 

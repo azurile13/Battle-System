@@ -6,6 +6,7 @@
 #include "engine/battle.h"
 #include "engine/variables.h"
 #include "lcd.h"
+#include "textbox.c"
 
 void load_screen_fade(void);
 void load_screen_bottom_top(void);
@@ -13,6 +14,7 @@ void battle_graphics_slide (struct battle_field *battle_field);
 void test_gfx(void);
 void setup(void);
 void dp12_fuel(u16 current);
+
 
 /* Reserved these 3 functions for SBird. */
 u16 get_environment() {
@@ -46,7 +48,6 @@ void clear_video()
 }
 
 void battle_graphics_slide (struct battle_field *battle_field) {
-	clear_video();
 	//Some window stuff todo
 	/*lcd_io_set(0x4C, 0x00);
 	lcd_io_set(0x40, 0xF0);
@@ -313,10 +314,10 @@ void update() {
 	dp12_update();
 }
 
+
 void setup (void) {
 	superstate.multi_purpose_state_tracker = 0;
 	battle_data_ptrs.task_id = task_add(do_battle, 0x1);
-
 	vblank_handler_set(update);
 	return;
 }
@@ -328,7 +329,6 @@ void battle_init(struct battle_config *b_config) {
 	struct battle_field *battle_field = (struct battle_field*) malloc(sizeof(struct battle_field));
 	battle_field->b_config = b_config;
 	battle_field->battle_type = b_config->type;
-
 	// set up battlers by battle type
 	switch (battle_field->battle_type) {
 		case SINGLE_WILD:
@@ -381,6 +381,8 @@ void battle_init(struct battle_config *b_config) {
 			c2_exit_to_overworld_1_continue_scripts_and_music();
 			break;
 	};
+	clear_video();
+	quick_setup_textbox(0);
 	battle_graphics_slide(battle_field);
 	setup();
 	return;

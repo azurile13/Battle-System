@@ -228,6 +228,14 @@ struct types_chart {
 	u8 weakness[19];
 };
 
+struct battle_strings {
+	u8 *string[50]; // to add as more come out
+};
+
+struct textflags {
+	u8 unknown[4];
+};
+
 
 u16 species_to_dex_index(u16);
 extern struct move_table move[move_total];
@@ -245,5 +253,7 @@ extern struct evolution_entry evolution_table[species_count];
 extern struct pokemon pokemon_bank[12];
 extern struct temp_vars temp_vars;
 extern struct types_chart type_chart[19];
+extern struct textflags textflags;
+extern struct battle_strings battle_strings;
 
 #endif /* ROM_TABLES_H */
