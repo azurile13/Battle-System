@@ -16,9 +16,13 @@ void sub_0800F34C(void);
 u8 sav2_get_text_speed(void);
 
 
-void textbox_set_text(u8 *string, u8 font, u8 text_bg, u8 text_colour, u8 shadow) {
+void textbox_set_text(u8 *string, u8 font, u8 text_bg, u8 text_colour, u8 shadow, u8 text_bg_box) {
 	textflags.unknown[0] = textflags.unknown[0] | 1;
-	rboxid_clear_pixels(0, 0x0);
+	if (text_bg_box) {
+		rboxid_clear_pixels(0, 0xFF); // transparent
+	} else {
+		rboxid_clear_pixels(0, 0x11); // white
+	}
 	rboxid_08003FA0(0);
 	rboxid_to_vram(0, 0);
 	box_related_one(0, font, string, sav2_get_text_speed(), 0, text_colour, text_bg, shadow);
@@ -44,7 +48,7 @@ void display_textbox() {
 void quick_setup_textbox(u8 string_id) {
 	create_battle_box();
 	display_textbox();
-	//textbox_set_text((u8 *)0x81C55C9, 1, 0, 1, 3);
+	//textbox_set_text((u8 *)0x81C55C9, 1, 0, 1, 3, 1);
 	textbox_set_text(battle_strings.string[string_id], 1, 0, 1, 3);
 }
 
