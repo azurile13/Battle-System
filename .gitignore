@@ -5,4 +5,5 @@
 *.sav
 *.sgm
 *.ss*
+*.bak
 build
