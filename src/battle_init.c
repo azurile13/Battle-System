@@ -315,11 +315,37 @@ void update() {
 }
 
 
-void setup (void) {
+void setup() {
 	superstate.multi_purpose_state_tracker = 0;
 	battle_data_ptrs.task_id = task_add(do_battle, 0x1);
 	vblank_handler_set(update);
 	return;
+}
+
+
+void scroll_bg(u8 task_id) {
+	void bgid_mod_x_offset(u8, u8, u8);
+	void bgid_mod_y_offset(u8, u8, u8);
+	if (tasks[task_id].priv[0] < 30) {
+		bgid_mod_x_offset(1, 255, 1);//bg_id, horizontal, h_dir);
+		bgid_mod_y_offset(1, 60, 2);//bg_id, verticle, v_dir);
+	} else {
+		task_del(task_id);
+	}
+}
+
+void grass_anim() {
+	load_battle_accessories(battle_env_table[battle_load_global.battle_environment]);
+	task_add(scroll_bg, 0x1);	
+}
+
+void slide_trainer_player() {
+	u8 gender = saveblock2_trainerdata->gender;
+	sub_08034750(gender, 0);
+	template_build_for_pokemon_or_trainer(gender, 0);
+	template_instanciate_forward_search(objt_pokemon, 0x20, 0x20);
+	
+	
 }
 
 void battle_init(struct battle_config *b_config) {
@@ -383,7 +409,9 @@ void battle_init(struct battle_config *b_config) {
 	};
 	clear_video();
 	quick_setup_textbox(0);
+	grass_anim();
 	battle_graphics_slide(battle_field);
+	player_slide_in();
 	setup();
 	return;
 }

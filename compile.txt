@@ -1,0 +1,2 @@
+C:\\python35\\python scripts\\build
+C:\\python35\\python scripts\\insert --debug
