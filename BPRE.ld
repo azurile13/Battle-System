@@ -126,6 +126,8 @@ fade_and_return_progress_probably = 0x080704D0|1;
 decompress_with_fallback_maybe = 0x080F6878|1;
 gpu_sync_bg_show = 0x080019BC|1;
 gpu_sync_bg_hide = 0x080019D0|1;
+bgid_mod_x_offset = 0x08001B90|1;
+bgid_mod_y_offset = 0x08001D08|1;
 
 bgid_set_tilemap = 0x08001FA0|1;
 bg_vram_setup = 0x08001658|1;
