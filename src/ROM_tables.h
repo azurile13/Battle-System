@@ -2,12 +2,16 @@
 #define ROM_TABLES_H
 
 #include "types.h"
+#include "engine\objects.h"
 
+/* 
+ * Table size constants
+ */
 #define type_total 19
 #define move_total 621
 #define berries_table_size 67
 
-/* most sizes are obviously inaccurate. To adjust once tables are generated */
+// Inaccurate sizes. Must adjust.
 #define natural_gift_table_size 50
 #define fling_table_size 50
 #define sheer_force_table_size 50
@@ -17,6 +21,165 @@
 #define mega_table_size 20
 #define species_count 721
 
+
+
+/*
+ *	RAM Structs and tables
+ */
+
+ 
+ struct pokemon {
+	u32 PID;
+	u32 OTID;
+	u8 name[10];
+	u16 language;
+	u8 OT_name[7];
+	u8 markings;
+	u16 checksum;
+	u16 padding_maybe;
+	u8 data[48];
+	u32 ailment;
+	u8 level;
+	u8 pokerus;
+	u16 current_hp;
+	u16 total_hp;
+	u16 attack;
+	u16 defense;
+	u16 speed;
+	u16 sp_attack;
+	u16 sp_defense;
+};
+
+struct textflags {
+	u8 unknown[4];// No idea, but controls text continue
+};
+
+struct saveblock_trainerdata {
+	struct sav2 *sav2;
+};
+
+struct sav2 {
+	u8 name[8];
+	u8 gender;
+	u8 padding;
+	u16 trainer_id;
+	u16 secret_id;
+	u16 hours;
+	u8 minutes;
+	u8 seconds;
+	u8 frames;
+	u8 options_button_style;
+	u8 options_text_speed;
+	u8 options_battle_style[7];
+	u32 field_1C;
+	u8 field_20[8];
+	u8 pokemon_flags_3[52];
+	u8 pokemon_flags_4[52];
+	u8 field_90[1044];
+	u8 fourCharacters[4];
+	u8 field_4A8[1008];
+	u8 mapdata[1672];
+	u32 bag_item_quantity_xor_value;
+	u8 field_F24[127];
+	u8 last_byte_in_sav2;
+};
+
+
+struct temp_vars {
+	// Only 0x8000s here
+	u16 var_8000;
+	u16 var_8001;
+	u16 var_8002;
+	u16 var_8003;
+	u16 var_8004;
+	u16 var_8005;
+	u16 var_8006;
+	u16 var_8007;
+	u16 var_8008;
+	u16 var_8009;
+	u16 var_800A;
+	u16 var_800B;
+	u16 var_800D;
+	u16 var_800F;
+	u16 var_800C;
+	u16 var_8010;
+	u16 var_8011;
+};
+
+extern struct pokemon pokemon_bank[12];
+extern struct saveblock_trainerdata saveblock2;
+extern struct textflags textflags;
+extern struct temp_vars temp_vars;
+
+extern struct objtemplate objt_pokemon[4];
+extern struct objtemplate template_0203AD40;
+
+ 
+ 
+ 
+/*
+ * ROM Graphic Structs and Tables
+ */
+ 
+
+typedef struct pal_table {
+		u8 *pal_off;
+		u8 id;
+		u8 filler[3];
+} pal_table;
+
+
+typedef struct gfx_img {
+	u8 *ptr_img;
+	u16 size;
+	u16 index;
+} gfx_img;
+
+
+
+struct trainer_animations {
+	struct frame* enter_field[2];
+	struct frame* throw_ball[6];
+};
+
+
+struct meta_animtable_trainer {
+	struct frame** trainer_anim[6];
+};
+
+
+struct animtable1_front {
+	struct frame **  animations_front[0x8F];
+};
+
+
+struct animtable1_pokemon {
+	struct frame ** anim[4];
+};
+
+
+
+extern gfx_img gfx_table_pokemon_back[0x19C];
+extern gfx_img gfx_table_pokemon_front[0x19C];
+extern gfx_img gfx_table_trainer_front[6];
+
+extern pal_table pal_table_nonshiny[0x19C];
+extern pal_table pal_table_shiny[0x19C];
+extern pal_table pal_table_trainer_front[0x94];
+extern pal_table pal_table_trainer_back[6];
+
+extern struct trainer_animations trainer_animations;
+extern struct meta_animtable_trainer meta_animtable_trainer;
+extern struct animtable1_pokemon animtable1_pokemon;
+extern struct animtable1_front animtable1_front;
+extern struct objtemplate ball_templates[12];
+
+
+/*
+ * ROM Data tables
+ */
+ 
+ 
 struct trainer {
 	u8 custom_items : 1;
 	u8 custom_attacks : 1;
@@ -42,27 +205,6 @@ struct trainer {
 	};
 };
 
-struct pokemon {
-	u32 PID;
-	u32 OTID;
-	u8 name[10];
-	u16 language;
-	u8 OT_name[7];
-	u8 markings;
-	u16 checksum;
-	u16 padding_maybe;
-	u8 data[48];
-	u32 ailment;
-	u8 level;
-	u8 pokerus;
-	u16 current_hp;
-	u16 total_hp;
-	u16 attack;
-	u16 defense;
-	u16 speed;
-	u16 sp_attack;
-	u16 sp_defense;
-};
 
 struct evolution_entry {
 	u8 method;
@@ -70,6 +212,7 @@ struct evolution_entry {
 	u16 species;
 	u8 padding[3];
 };
+
 
 struct dex_entry_data {
 	u8 name[12];
@@ -82,6 +225,7 @@ struct dex_entry_data {
 	u16 trainer_scale;
 	u16 trainer_offset;
 };
+
 
 struct base_stat_entry {
 	u8 hp;
@@ -110,6 +254,7 @@ struct base_stat_entry {
 	u16 padding;
 };
 
+
 struct move_table {
 	u8 script_id;
 	u8 base_power;
@@ -131,39 +276,47 @@ struct move_table {
 	u16 move_id;
 };
 
+// to optimize.
 struct natural_gift_table {
 	u16 item_id;
 };
+
 
 struct fling_table {
 	u16 move_id;
 	u8 base_power;
 };
 
+
 struct sheer_force_table {
 	u16 move_id;
 };
+
 
 struct mega_items_table {
 	u16 item_id;
 };
 
+
 struct berries_table {
 	u16 item_id;
 };
 
-/* low priority tables: */
+
 struct iron_fist_table {
 	u16 move_id;
 };
+
 
 struct reckless_table {
 	u16 move_id;
 };
 
+
 struct mold_breaker_table {
 	u8 ability_id;
 };
+
 
 struct types {
 	u8 something;
@@ -172,27 +325,6 @@ struct types {
 struct mega_table {
 	u16 species;
 	u16 item;
-};
-
-struct temp_vars {
-	// Only 0x8000s here
-	u16 var_8000;
-	u16 var_8001;
-	u16 var_8002;
-	u16 var_8003;
-	u16 var_8004;
-	u16 var_8005;
-	u16 var_8006;
-	u16 var_8007;
-	u16 var_8008;
-	u16 var_8009;
-	u16 var_800A;
-	u16 var_800B;
-	u16 var_800D;
-	u16 var_800F;
-	u16 var_800C;
-	u16 var_8010;
-	u16 var_8011;
 };
 
 
@@ -232,12 +364,11 @@ struct battle_strings {
 	u8 *string[50]; // to add as more come out
 };
 
-struct textflags {
-	u8 unknown[4];
-};
+extern struct objtemplate uns_table_pokemon_trainer[6];
+extern struct objtemplate uns_table_pokemon_real[4];
 
+extern struct dword_8239F8C dword_8239F8C;
 
-u16 species_to_dex_index(u16);
 extern struct move_table move[move_total];
 extern struct natural_gift_table natural_gift_t[natural_gift_table_size];
 extern struct fling_table fling_t[fling_table_size];
@@ -250,10 +381,9 @@ extern struct mega_table megas[mega_items_table_size];
 extern struct base_stat_entry base_stats[species_count];
 extern struct dex_entry_data dex_data[species_count];
 extern struct evolution_entry evolution_table[species_count];
-extern struct pokemon pokemon_bank[12];
-extern struct temp_vars temp_vars;
+
 extern struct types_chart type_chart[19];
-extern struct textflags textflags;
+
 extern struct battle_strings battle_strings;
 
 #endif /* ROM_TABLES_H */

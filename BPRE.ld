@@ -39,7 +39,27 @@ battle_load_global = 0x0203F000; /*Free RAM space*/
 superstate = 0x030030F0;
 displayed_string = 0x02021D18;
 textflags = 0x03003E50;
-
+saveblock2 = 0x0300500C;
+objt_pokemon = 0x020244DC;
+animtable1_pokemon = 0x082349BC|1;
+template_0203AD40 = 0x0203AD40;
+uns_table_pokemon_trainer = 0x0825DF50;
+meta_animtable_trainer = 0x08239F74;
+gfx_table_trainer_back = 0x08239FA4;
+gfx_table_trainer_front = 0x0823957C;
+gfx_table_pokemon_front = 0x082350AC;
+gfx_table_pokemon_back = 0x0823654C;
+backsprite_pals = 0x08239FD4;
+animtable1_front = 0x082390DC;
+animtable1_pokemon = 0x82349BC;
+oac_poke_opponent = 0x08011D64|1;
+oam_poke_ally = 0x0824F018;
+pal_table_nonshiny = 0x0823730C;
+pal_table_shiny = 0x082380CC;
+pal_table_trainer_front = 0x08239A1C;
+pal_table_trainer_back = 0x08239FD4;
+anim_082347F8 = 0x082347F8;
+ball_templates = 0x082606F4;
 
 /*
 * Place holder data
@@ -51,12 +71,15 @@ mega_items_t = 0x8740000;
 megas = 0x8740000;
 type_chart = 0x8740000;
 battle_strings = 0x8740000;
+oam_resources = 0x0203C000;
 
 
 /*
  * Functions
  */
 
+
+oac_nullsub_0 = 0x810BB88|1; 
 rboxid_clear_pixels = 0x0800445C|1;
 rboxid_08003FA0 =  0x08003FA0|1;
 rboxid_to_vram = 0x08003F20|1;
@@ -65,7 +88,6 @@ gpu_tile_obj_alloc_tag_and_upload = 0x080086DC|1;
 gpu_tile_obj_alloc_tag_and_apply = 0x08008928|1;
 gpu_sync_bg_show = 0x080019BC|1;
 something_08050969 = 0x08050968|1;
-battle_show_message_maybe = 0x080D87BC|1;
 box_print = 0x0812E51C|1;
 sub_0800F380 = 0x0800F380|1;
 sub_0800F34C = 0x0800F34C|1;
@@ -128,6 +150,7 @@ gpu_sync_bg_show = 0x080019BC|1;
 gpu_sync_bg_hide = 0x080019D0|1;
 bgid_mod_x_offset = 0x08001B90|1;
 bgid_mod_y_offset = 0x08001D08|1;
+gpu_pal_alloc_new = 0x080089B8|1;
 
 bgid_set_tilemap = 0x08001FA0|1;
 bg_vram_setup = 0x08001658|1;
@@ -135,6 +158,9 @@ memset = 0x081E5ED8|1;
 
 template_instanciate_forward_search = 0x08006F8C|1;
 obj_delete = 0x080073DC|1;
+sub_08034750 = 0x08034750|1;
+template_build_for_pokemon_or_trainer = 0x0803F864|1;
+obj_anim_image_start = 0x0800838C|1;
 
 get_attribute = 0x0803FBE8|1;
 set_attribute = 0x0804037C|1;
@@ -142,6 +168,7 @@ divmod_remainder = 0x081E4684|1;
 rand = 0x08044EC8|1;
 __aeabi_idiv = 0x081E4684|1;
 __aeabi_uidiv = 0x081E4684|1;
+mem_cpy = 0x081E5E78|1;
 
 species_to_dex_index = 0x08043298|1;
 
@@ -155,6 +182,14 @@ box_curved = 0x080F7768|1;
 sub_080F696C = 0x080F696C|1;
 sub_08002040 = 0x08002040|1;
 gpu_sync_bg_show = 0x80019BC|1;
+LZ77UnCompAnyRAM = 0x0800EC8C|1;
+oamt_spawn_poke_or_trainer_picture = 0x0810BDAC|1;
+uns_builder_assign_animtable1 = 0x0810BD80|1;
+ball_number_to_ball_processing_index = 0x080EF52C|1;
+ball_to_ram_setup = 0x0804BEF4|1;
+dp13_810BB8C = 0x0810BB8C|1;
+
+some_test_func = 0x080F1198|1;
 
 /*
  * IO

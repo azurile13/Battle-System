@@ -27,6 +27,7 @@ void hblank_handler_set(super_callback func);
 
 void c2_exit_to_overworld_1_continue_scripts_and_music(void);
 void callback_clear_and_init(void);
+void mem_cpy(void *dst, void *src, u32 size);
 
 extern struct task tasks[16];
 

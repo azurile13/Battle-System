@@ -1,37 +1,12 @@
 #include "ROM_tables.h"
 #include "battle_engine_resource.h"
 #include "./engine/callback.h"
+#include "./engine/objects.h"
 
 /*
  * Data
  */
  
- struct sprite {
-	u32 y : 8;
-	u32 rotscale : 1;
-	u32 double_size;
-	u32 obj_mode : 2;
-	u32 mosaic : 1;
-	u32 colors : 1;
-	u32 shape : 2;
-
-	u32 x : 9;
-	union {
-		u32 rotscale_param : 5;
-		struct {
-			u32 unused : 3;
-			u32 hflip : 1;
-			u32 vflip : 1;
-		};
-	};
-	u32 size : 2; 
-
-	u16 char_name : 10;
-	u16 priority : 2;
-	u16 palette : 4;
-	
-	u16 rotscale_info; 
-};
 
  struct super {
 	super_callback callback1;
@@ -67,6 +42,7 @@ void *malloc(u32 size);
 void free(void *ptr);
 u32 get_attribute(struct pokemon *, u8);
 void fade_and_return_progress_probably(void);
+
 void obj_sync_something(void);
 void objc_exec(void);
 void textbox_something();
@@ -78,7 +54,9 @@ void gpu_tile_obj_alloc_tag_and_upload(u32);
 void gpu_tile_obj_alloc_tag_and_apply(u32);
 void gpu_sync_bg_show(u8);
 void something_08050969(u8);
-void battle_show_message_maybe(u32, u8);
+u8 gpu_pal_alloc_new(u16);
+u16 species_to_dex_index(u16);
+
 
 extern struct super superstate;
 

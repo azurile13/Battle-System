@@ -49,7 +49,7 @@ void quick_setup_textbox(u8 string_id) {
 	create_battle_box();
 	display_textbox();
 	//textbox_set_text((u8 *)0x81C55C9, 1, 0, 1, 3, 1);
-	textbox_set_text(battle_strings.string[string_id], 1, 0, 1, 3);
+	textbox_set_text(battle_strings.string[string_id], 1, 0, 1, 3, 1);
 }
 
 /* TODO

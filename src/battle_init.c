@@ -7,6 +7,7 @@
 #include "engine/variables.h"
 #include "lcd.h"
 #include "textbox.c"
+#include "engine/objects.h"
 
 void load_screen_fade(void);
 void load_screen_bottom_top(void);
@@ -31,7 +32,7 @@ void clear_video()
 {
     overworld_free_bgmaps();
     gpu_tile_bg_drop_all_sets(0);
-	  bg_positions_reset();
+	bg_positions_reset();
     callback_clear_and_init();
 
     //TODO: Use DMA or memcopy instead of hacky for loops
@@ -309,7 +310,7 @@ void update() {
 	gpu_pal_upload();
 	gpu_sprites_upload();
 	fade_and_return_progress_probably();
-
+	copy_queue_process();
 	lcd_io_set(0x1C, vblank_cb_battle_BG3HOFS);
 	dp12_update();
 }
@@ -326,9 +327,10 @@ void setup() {
 void scroll_bg(u8 task_id) {
 	void bgid_mod_x_offset(u8, u8, u8);
 	void bgid_mod_y_offset(u8, u8, u8);
-	if (tasks[task_id].priv[0] < 30) {
+	if (tasks[task_id].priv[0] < (99 * 5)) {
 		bgid_mod_x_offset(1, 255, 1);//bg_id, horizontal, h_dir);
 		bgid_mod_y_offset(1, 60, 2);//bg_id, verticle, v_dir);
+		tasks[task_id].priv[0] ++;
 	} else {
 		task_del(task_id);
 	}
@@ -339,14 +341,7 @@ void grass_anim() {
 	task_add(scroll_bg, 0x1);	
 }
 
-void slide_trainer_player() {
-	u8 gender = saveblock2_trainerdata->gender;
-	sub_08034750(gender, 0);
-	template_build_for_pokemon_or_trainer(gender, 0);
-	template_instanciate_forward_search(objt_pokemon, 0x20, 0x20);
-	
-	
-}
+
 
 void battle_init(struct battle_config *b_config) {
 	void c2_exit_to_overworld_1_continue_scripts_and_music(void);
@@ -411,7 +406,8 @@ void battle_init(struct battle_config *b_config) {
 	quick_setup_textbox(0);
 	grass_anim();
 	battle_graphics_slide(battle_field);
-	player_slide_in();
+	void test_oam(void);
+	test_oam();
 	setup();
 	return;
 }
