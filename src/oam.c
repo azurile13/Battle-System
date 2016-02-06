@@ -2,7 +2,8 @@
 #include "ROM_tables.h"
 #include "lcd.h"
 #include "engine/callback.h"
-#include "multipurpose_resources.c"
+#include "multipurpose_resources.h"
+#include "engine/objects.h"
 
 void LZ77UnCompAnyRAM(u8 *src, u8 *dst, u8 id);
 void uns_builder_assign_animtable1(u8);
@@ -15,18 +16,9 @@ object_callback oac_nullsub_0();
 struct rotscale_frame **anim_082347F8;
 
 
-void obj_callback_slide_left(struct object *obj) {
-	if (obj->x > 0x20) {
-		obj->x--;
-	}
-
-}
-
-
-void obj_callback_slide_right(struct object *obj) {
-	if (obj->x < 0x100) {
-		obj->x++;
-	}
+void do_anim(u8 obj_id) {
+	void obj_anim_image_start(struct object*, u8);
+	obj_anim_image_start(&objects[obj_id], 1);
 	return;
 }
 
@@ -63,7 +55,7 @@ void obj_del_delayed(u8 obj_id, u16 delay) {
 	tasks[task_id].priv[1] = delay;
 }
 
-u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, u8 callback_by_id) {
+u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_callback cb) {
 
 	// allocate palette
 	u8 pal_id = gpu_pal_alloc_new((id *0x10) + 0x100);
@@ -75,24 +67,7 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, u8 callbac
 	oam_template->pal_tag = (id *0x10) + 0x100;
 	oam_template->oam = uns_table_pokemon_trainer[0].oam;
 	oam_template->rotscale = uns_table_pokemon_trainer[0].rotscale;
-	
-	switch (callback_by_id) {
-		case 0:
-			oam_template->callback = (object_callback) obj_callback_slide_down;
-			break;
-		case 1:
-			oam_template->callback = (object_callback) obj_callback_slide_up;
-			break;
-		case 2:
-			oam_template->callback = (object_callback) obj_callback_slide_left;
-			break;
-		case 3:
-			oam_template->callback = (object_callback) obj_callback_slide_right;
-			break;
-		default:
-			oam_template->callback = (object_callback) oac_nullsub_0;
-			break;
-	};
+	oam_template->callback = cb;
 	oam_template->animation = meta_animtable_trainer.trainer_anim[0];
 	
 	// send gfx to vram
@@ -118,7 +93,7 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, u8 callbac
 	return obj_id;
 }
 
-u8 oam_pkmn_front(u16 species, u8 shinyness, u16 x, u16 y, u8 cb) {
+u8 oam_pkmn_front(u16 species, u8 shinyness, u16 x, u16 y, object_callback cb) {
 	void *pal;
 	
 	// use shiny pal if shiny
@@ -139,7 +114,7 @@ u8 oam_pkmn_front(u16 species, u8 shinyness, u16 x, u16 y, u8 cb) {
 	return id;
 }
 
-void oam_pkmn_back(u16 species, u8 shinyness, u16 x, u16 y, u8 cb) {
+void oam_pkmn_back(u16 species, u8 shinyness, u16 x, u16 y, object_callback cb) {
 	void *pal;
 	
 	// use shiny pal if shiny
@@ -161,15 +136,15 @@ void oam_pkmn_back(u16 species, u8 shinyness, u16 x, u16 y, u8 cb) {
 	return;
 }
 
-void oam_trainer_front(u16 img_id, u16 x, u16 y, u8 cb) {
+u8 oam_trainer_front(u16 img_id, u16 x, u16 y, object_callback cb) {
 	void *pal = pal_table_trainer_front[img_id].pal_off;
 	u8 *img = gfx_table_trainer_front[img_id].ptr_img;
 	u16 img_size = 0x800;
-	create_oam(pal, img, img_size, x, y, img_id, cb);
-	return;
+	u8 id = create_oam(pal, img, img_size, x, y, img_id, cb);
+	return id;
 }
 
-void oam_trainer_back(u16 id, u16 x, u16 y, u8 cb) {
+u8 oam_trainer_back(u16 id, u16 x, u16 y, object_callback cb) {
 
 	// allocate palette
 	u8 pal_id = gpu_pal_alloc_new((id *0x10) + 0x100);
@@ -182,15 +157,17 @@ void oam_trainer_back(u16 id, u16 x, u16 y, u8 cb) {
 	objt_pokemon[2].oam = backsprite_temp.oam;
 	objt_pokemon[2].graphics = backsprite_temp.graphics;
 	objt_pokemon[2].rotscale = backsprite_temp.rotscale;
-	objt_pokemon[2].callback = backsprite_temp.callback;
+	objt_pokemon[2].callback = cb;
+	//backsprite_temp.callback;
 	objt_pokemon[2].animation = meta_animtable_trainer.trainer_anim[id];
-	template_instanciate_forward_search(&objt_pokemon[2], x, y, 0x1E);
-	return;
+	u8 obj_id = template_instanciate_forward_search(&objt_pokemon[2], x, y, 0x1E);
+	objects[obj_id].x = x;
+	objects[obj_id].y = y;
+	return obj_id;
 }
 
 u8 hide_oam(u8 id) {
 	objects[id].bitfield2 = 0x4;
-	
 	return (sizeof(objects[id]));
 }
 
@@ -220,17 +197,6 @@ u8 slide_trainer_player() {
 	return 0;
 }
 
-void open_ball(u8 task_id) {
-	if (tasks[task_id].priv[0] > 50) {
-		u8 obj_id = template_instanciate_forward_search(&ball_templates[tasks[task_id].priv[1]], 0x40, 0x30, 0x0);
-		task_del(task_id);
-		obj_del_delayed(obj_id, 60);
-	} else {
-		tasks[task_id].priv[0]++;
-	}
-	return;
-}
-
 u8 ball_throw(u8 type, u16 x, u16 y) {
 	u8 ball_number_to_ball_processing_index(u8);
 	void ball_to_ram_setup(u8);
@@ -244,36 +210,9 @@ u8 ball_throw(u8 type, u16 x, u16 y) {
 	ball->x = 32;
 	ball->y = 64;
 	objects[id].callback = (object_callback) 0x804B685;
-	u8 t_id = task_add(open_ball, 0x1);
-	tasks[t_id].priv[0] = 0x0;
-	tasks[t_id].priv[1] = type;
 	obj_del_delayed(id, 70);
 	return 0;
 }
 
-
-void do_anim(u8 obj_id) {
-	void obj_anim_image_start(struct object*, u8);
-	obj_anim_image_start(&objects[obj_id], 1);
-	return;
-}
-
-void task_do_func_delayed(u8 task_id) {
-	if (tasks[task_id].priv[0] < tasks[task_id].priv[1]) {
-		task_del(task_id);
-		ball_throw(0, 0x50, 0x50);
-	} else {
-		tasks[task_id].priv[1]++;
-	}
-	return;
-}
-
-
-void test_oam() {
-	u8 t_id = task_add(task_do_func_delayed, 0x1);
-	tasks[t_id].priv[0] = 0xF0;
-	//ball_throw(0, 0x50, 0x50);
-	return;
-}
 
 

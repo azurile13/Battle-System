@@ -1,17 +1,19 @@
 #include "types.h"
 #include "battle_engine_resource.h"
 #include "ROM_tables.h"
-#include "multipurpose_resources.c"
+#include "multipurpose_resources.h"
 #include "defines.h"
 #include "engine/battle.h"
 #include "engine/variables.h"
 #include "lcd.h"
 #include "textbox.c"
 #include "engine/objects.h"
+#include "engine/callback.h"
+#include "enter_battle.c"
 
 void load_screen_fade(void);
 void load_screen_bottom_top(void);
-void battle_graphics_slide (struct battle_field *battle_field);
+//void battle_graphics_slide (struct battle_field *battle_field);
 void test_gfx(void);
 void setup(void);
 void dp12_fuel(u16 current);
@@ -48,7 +50,7 @@ void clear_video()
     }
 }
 
-void battle_graphics_slide (struct battle_field *battle_field) {
+void battle_graphics_slide (void) {//struct battle_field *battle_field) {
 	//Some window stuff todo
 	/*lcd_io_set(0x4C, 0x00);
 	lcd_io_set(0x40, 0xF0);
@@ -78,7 +80,10 @@ void battle_graphics_slide (struct battle_field *battle_field) {
 			break;
 		case BOTTOM_TOP:
 			set_callback2(load_screen_bottom_top);
-		  break;
+			break;
+		default:
+			set_callback2(load_screen_bottom_top);
+			break;
 	}
 }
 
@@ -246,61 +251,6 @@ void battle_end (struct battle_field *battle_field) {
 }
 
 
-void do_battle (u8 task_id) {
-	//struct battle_field *battle_field = &battle_data_ptrs->field_ptr;
-	struct battle_field *battle_field = battle_data_ptrs.field_ptr;
-	u8 counter = superstate.multi_purpose_state_tracker;
-	switch (counter) {
-		case 0:
-			// increment turn counter
-			battle_field->turn_counter ++;
-			counter ++;
-			break;
-		case 1:
-			// do text things
-			// send out parties
-			break;
-		case 2:
-			// check ability activations
-			break;
-		case 3:
-			// player pick moves
-		case 4:
-			// ai pick moves
-		case 5:
-			// execute pre-move abilities
-		case 6:
-			// execute moves
-		case 7:
-			// update battle field. HP bars, clear dead, ect.
-		case 8:
-			// check battle is over -> end (captured, frontier mode loss, dex, money, revert forms, ect)
-			break;
-		case 9:
-			// loop
-			counter = 0;
-			break;
-		default:
-			// battle is over
-			task_del(task_id);
-			battle_end(battle_field);
-			break;
-	};
-	return;
-}
-/*
-Battle (task):
-	- Turn counter ++
-	- Trainer was challenged/run send out anims for each side (BS)
-	- player pick move to use
-	- AIs pick move to use
-	- execute moves -> Run "battle script" tasks for move
-	- update battle field
-	- check battle is over -> end (captured, frontier mode loss, dex, money, revert forms, ect)
-	- give exp, learn move, evolve checks
-	Back to turn counter ++
-}
-*/
 
 void update() {
 	task_exec();
@@ -318,7 +268,7 @@ void update() {
 
 void setup() {
 	superstate.multi_purpose_state_tracker = 0;
-	battle_data_ptrs.task_id = task_add(do_battle, 0x1);
+	//battle_data_ptrs.task_id = task_add(do_battle, 0x1);
 	vblank_handler_set(update);
 	return;
 }
@@ -343,15 +293,12 @@ void grass_anim() {
 
 
 
-void battle_init(struct battle_config *b_config) {
+struct battle_field* battle_init(struct battle_config *b_config, struct battle_field* battle_field) {
 	void c2_exit_to_overworld_1_continue_scripts_and_music(void);
-
-	// malloc resources and set up
-	struct battle_field *battle_field = (struct battle_field*) malloc(sizeof(struct battle_field));
 	battle_field->b_config = b_config;
 	battle_field->battle_type = b_config->type;
 	// set up battlers by battle type
-	switch (battle_field->battle_type) {
+	switch (b_config->type) {
 		case SINGLE_WILD:
 		case SINGLE_TRAINER:
 			battle_field->active_battler_count_max = 2;
@@ -398,16 +345,83 @@ void battle_init(struct battle_config *b_config) {
 			break;
 		default:
 			free(battle_field);
-			// call back, return to overworld -> safe exit
+			//call back, return to overworld -> safe exit
 			c2_exit_to_overworld_1_continue_scripts_and_music();
 			break;
 	};
+	return battle_field;
+}
+
+void do_battle(u8 task_id) {
+	struct battle_field *battle_field = battle_data_ptrs.field_ptr;
+	u8 counter = superstate.multi_purpose_state_tracker;
+	switch (counter) {
+		case 0:
+			// increment turn counter
+			battle_field->turn_counter ++;
+			counter ++;
+			break;
+		case 1:
+			// do text things
+			// send out parties
+			break;
+		case 2:
+			// check ability activations
+			break;
+		case 3:
+			// player pick moves
+		case 4:
+			// ai pick moves
+		case 5:
+			// execute pre-move abilities
+		case 6:
+			// execute moves
+		case 7:
+			// update battle field. HP bars, clear dead, ect.
+		case 8:
+			// check battle is over -> end (captured, frontier mode loss, dex, money, revert forms, ect)
+			break;
+		case 9:
+			// loop
+			counter = 0;
+			break;
+		default:
+			// battle is over
+			task_del(task_id);
+			battle_end(battle_field);
+			break;
+	};
+	return;
+}
+
+void test_battle(void) {
+	void *memset(void *s, int c, u32 n);
+	void enter_field_opponent(u8, struct battle_config*);
+	void enter_field_player_oam(u8, struct battle_config*);
+	struct battle_config *b_config = (struct battle_config *)malloc(sizeof(struct battle_config));
+	b_config->type = SINGLE_WILD;
+	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
+	b_config->whiteout_switch = true; // enable whiteout 
+	b_config->money_switch = true; // enable money gain
+	b_config->exp_switch = true; // enable exp gain
+	b_config->ai_difficulty = 0xFF; // hard
+	b_config->env_by_map = 0x0; // grass, SBIRD pls
+	b_config->opponent_count = 0x1; // one opp 
+
+	// malloc resources and set up
+	struct battle_field *battle_field = (struct battle_field*) malloc(sizeof(struct battle_field));
+	battle_init((struct battle_config*) 0x8900000, battle_field); // this is needed. FF filled.
+	memset((u8 *)battle_field, 0x0, sizeof(struct battle_field));
+	battle_init(b_config, battle_field);
 	clear_video();
 	quick_setup_textbox(0);
 	grass_anim();
-	battle_graphics_slide(battle_field);
-	void test_oam(void);
-	test_oam();
+	enter_field_playerside_oam(battle_field->battle_type, battle_field->b_config);
+	enter_field_opponent(battle_field->battle_type, battle_field->b_config);
+	battle_graphics_slide();
 	setup();
-	return;
+
+	task_add(do_battle, 0x1);
+
 }
+
