@@ -1,6 +1,6 @@
 #include "battle_engine_resource.h"
 #include "ROM_tables.h"
-#include "multipurpose_resources.c"
+#include "multipurpose_resources.h"
 #include "types.h"
 #include "defines.h"
 

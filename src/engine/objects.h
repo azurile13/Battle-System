@@ -114,4 +114,11 @@ object_callback oac_nullsub;
 u8 template_instanciate_forward_search(struct objtemplate *, u8, u8, u8);
 void obj_delete(struct object *);
 
+
+u8 obj_id_from_obj(struct object *obj) {
+	u32 pointer = (u32) obj;
+	pointer -= 0x202063C;
+	return (pointer / 0x44);
+}
+
 #endif /* ENGINE_OBJECTS_H */

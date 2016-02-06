@@ -29,19 +29,20 @@ struct flags {
 
 struct battle_config {
 	u8 type;
-	u8 purge_switch;
-	u32 *callback_return;
+	//u8 purge_switch;
+	super_callback callback_return;
 	u8 whiteout_switch;
 	u8 money_switch;
 	u8 exp_switch;
-	u8 tut_mode;
+	//u8 tut_mode;
 	u8 ai_difficulty;
 	u8 env_by_map;
-	u8 frontier_mode;
+	u16 opp_id[5];
+	//u8 frontier_mode;
 	u8 opponent_count;
-	u8 player_control_ally_count;
-	u8 ai_control_ally_count;
-	u8 ally_backsprites[3];
+	//u8 player_control_ally_count;
+	//u8 ai_control_ally_count;
+	u8 ally_backsprite;
 	struct flags *flags;
 	u16 opponent_id;
 };

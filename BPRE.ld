@@ -2,7 +2,7 @@
  * Data
  */
 
-
+memtest = 0x0203C000;
 vblank_cb_battle_BG0HOFS = 0x02022974;
 vblank_cb_battle_BG0VOFS = 0x02022976;
 vblank_cb_battle_BG1HOFS = 0x02022978;

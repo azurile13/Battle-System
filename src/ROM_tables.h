@@ -2,7 +2,8 @@
 #define ROM_TABLES_H
 
 #include "types.h"
-#include "engine\objects.h"
+#include "engine/objects.h"
+#include "engine/callback.h"
 
 /* 
  * Table size constants
@@ -105,6 +106,31 @@ struct temp_vars {
 	u16 var_8010;
 	u16 var_8011;
 };
+
+ struct super {
+	super_callback callback1;
+	super_callback callback2;
+	super_callback callback2backup;
+	super_callback callback5_vblank;
+	super_callback hblank_callback;
+	u32 field_14;
+	u32 field_18;
+	u32 bit_to_wait_for;
+	u32 *ptr_vblank_counter;
+	u32 field_24;
+	u16 buttons_held;
+	u16 buttons_new;
+	u16 buttons_held_remapped;
+	u16 buttons_new_remapped;
+	u16 buttons_new_and_key_repeat;
+	u32 keypad_countdown;
+	u32 unused_padding;
+	struct sprite sprites[128];
+	u8 multi_purpose_state_tracker;
+	u8 gpu_sprites_upload_skip;
+ };
+ 
+extern struct super superstate;
 
 extern struct pokemon pokemon_bank[12];
 extern struct saveblock_trainerdata saveblock2;
@@ -385,5 +411,7 @@ extern struct evolution_entry evolution_table[species_count];
 extern struct types_chart type_chart[19];
 
 extern struct battle_strings battle_strings;
+
+extern void *memtest;
 
 #endif /* ROM_TABLES_H */
