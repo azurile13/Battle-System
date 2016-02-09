@@ -606,7 +606,7 @@ void z_battle_setup () {
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
 	
 	// set up battle properties
-	b_config->type = 1;
+	b_config->type = SINGLE_TRAINER;
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
 	b_config->whiteout_switch = true; // enable whiteout 
 	b_config->money_switch = true; // enable money gain
