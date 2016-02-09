@@ -1,8 +1,23 @@
+
 /*
  * Data
  */
 
-memtest = 0x0203C000;
+str_cpy = 0x08008D84|1;
+buffer1 = 0x02022100;
+buffer2 = 0x02021CD0;
+buffer3 = 0x02021CF0;
+buffer4 = 0x02021D04;
+string_buffer = 0x02021D18;
+
+pkmn_names_table = 0x08245EE0;
+move_names = 0x8247094;
+ability_names = 0x0824FC40;
+ai_trainer = 0x0823EAC8; /* trainer table */
+trainer_class_names = 0x0823E558;
+typenames = 0x0824F1A0;
+items = 0x083DB028;
+
 vblank_cb_battle_BG0HOFS = 0x02022974;
 vblank_cb_battle_BG0VOFS = 0x02022976;
 vblank_cb_battle_BG1HOFS = 0x02022978;
@@ -16,6 +31,7 @@ vblank_cb_battle_WIN0V = 0x02022986;
 vblank_cb_battle_WIN1H = 0x02022988;
 vblank_cb_battle_WIN1V = 0x0202298A;
 dp12_8700 = 0x02038700;
+
 dp12_config = 0x02039600;
 script_env_1 = 0x03000EB0;
 script_env_2 = 0x03000F28;
@@ -34,10 +50,10 @@ base_stats = 0x08254784;
 dex_data = 0x0844E850;
 battle_env_table = 0x0824EE34;
 temp_vars = 0x020370B8;
-battle_data_ptrs = 0x0203C000;
+battle_data_ptrs = 0x0203BFFC;
 battle_load_global = 0x0203F000; /*Free RAM space*/
 superstate = 0x030030F0;
-displayed_string = 0x02021D18;
+
 textflags = 0x03003E50;
 saveblock2 = 0x0300500C;
 objt_pokemon = 0x020244DC;
@@ -71,14 +87,26 @@ mega_items_t = 0x8740000;
 megas = 0x8740000;
 type_chart = 0x8740000;
 battle_strings = 0x8740000;
-oam_resources = 0x0203C000;
+battle_mallocd_resources = 0x0203C000;
 
 
 /*
  * Functions
  */
+ 
+bs_exec = 0x080123E4|1;
+b_setup_bx = 0x0800D30C|1;
+cpu_set = 0x081E3B64|1;
+load_battle_screen_elements2 = 0x0800F2AC|1;
+vblank_cb_battle = 0x080116F4|1;
+sub_8001960 = 0x08001960|1;
+sub_80357C8 = 0x080357C8|1;
 
-
+remoboxes_upload_tilesets = 0x08002DE8|1;
+pal_fade_control_reset_maybe = 0x08070A84|1;
+fmt_int_10 = 0x08008E78;
+tasks_init = 0x080773BC|1;
+gpu_pal_allocator_reset = 0x080088F0|1;
 oac_nullsub_0 = 0x810BB88|1; 
 rboxid_clear_pixels = 0x0800445C|1;
 rboxid_08003FA0 =  0x08003FA0|1;
@@ -91,8 +119,13 @@ something_08050969 = 0x08050968|1;
 box_print = 0x0812E51C|1;
 sub_0800F380 = 0x0800F380|1;
 sub_0800F34C = 0x0800F34C|1;
-
-
+sub_0800F420 = 0x0800F420|1;
+rboxid_tilemap_update = 0x08003FA0|1;
+rboxid_upload_a = 0x08003F20|1;
+sub_8002C48 = 0x08002C48|1;
+sub_8150048 = 0x08150048|1;
+battle_show_message = 0x080D87BC|1;
+remoid_a_pressed_maybe = 0x08002E64|1;
 
 c2_exit_to_overworld_1_continue_scripts_and_music = 0x080568C4|1;
 
@@ -114,11 +147,14 @@ gpu_pal_upload = 0x08070474|1;
 bg_scroll_invert = 0x08087F54|1;
 dp12_reset_something = 0x08087EA4|1;
 dp12_something = 0x08087EE4|1;
+sub_8087EE4 = 0x08087EE4|1;
 dp12_update = 0x08087F54|1;
 dp12_b_callback = 0x08087FE0|1;
 dp12_abort = 0x08087E64|1;
 pal_decompress_slice_to_faded_and_unfaded = 0x080703A8|1;
 get_bs_elem_env_index = 0x0800FC2C|1;
+
+obj_and_aux_reset_all = 0x08006B10|1;
 
 load_var_value = 0x0806E568|1;
 var_set_value = 0x0806E584|1;
@@ -140,6 +176,8 @@ bgid_send_tilemap = 0x080020BC|1;
 gpu_pal_apply = 0x080703EC|1;
 lz77_uncomp_vram = 0x081E3B6C|1;
 
+trainer_card_reset = 0x08089D0C|1;
+
 task_exec = 0x08077578|1;
 textbox_something = 0x08002DE8|1;
 objc_exec = 0x08006B5C|1;
@@ -154,13 +192,14 @@ gpu_pal_alloc_new = 0x080089B8|1;
 
 bgid_set_tilemap = 0x08001FA0|1;
 bg_vram_setup = 0x08001658|1;
-memset = 0x081E5ED8|1;
+mem_set = 0x081E5ED8|1;
 
 template_instanciate_forward_search = 0x08006F8C|1;
-obj_delete = 0x080073DC|1;
+obj_delete_and_free_tiles = 0x080073DC|1;
 sub_08034750 = 0x08034750|1;
 template_build_for_pokemon_or_trainer = 0x0803F864|1;
 obj_anim_image_start = 0x0800838C|1;
+obj_delete_and_free_tiles_and_free_tiles = 0x08007280|1;
 
 get_attribute = 0x0803FBE8|1;
 set_attribute = 0x0804037C|1;
@@ -188,8 +227,11 @@ uns_builder_assign_animtable1 = 0x0810BD80|1;
 ball_number_to_ball_processing_index = 0x080EF52C|1;
 ball_to_ram_setup = 0x0804BEF4|1;
 dp13_810BB8C = 0x0810BB8C|1;
-
+battle_load_health_boxes_unused = 0x080347A8|1; 
 some_test_func = 0x080F1198|1;
+init_malloc = 0x08002B80|1;
+
+pal_fade_control_and_dead_struct_reset = 0x08070528|1;
 
 /*
  * IO
