@@ -60,7 +60,7 @@ struct saveblock_trainerdata {
 };
 
 struct sav2 {
-	u8 name[8];
+	char name[8];
 	u8 gender;
 	u8 padding;
 	u16 trainer_id;
@@ -205,6 +205,21 @@ extern struct objtemplate ball_templates[12];
  * ROM Data tables
  */
  
+ struct pkmn_name {
+	char name[11];
+};
+extern struct pkmn_name pkmn_names_table[0x19C];
+ 
+ 
+struct pokemon_battle_template_3 {
+	u8 ivs;
+	u8 filler;
+	u8 level;
+	u8 filler2;
+	u16 species;
+	u16 item;
+	u16 moves[4];
+}; 
  
 struct trainer {
 	u8 custom_items : 1;
@@ -214,23 +229,23 @@ struct trainer {
 	u8 gender : 1;
 	u8 intro_music : 7;
 	u8 trainer_pic;
-	u8 trainer_name[13];
+	char trainer_name[11];
 	u16 trainer_items[4];
-	u8 unk1;
 	u8 double_battle;
 	u8 unk2[3]; // maybe padding - doubtful though
 	u8 trainer_AI_difficulty;
 	u8 unk3[3]; // maybe padding - doubtful though
 	u8 poke_count;
 	u8 padding[3];
-	union {
+	//union {
 		struct pokemon_battle_template_3 *pkmn; // fully customized
-		struct pokemon_battle_template_2 *pkmn1; // moves customized
-		struct pokemon_battle_template_1 *pkmn2; // items customized
-		struct pokemon_battle_template_0 *pkmn3; // no customizations
-	};
+		//struct pokemon_battle_template_2 *pkmn1; // moves customized
+		//struct pokemon_battle_template_1 *pkmn2; // items customized
+		//struct pokemon_battle_template_0 *pkmn3; // no customizations
+	//};
 };
 
+extern struct trainer ai_trainer[0x2E6];
 
 struct evolution_entry {
 	u8 method;
@@ -302,6 +317,14 @@ struct move_table {
 	u16 move_id;
 };
 
+struct movename {
+	char name[13];
+};
+
+extern struct movename move_names[355];
+extern struct movename ability_names[78];
+extern struct movename trainer_class_names[0x6B];
+
 // to optimize.
 struct natural_gift_table {
 	u16 item_id;
@@ -353,7 +376,11 @@ struct mega_table {
 	u16 item;
 };
 
+struct type_name {
+	char typename[7];
+};
 
+extern struct type_name typenames[18];
 /* 
 0 = normal effective
 1 = super effective
@@ -389,6 +416,28 @@ struct types_chart {
 struct battle_strings {
 	u8 *string[50]; // to add as more come out
 };
+
+typedef void(*item_func)(u8);
+ 
+struct item {
+	char name[14];
+	u16 index;
+	u16 price;
+	u8 hold_effect;
+	u8 parameter;
+	char *description_ptr;
+	u16 mystery_value;
+	u8 pocket;
+	u8 type;
+	item_func field_usage;
+	u32 battle_usage;
+	item_func battle_usage_p;
+	u32 extra_param;
+	
+};
+
+extern struct item items[0x178];
+
 
 extern struct objtemplate uns_table_pokemon_trainer[6];
 extern struct objtemplate uns_table_pokemon_real[4];

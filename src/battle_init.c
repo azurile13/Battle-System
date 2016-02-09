@@ -10,192 +10,37 @@
 #include "engine/objects.h"
 #include "engine/callback.h"
 #include "enter_battle.c"
-
-void load_screen_fade(void);
-void load_screen_bottom_top(void);
-//void battle_graphics_slide (struct battle_field *battle_field);
-void test_gfx(void);
-void setup(void);
-void dp12_fuel(u16 current);
+#include "engine/rom_funcs.h"
+#include "strings.h"
+#include "decoder.c"
 
 
-/* Reserved these 3 functions for SBird. */
-u16 get_environment() {
-	u16 custom_environment = load_var_value(VAR_BATTLE_BG_CUSTOM);
-	return custom_environment > 0 ? custom_environment : get_bs_elem_env_index();
-}
-
-u8 set_up_oam_sliding() {
-	// slide opponent and trainer into battle env
-	return 0;
-}
-
-void clear_video()
-{
-    overworld_free_bgmaps();
-    gpu_tile_bg_drop_all_sets(0);
-	bg_positions_reset();
-    callback_clear_and_init();
-
-    //TODO: Use DMA or memcopy instead of hacky for loops
-    int i = 0;
-    for(i = 0x06000000; i < 0x06010000; i+=4)
-    {
-        *((u32*)(i)) = 0x00000000;
-    }
-    for(i = 0; i < 512; i+=4)
-    {
-        *((u32*)(0x020371F8 + i)) = 0x00000000;
-        *((u32*)(0x020375F8 + i)) = 0x00000000;
-    }
-}
-
-void battle_graphics_slide (void) {//struct battle_field *battle_field) {
-	//Some window stuff todo
-	/*lcd_io_set(0x4C, 0x00);
-	lcd_io_set(0x40, 0xF0);
-	lcd_io_set(0x44, 0x5051);
-	lcd_io_set(0x48, 0x00);
-	lcd_io_set(0x4A, 0x00);
-	vblank_cb_battle_WIN0H = 0xF0;
-	vblank_cb_battle_WIN0V = 0x5051;*/
+void obj_and_aux_reset_all(void);
+void gpu_pal_allocator_reset(void);
+void tasks_init(void);
 
 
+char ca_Tis[] = { 0xCE, 0xDD, 0xE7, 0x00, 0xD6, 0xE9, 0xE8, 0x00, 0xD5, 0x00, 0xE8, 0xD9, 0xE7, 0xE8, 0xAD, 0xFF };
 
 
+static u8 *idx_for_battle_screen_elements_by_env = (u8 *)0x02022B50;
+static u16 c_x5051 = 0x5051;
+static u32 unk_05006000 = 0x5006000;
+static u16* dp12_2038700 = (u16 *)0x02038700;
+static u16* dp12_big_2038700 = (u16 *)(0x02038700 + 0x780);
+static u16* dp12_big1_2038700 = (u16 *)(0x02038700 + 0x820);
+static u16* dp12_big2_2038700 = (u16 *)(0x02038700 + 0xA0);
+static u32 c_x0400001C = 0x0400001C;
+static u32 c_xA2600001 = 0xA2600001;
+static u8 *gpu_pal_tag_search_lower_boundary = (u8 *)0x03003E58;
 
-	lcd_io_set(0x08, 0x9800);
-	lcd_io_set(0x0A, 0x9C04);
-	lcd_io_set(0x0C, 0x5E00);
-	lcd_io_set(0x0E, 0x5A0B);
-	lcd_io_set(0x00, 0x7F60);
-	battle_load_global.battle_environment = get_environment();
-
-	battle_load_global.animation = BOTTOM_TOP;
-	battle_load_global.battle_load_state = 0;
-	switch(battle_load_global.animation)
-	{
-		case FADE_IN:
-			set_callback2(load_screen_fade);
-			break;
-		case BOTTOM_TOP:
-			set_callback2(load_screen_bottom_top);
-			break;
-		default:
-			set_callback2(load_screen_bottom_top);
-			break;
-	}
-}
-
-void dp12_fuel(u16 current)
-{
-	u16* dp12_8700_p;
-	for(dp12_8700_p = &dp12_8700; dp12_8700_p < (&dp12_8700 + 0x50); dp12_8700_p++)
-	{
-		*(dp12_8700_p) = (u16)current;
-		*(dp12_8700_p + 0x3C0) = (u16)current;
-		*(dp12_8700_p + 0x50) = (u16)(0xFFFF - current + 1);
-		*(dp12_8700_p + 0x410) = (u16)(0xFFFF - current + 1);
-	}
-}
-
-void load_battle_background(struct bs_elements_t screen_graphic)
-{
-	lz77_uncomp_vram(screen_graphic.background_set, (void*)0x06008000);
-	lz77_uncomp_vram(screen_graphic.background_map, (void*)0x0600d000);
-
-	pal_decompress_slice_to_faded_and_unfaded(screen_graphic.palette, 0x20, 0x60);
-}
-
-void load_battle_accessories(struct bs_elements_t screen_graphic)
-{
-	lz77_uncomp_vram(screen_graphic.grass_set, (void*)0x06004000);
-	lz77_uncomp_vram(screen_graphic.grass_map, (void*)0x0600E000);
-}
-
-void load_screen_bottom_top()
-{
-	switch(battle_load_global.battle_load_state)
-	{
-		case 0:
-		{
-			/*Honestly no idea what this is, but i'm copying the games setup for now*/
-			dp12_reset_something();
-			dp12_something(&BG3HOFS, (&BG3HOFS) + 4, (&BG3HOFS) + 8);
-
-			vblank_cb_battle_BG0HOFS = 0;
-			vblank_cb_battle_BG0VOFS = 0;
-			vblank_cb_battle_BG1HOFS = 0;
-			vblank_cb_battle_BG1VOFS = 0;
-			vblank_cb_battle_BG2HOFS = 0;
-			vblank_cb_battle_BG2VOFS = 0;
-			vblank_cb_battle_BG3HOFS = 0xF0;
-			vblank_cb_battle_BG3VOFS = 0;
-			battle_load_global.revert_screen = 1;
-
-			load_battle_background(battle_env_table[battle_load_global.battle_environment]);
-			dp12_config.source_one = &dp12_8700 + 1;
-			dp12_config.source_two = &dp12_8700 + 0x3C1;
-			dp12_config.callback = dp12_b_callback;
-			dp12_config.enable = 0x1;
-			dp12_config.length = 0x1;
-			dp12_config.config = 0xA260;
-			battle_load_global.battle_load_state++;
-		}
-		break;
-		case 1:
-		{
-			dp12_fuel(vblank_cb_battle_BG3HOFS);
-			if(dp12_config.revert == 1)
-			{
-				dp12_config.revert = 0;
-			}
-			else
-			{
-				dp12_config.revert = 1;
-			}
-			(vblank_cb_battle_BG3HOFS)--;
-			if(vblank_cb_battle_BG3HOFS == 0)
-			{
-				battle_load_global.battle_load_state++;
-			}
-
-		}
-		break;
-		case 2:
-		{
-			//finished loading, disengage dp12
-			dp12_abort();
-		}
-	}
-}
-
-void load_screen_fade()
-{
-	switch(battle_load_global.battle_load_state)
-	{
-		case 0:
-		{
-			int i = 0;
-			//kill the faded palettes
-			for(i = 0; i < 512; i+=4)
-			{
-					*((u32*)(0x020375F8 + i)) = 0x00000000;
-			}
-			//Load gfx
-			load_battle_background(battle_env_table[battle_load_global.battle_environment]);
-			fade_screen(0xFFFFFFFF,0x6,0x10,0x0,0x0000);
-
-			battle_load_global.battle_load_state = 1;
-		}
-		break;
-		case 1:
-			if(pal_fade_control.done == 0)
-				battle_load_global.battle_load_state = 2;
-		break;
-
-	}
-}
+void sub_8087EE4(u32, u32, u8);
+void pal_fade_control_and_dead_struct_reset(void);
+void sub_0800F34C(void);
+void sub_0800F420(void);
+void vblank_cb_battle(void);
+void load_battle_screen_elements2(u8);
+void *malloc_and_clear(u32);
 
 
 
@@ -251,50 +96,279 @@ void battle_end (struct battle_field *battle_field) {
 }
 
 
-
-void update() {
-	task_exec();
-	textbox_something();
+void battle_prep_second_stage() {
+	void remoboxes_upload_tilesets(void);
 	objc_exec();
 	obj_sync_something();
 	gpu_pal_upload();
 	gpu_sprites_upload();
+	remoboxes_upload_tilesets();
 	fade_and_return_progress_probably();
+	task_exec();
 	copy_queue_process();
-	lcd_io_set(0x1C, vblank_cb_battle_BG3HOFS);
-	dp12_update();
 }
 
 
-void setup() {
-	superstate.multi_purpose_state_tracker = 0;
-	//battle_data_ptrs.task_id = task_add(do_battle, 0x1);
-	vblank_handler_set(update);
+static u8* battle_type_flags = (u8 *)0x02022B4C;
+u8 battle_load_something(u8*, u8*);
+
+
+void battle_intro() {
+
+	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
+
+	switch (superstate.multi_purpose_state_tracker) {
+		case 0:
+		{
+			// load sliding player side first 
+			
+			u8 gender = saveblock2.sav2->gender;
+			if (battle_field->battle_type == DOUBLE_TWO_AI) {
+			
+				u8 id = oam_trainer_back(gender, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
+				objects[id].private[1] = 2;
+				objects[id].private[2] = 0x20;
+				battle_mallocd_resources.ids_in_use[1] = id;
+				
+				id = oam_trainer_back(battle_field->b_config->ally_backsprite, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
+				objects[id].private[1] = 1;
+				objects[id].private[2] = 0x55;
+				battle_mallocd_resources.ids_in_use[0] = id;
+				
+			} else {
+			
+				u8 id =	oam_trainer_back(gender, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
+				objects[id].private[1] = 1;
+				objects[id].private[2] = 0x20;
+				battle_mallocd_resources.ids_in_use[1] = id;
+				battle_mallocd_resources.ids_in_use[0] = 0x7F; //special flag
+			}
+			
+			// load sliding opponent side
+			switch (battle_field->battle_type) {
+			case SINGLE_TRAINER:
+			case DOUBLE_TRAINER: // one trainer, two pkmn
+				{
+				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
+				objects[id].private[0] = 0x20;
+				objects[id].private[1] = 1;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.ids_in_use[3] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				break;
+				}
+			case DOUBLE_WILD:
+				{
+				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
+				objects[id].private[0] = 0x20;
+				objects[id].private[1] = 1;
+				battle_mallocd_resources.ids_in_use[3] = id;
+				id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
+				objects[id].private[0] = 0x50;
+				objects[id].private[1] = 2;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				break;
+				}
+			case DOUBLE_TWO_AI:
+				{
+				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
+				objects[id].private[0] = 0x20;
+				objects[id].private[1] = 1;
+				battle_mallocd_resources.ids_in_use[3] = id;
+				id = oam_trainer_front(battle_field->b_config->opp_id[1], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
+				objects[id].private[0] = 0x50;
+				objects[id].private[1] = 2;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				break;
+				}
+			case TRIPLE_WILD:
+				{
+				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X - 20, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
+				objects[id].private[0] = 0x20;
+				objects[id].private[1] = 1;
+				battle_mallocd_resources.ids_in_use[4] = id;
+				id = oam_pkmn_front(battle_field->b_config->opp_id[1], 0, OPPONENT1_OAM_START_POS_X - 30, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
+				objects[id].private[0] = 0x50;
+				objects[id].private[1] = 2;
+				battle_mallocd_resources.ids_in_use[3] = id;
+				id = oam_pkmn_front(battle_field->b_config->opp_id[2], 0, OPPONENT1_OAM_START_POS_X - 40, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
+				objects[id].private[0] = 0x80;
+				objects[id].private[1] = 3;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				break;
+				}
+			case TRIPLE_TRAINER:
+				{
+				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X - 20, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
+				objects[id].private[0] = 0x20;
+				objects[id].private[1] = 6;
+				battle_mallocd_resources.ids_in_use[4] = id;
+				id = oam_trainer_front(battle_field->b_config->opp_id[1], OPPONENT1_OAM_START_POS_X - 25, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
+				objects[id].private[0] = 0x40;
+				objects[id].private[1] = 7;
+				battle_mallocd_resources.ids_in_use[3] = id;
+				id = oam_trainer_front(battle_field->b_config->opp_id[2], OPPONENT1_OAM_START_POS_X - 0x2F, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
+				objects[id].private[0] = 0x60;
+				objects[id].private[1] = 8;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				break;
+				}
+			case HORDE_WILD:
+				{
+				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x30;
+				battle_mallocd_resources.ids_in_use[6] = id;
+				id = oam_pkmn_front(battle_field->b_config->opp_id[1], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x50;
+				battle_mallocd_resources.ids_in_use[5] = id;
+				id = oam_pkmn_front(battle_field->b_config->opp_id[2], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x70;
+				battle_mallocd_resources.ids_in_use[4] = id;
+				id = oam_pkmn_front(battle_field->b_config->opp_id[3], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x90;
+				battle_mallocd_resources.ids_in_use[3] = id;
+				id = oam_pkmn_front(battle_field->b_config->opp_id[4], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0xA0;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				break;
+				}
+			case HORDE_TRAINER:
+				{
+				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x30;
+				battle_mallocd_resources.ids_in_use[6] = id;
+				id = oam_trainer_front(battle_field->b_config->opp_id[1], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x50;
+				battle_mallocd_resources.ids_in_use[5] = id;
+				id = oam_trainer_front(battle_field->b_config->opp_id[2], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x70;
+				battle_mallocd_resources.ids_in_use[4] = id;
+				id = oam_trainer_front(battle_field->b_config->opp_id[3], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0x90;
+				battle_mallocd_resources.ids_in_use[3] = id;
+				id = oam_trainer_front(battle_field->b_config->opp_id[4], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
+				objects[id].private[0] = 0xA0;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				break;
+				}
+			case SINGLE_WILD:
+			default:
+				{
+				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
+				objects[id].private[0] = 0x20;
+				objects[id].private[1] = 6;
+				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.ids_in_use[3] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
+				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				break;
+				}
+			};
+			
+			superstate.multi_purpose_state_tracker = 1;
+			break;
+		}
+		case 1: 
+		{
+			if (superstate.multi_purpose_state_tracker == 1) {
+				// wait for trainers to be in positions
+				u8 t_1_player = battle_mallocd_resources.ids_in_use[1];
+				u8 t_1_opponent = battle_mallocd_resources.ids_in_use[2];
+				if ((objects[t_1_opponent].private[0] == 2) && (objects[t_1_player].private[0] == 2)) {
+					// text box set textbox_set_text
+					decoder((char *)ca_trainer_single_intro);
+					textbox_set_text(string_buffer, 1, 0, 1, 3, 1);
+					task_add(waitbutton_text, 1);
+					superstate.multi_purpose_state_tracker = 0x2;
+				}
+
+			}
+		break;
+		}
+		case 3:
+			
+			textbox_set_text((char *)0x81C55C9, 1, 0, 1, 3, 1);
+			
+			superstate.multi_purpose_state_tracker = 0x4;
+			break;
+		case 2:
+		default:
+			// idle state.
+			break;
+		};
+	
+	
+
+}
+
+void c1_battle_prep(void) {
+	if (superstate.multi_purpose_state_tracker < 6) {
+		void bs_exec(void);
+		bs_exec();
+		superstate.multi_purpose_state_tracker++;
+	} else {
+		//superstate.callback1 = (super_callback) 0x0000000;
+		set_callback2(battle_prep_second_stage);
+		set_callback1(battle_intro);
+		superstate.multi_purpose_state_tracker = 0;
+	}
+}
+
+void battle_prep() {
+	u8 sub_8001960(void);
+	void sub_80357C8(void);
+
+		task_exec();
+		objc_exec();
+		obj_sync_something();
+
+	switch(superstate.multi_purpose_state_tracker) {
+		case 0:	
+			{
+			if (!sub_8001960()) {
+				gpu_sync_bg_show(0);
+				gpu_sync_bg_show(1);
+				gpu_sync_bg_show(2);
+				gpu_sync_bg_show(3);
+				sub_80357C8();
+				superstate.multi_purpose_state_tracker++;
+				*battle_type_flags = 4;
+
+				void b_setup_bx(void);
+				b_setup_bx();
+			}
+			break;
+			}
+		case 1:
+			{
+			superstate.multi_purpose_state_tracker = 0;
+			set_callback1(c1_battle_prep);
+			set_callback2(battle_prep_second_stage);
+			break;
+			}
+		default:
+			break;
+		};
 	return;
 }
 
 
-void scroll_bg(u8 task_id) {
-	void bgid_mod_x_offset(u8, u8, u8);
-	void bgid_mod_y_offset(u8, u8, u8);
-	if (tasks[task_id].priv[0] < (99 * 5)) {
-		bgid_mod_x_offset(1, 255, 1);//bg_id, horizontal, h_dir);
-		bgid_mod_y_offset(1, 60, 2);//bg_id, verticle, v_dir);
-		tasks[task_id].priv[0] ++;
-	} else {
-		task_del(task_id);
-	}
-}
-
-void grass_anim() {
-	load_battle_accessories(battle_env_table[battle_load_global.battle_environment]);
-	task_add(scroll_bg, 0x1);	
-}
-
 
 
 struct battle_field* battle_init(struct battle_config *b_config, struct battle_field* battle_field) {
-	void c2_exit_to_overworld_1_continue_scripts_and_music(void);
 	battle_field->b_config = b_config;
 	battle_field->battle_type = b_config->type;
 	// set up battlers by battle type
@@ -304,6 +378,8 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 			battle_field->active_battler_count_max = 2;
 			battler_init(&battle_field->battlers[0], &pokemon_bank[6], 6); // player's first pkmn
 			battler_init(&battle_field->battlers[3], &pokemon_bank[0], 0); // opponent's first pkmn
+			battle_field->trainer_flag[0] = b_config->opp_id[0];
+			battle_field->trainer_flag[1] = b_config->opp_id[1];
 			break;
 		case DOUBLE_WILD:
 		case DOUBLE_TRAINER:
@@ -312,6 +388,8 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 			battler_init(&battle_field->battlers[1], &pokemon_bank[7], 7); // player's 2nd pkmn
 			battler_init(&battle_field->battlers[3], &pokemon_bank[0], 0); // opponent's 1st pkmn
 			battler_init(&battle_field->battlers[4], &pokemon_bank[1], 1); // opponent's 2nd pkmn
+			battle_field->trainer_flag[0] = b_config->opp_id[0];
+			battle_field->trainer_flag[1] = b_config->opp_id[1];
 			break;
 		case DOUBLE_TWO_AI:
 			battle_field->active_battler_count_max = 4;
@@ -319,6 +397,8 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 			battler_init(&battle_field->battlers[1], &pokemon_bank[9], 9); // ally's 1st pkmn
 			battler_init(&battle_field->battlers[3], &pokemon_bank[0], 0); // opponent1's 1st pkmn
 			battler_init(&battle_field->battlers[4], &pokemon_bank[3], 3); // opponent2's 2nd pkmn
+			battle_field->trainer_flag[0] = b_config->opp_id[0];
+			battle_field->trainer_flag[1] = b_config->opp_id[1];
 			break;
 		case TRIPLE_WILD:
 		case TRIPLE_TRAINER:
@@ -329,6 +409,9 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 			battler_init(&battle_field->battlers[3], &pokemon_bank[0], 0); // opponent's 1st pkmn
 			battler_init(&battle_field->battlers[4], &pokemon_bank[1], 1); // opponent's 1st pkmn
 			battler_init(&battle_field->battlers[5], &pokemon_bank[2], 2); // opponent's 2nd pkmn
+			battle_field->trainer_flag[0] = b_config->opp_id[0];
+			battle_field->trainer_flag[1] = b_config->opp_id[1];
+			battle_field->trainer_flag[2] = b_config->opp_id[2];
 			break;
 		case TRIPLE_FOUR_AI: // low priority
 		case TRIPLE_FIVE_AI: // low priority
@@ -342,86 +425,122 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 			battler_init(&battle_field->battlers[3], &pokemon_bank[2], 2); // opponent's 3rd pkmn
 			battler_init(&battle_field->battlers[4], &pokemon_bank[1], 1); // opponent's 4th pkmn
 			battler_init(&battle_field->battlers[5], &pokemon_bank[2], 2); // opponent's 5th pkmn
+			battle_field->trainer_flag[0] = b_config->opp_id[0];
+			battle_field->trainer_flag[1] = b_config->opp_id[1];
+			battle_field->trainer_flag[2] = b_config->opp_id[2];
+			battle_field->trainer_flag[3] = b_config->opp_id[3];
+			battle_field->trainer_flag[4] = b_config->opp_id[4];
 			break;
 		default:
-			free(battle_field);
-			//call back, return to overworld -> safe exit
-			c2_exit_to_overworld_1_continue_scripts_and_music();
 			break;
 	};
 	return battle_field;
 }
 
-void do_battle(u8 task_id) {
-	struct battle_field *battle_field = battle_data_ptrs.field_ptr;
-	u8 counter = superstate.multi_purpose_state_tracker;
-	switch (counter) {
-		case 0:
-			// increment turn counter
-			battle_field->turn_counter ++;
-			counter ++;
-			break;
-		case 1:
-			// do text things
-			// send out parties
-			break;
-		case 2:
-			// check ability activations
-			break;
-		case 3:
-			// player pick moves
-		case 4:
-			// ai pick moves
-		case 5:
-			// execute pre-move abilities
-		case 6:
-			// execute moves
-		case 7:
-			// update battle field. HP bars, clear dead, ect.
-		case 8:
-			// check battle is over -> end (captured, frontier mode loss, dex, money, revert forms, ect)
-			break;
-		case 9:
-			// loop
-			counter = 0;
-			break;
-		default:
-			// battle is over
-			task_del(task_id);
-			battle_end(battle_field);
-			break;
-	};
-	return;
+
+
+
+void battle_malloc_resources() {
+
+	 battle_mallocd_resources.b_config = malloc_and_clear(sizeof(struct battle_config));
+	 battle_mallocd_resources.battle_field = malloc_and_clear(sizeof(struct battle_field));
+	 // more to come, maybe.
 }
 
-void test_battle(void) {
-	void *memset(void *s, int c, u32 n);
-	void enter_field_opponent(u8, struct battle_config*);
-	void enter_field_player_oam(u8, struct battle_config*);
-	struct battle_config *b_config = (struct battle_config *)malloc(sizeof(struct battle_config));
-	b_config->type = SINGLE_WILD;
+
+
+void store_byte_skipping(u16 *ptr, u16 pattern, u16 size) {
+	u8 i;
+	for (i = 0; i < size; i++) {
+		*ptr = pattern;
+		ptr += 1;
+	}	
+};
+
+void battle_slidein_bg(struct battle_config *b_config) {
+	hblank_handler_set(0);
+	vblank_handler_set(0);
+	u8 VRAM = 0x06;
+	temp_vars.var_8000 = 0;
+	cpu_set(&temp_vars.var_8000, (void *)(VRAM << 24), unk_05006000);
+	lcd_io_set(0x4C, 0);
+	lcd_io_set(0x40, 240);
+	lcd_io_set(0x44, c_x5051);
+	lcd_io_set(0x48, 0);
+	lcd_io_set(0x4A, 0);
+	vblank_cb_battle_WIN0H = 240;
+	vblank_cb_battle_WIN0V = c_x5051;
+	dp12_reset_something();
+	store_byte_skipping(dp12_2038700, 0xF0, 0x4F);
+	store_byte_skipping(dp12_big_2038700, 0xF0, 0x4F);
+	store_byte_skipping(dp12_big1_2038700, 0xFF10, 0x4F);
+	store_byte_skipping(dp12_big2_2038700, 0xFF10, 0x4F);
+	
+	sub_8087EE4(c_x0400001C, c_xA2600001, 0x1);
+	pal_fade_control_and_dead_struct_reset();
+	
+	vblank_cb_battle_BG0HOFS = 0;
+	vblank_cb_battle_BG0VOFS = 0;
+	vblank_cb_battle_BG1HOFS = 0;
+	vblank_cb_battle_BG1VOFS = 0;
+	vblank_cb_battle_BG2HOFS = 0;
+	vblank_cb_battle_BG2VOFS = 0;
+	vblank_cb_battle_BG3HOFS = 0;
+	vblank_cb_battle_BG3VOFS = 0;
+
+	
+	*idx_for_battle_screen_elements_by_env = b_config->env_by_map;
+	sub_0800F34C();
+	sub_0800F420();
+	obj_and_aux_reset_all();
+	tasks_init();
+	
+	/*
+	
+	0 - grass
+	*/
+	load_battle_screen_elements2(b_config->env_by_map);
+	gpu_pal_allocator_reset();
+
+	*gpu_pal_tag_search_lower_boundary = 4;
+	vblank_handler_set(vblank_cb_battle);
+	
+	superstate.multi_purpose_state_tracker = 0;
+	set_callback2(battle_prep);
+	
+
+	
+
+}
+
+void z_battle_setup () {
+	// allocate resources @start
+	battle_malloc_resources();
+
+	
+	struct battle_config *b_config = battle_mallocd_resources.b_config;
+	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
+	
+	// set up battle properties
+	b_config->type = HORDE_WILD;
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
 	b_config->whiteout_switch = true; // enable whiteout 
 	b_config->money_switch = true; // enable money gain
 	b_config->exp_switch = true; // enable exp gain
 	b_config->ai_difficulty = 0xFF; // hard
-	b_config->env_by_map = 0x0; // grass, SBIRD pls
+	b_config->env_by_map = 0; // grass
+	b_config->opp_id[0] = 0x14;
+	b_config->opp_id[1] = 0x77;
+	b_config->opp_id[2] = 0x61;
+	b_config->opp_id[3] = 0x66;
+	b_config->opp_id[4] = 0x24;
 	b_config->opponent_count = 0x1; // one opp 
+	b_config->ally_backsprite = 0x2;
 
-	// malloc resources and set up
-	struct battle_field *battle_field = (struct battle_field*) malloc(sizeof(struct battle_field));
-	battle_init((struct battle_config*) 0x8900000, battle_field); // this is needed. FF filled.
-	memset((u8 *)battle_field, 0x0, sizeof(struct battle_field));
-	battle_init(b_config, battle_field);
-	clear_video();
-	quick_setup_textbox(0);
-	grass_anim();
-	enter_field_playerside_oam(battle_field->battle_type, battle_field->b_config);
-	enter_field_opponent(battle_field->battle_type, battle_field->b_config);
-	battle_graphics_slide();
-	setup();
+	// battle_field fill battlers
+	battle_field = battle_init(b_config, battle_field);
 
-	task_add(do_battle, 0x1);
-
-}
+	
+	battle_slidein_bg(b_config);
+};
 
