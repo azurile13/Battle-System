@@ -69,17 +69,16 @@ void obj_callback_slide_right_triple(struct object *obj) {
 	switch(obj->private[1]) {
 		case 1:
 		case 6:
-			obj->y = 0x30;
+			obj->y = 0x25;
 			break;
 		case 2:
 		case 7:
-			obj->y = 0x20;
+			obj->y = 0x30;
 			break;
 		case 3:
 		case 8:
 		default:
-			obj->y = 0x30;
-			break;
+			obj->y = 0x25;
 	};
 }
 
@@ -91,7 +90,7 @@ void obj_callback_hide_triple(struct object *obj) {
 		obj->private[0]--;
 	} else {
 		//obj->x = 0x0;
-		obj->y = 0x30;
+		obj->y = 0x25;
 		obj->callback = obj_callback_slide_right_triple;
 	}
 	return;
@@ -123,7 +122,7 @@ void obj_callback_hide_double(struct object *obj) {
 		obj->private[0]--;
 	} else {
 		//obj->x = 0x0;
-		obj->y = 0x30;
+		obj->y = 0x25;
 		obj->callback = obj_callback_slide_right_double;
 	}
 	return;
@@ -133,7 +132,7 @@ void obj_callback_hide_double(struct object *obj) {
 
 void obj_callback_slide_right(struct object *obj) {
 	if (obj->private[1] > obj->private[0]) {
-		obj->y = 0x30;
+		obj->y = 0x25;
 		if (obj->private[2] < (0x120 - obj->private[0])) {
 			obj->x += 2;
 			obj->private[2] += 2;

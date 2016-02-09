@@ -1,6 +1,6 @@
 wild_single_intro =A wild |FD0B| appeared!|FB||FF|
 wild_double_intro =A wild |FD0B| and |FE||FD0C| appeared!|FB||FF|
-wild_triple_intro =A wild |FD0B|,|FE| a wild |FD0C| and |FB||FD0D| appeared!|FB||FF|
+wild_triple_intro =A wild |FD0B|, |FD0C||FE|and |FD0D| appeared!|FB||FF|
 wild_horde_intro =Woah! A horde of |FE||FD0B| appeared!|FB||FF|
 trainer_single_intro =|FD15| |FD06||FE|would like to battle!|FB||FF|
 trainer_double_intro =You are challenged by|FE||FD15| |FD06| and |FB||FD16| |FD07|!|FB||FF|

@@ -116,7 +116,7 @@ u8 battle_load_something(u8*, u8*);
 void battle_intro() {
 
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
-
+	u8 is_wild = 0;
 	switch (superstate.multi_purpose_state_tracker) {
 		case 0:
 		{
@@ -147,9 +147,6 @@ void battle_intro() {
 			// load sliding opponent side
 			switch (battle_field->battle_type) {
 			case SINGLE_TRAINER:
-				{
-					decoder((char *)ca_trainer_single_intro);
-				}
 			case DOUBLE_TRAINER: // one trainer, two pkmn
 				{
 				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
@@ -160,7 +157,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
-				decoder((char *)ca_trainer_double_intro);
+				decoder((char *)ca_trainer_single_intro);
 				break;
 				}
 			case DOUBLE_WILD:
@@ -169,7 +166,7 @@ void battle_intro() {
 				objects[id].private[0] = 0x20;
 				objects[id].private[1] = 1;
 				battle_mallocd_resources.ids_in_use[3] = id;
-				id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
+				id = oam_pkmn_front(battle_field->b_config->opp_id[1], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
 				objects[id].private[0] = 0x50;
 				objects[id].private[1] = 2;
 				battle_mallocd_resources.ids_in_use[2] = id;
@@ -177,6 +174,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_wild_double_intro);
+				is_wild = 1;
 				break;
 				}
 			case DOUBLE_TWO_AI:
@@ -193,6 +191,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_double_intro);
+				is_wild = 1;
 				break;
 				}
 			case TRIPLE_WILD:
@@ -231,6 +230,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_triple_intro);
+				is_wild = 1;
 				break;
 				}
 			case HORDE_WILD:
@@ -271,6 +271,7 @@ void battle_intro() {
 				objects[id].private[0] = 0xA0;
 				battle_mallocd_resources.ids_in_use[2] = id;
 				decoder((char *)ca_trainer_horde_intro);
+				is_wild = 1;
 				break;
 				}
 			case SINGLE_WILD:
@@ -284,7 +285,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
-				decoder((char *)ca_trainer_single_intro);
+				decoder((char *)ca_wild_single_intro);
 				break;
 				}
 			};
@@ -308,11 +309,16 @@ void battle_intro() {
 		break;
 		}
 		case 3:
-			
+			// intro text
 			textbox_set_text((char *)0x81C55C9, 1, 0, 1, 3, 1);
-			
 			superstate.multi_purpose_state_tracker = 0x4;
 			break;
+		case 4:
+			// if against wild, player sends out pkmn
+			if (is_wild) {
+			} else {
+				// opponent send out
+			}
 		case 2:
 		default:
 			// idle state.
@@ -531,7 +537,7 @@ void z_battle_setup () {
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
 	
 	// set up battle properties
-	b_config->type = TRIPLE_TRAINER;
+	b_config->type = 1;
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
 	b_config->whiteout_switch = true; // enable whiteout 
 	b_config->money_switch = true; // enable money gain
