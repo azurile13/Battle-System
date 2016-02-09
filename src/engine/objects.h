@@ -1,6 +1,8 @@
 #ifndef ENGINE_OBJECTS_H
 #define ENGINE_OBJECTS_H
 
+
+
 struct object;
 typedef void (*object_callback)(struct object*);
 
@@ -88,23 +90,6 @@ struct object {
 	u8 field43;
 };
 
-struct oam_memory_resources {
-	u8 obj_id;
-	u8 filler[3];
-	// resources to free
-	u8 *gfx_img;
-	u8 *obj_template;
-	u8 *resource;
-};
-
-struct oam_resource_array {
-	u8 next_index;
-	u8 filler[3];
-	struct oam_memory_resources resources[8];
-	u8 obj_cb_logging[20];
-};
-
-extern struct oam_resource_array oam_resources;
 extern struct object objects[64];
 u8 *obj_ids_to_display;
 struct sprite * poke_oam_battle;
@@ -113,12 +98,12 @@ struct rotscale_frame **rotscale_empty;
 object_callback oac_nullsub;
 u8 template_instanciate_forward_search(struct objtemplate *, u8, u8, u8);
 void obj_delete(struct object *);
-
+void obj_delete_and_free_tiles(struct object *);
 
 u8 obj_id_from_obj(struct object *obj) {
-	u32 pointer = (u32) obj;
-	pointer -= 0x202063C;
-	return (pointer / 0x44);
+	u32 pointer = (u8 *)obj - (u8 *)objects;
+	return ((u32)pointer / 0x44);
 }
+
 
 #endif /* ENGINE_OBJECTS_H */

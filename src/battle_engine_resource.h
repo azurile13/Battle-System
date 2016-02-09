@@ -195,10 +195,10 @@ struct field_modifiers {
 };
 
 struct battle_field {
-	u16 trainer_flag_or_species;
-	struct battle_config *b_config;
+	u16 trainer_flag[5];
 	u8 battle_type;
 	u8 turn_counter;
+	struct battle_config *b_config;
 	struct field_modifiers modifiers;
 	struct battler battlers[6]; // potential for 6 on field
 	struct battle_flags *b_flags;
@@ -207,16 +207,36 @@ struct battle_field {
 	u8 active_battler_count;
 	u8 active_battler_count_max;
 	enum battle_result battle_result;
+	u16 multi_use;
 };
 
-struct battle_data_ptrs {
-	struct battle_field *field_ptr;
-	u8 task_id;
-	// more to come maybe...
+
+struct battle_mallocd_resources {
+	struct battle_config *b_config;
+	struct battle_field *battle_field;
+	struct objtemplate objtemp[10]; // ten templates maybe too much
+	struct resource resources[10];
+	u8 *oams[10];
+	u8 ids_in_use[10];
+	u16 consumed1 : 1;
+	u16 consumed2 : 1;
+	u16 consumed3 : 1;
+	u16 consumed4 : 1;
+	u16 consumed5 : 1;
+	u16 consumed6 : 1;
+	u16 consumed7 : 1;
+	u16 consumed8 : 1;
+	u16 consumed9 : 1;
+	u16 consumed10 : 1;
+
+	u16 filler : 6;
+	
+
+	
 };
 
+extern struct battle_mallocd_resources battle_mallocd_resources;
 extern struct battle_field battle_field;
-extern struct battle_data_ptrs battle_data_ptrs;
 extern enum battle_result battle_result;
 
 #endif /* BATTLE_LOCAL_RESOURCES */

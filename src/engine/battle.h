@@ -3,7 +3,8 @@
 
 /*Use map_temp var for custom backgrounds*/
 #define VAR_BATTLE_BG_CUSTOM 0x4000
-#define BATTLE_ENV_TABLE_SIZE 0x10 /*Not sure about the actual size*/
+#define BATTLE_ENV_TABLE_SIZE 0x10 
+/*Not sure about the actual size*/
 
 typedef void (*dp12_callback)(void);
 
@@ -47,6 +48,17 @@ struct bs_load_var_t
     u8 revert_screen;
     u16 bg3_hof;
 };
+
+/*
+struct dp12_2038700 {
+	u16 bank[0x4F];
+};
+
+struct dp12_big_2038700 {
+	u16 bank[0x4F];
+};*/
+
+
 
 extern struct bs_elements_t battle_env_table[BATTLE_ENV_TABLE_SIZE];
 extern struct bs_load_var_t battle_load_global;
