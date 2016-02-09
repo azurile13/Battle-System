@@ -129,6 +129,7 @@ void oam_pkmn_back(u16 species, u8 shinyness, u16 x, u16 y, object_callback cb) 
 }
 
 u8 oam_trainer_front(u16 img_id, u16 x, u16 y, object_callback cb) {
+	img_id = ai_trainer[img_id].trainer_pic;
 	void *pal = pal_table_trainer_front[img_id].pal_off;
 	u8 *img = gfx_table_trainer_front[img_id].ptr_img;
 	u16 img_size = 0x800;

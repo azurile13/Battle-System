@@ -113,6 +113,42 @@ char *gen_string(char c) {
 			return(trainer_class_names[id].name);
 			break;
 			}
+		case 0x16:
+			// trainer class
+			{
+			u8 id = battle_mallocd_resources.battle_field->trainer_flag[1];
+			id = ai_trainer[id].trainer_class;
+			//return trainer_class_names[id * 13];
+			return(trainer_class_names[id].name);
+			break;
+			}
+		case 0x17:
+			// trainer class
+			{
+			u8 id = battle_mallocd_resources.battle_field->trainer_flag[2];
+			id = ai_trainer[id].trainer_class;
+			//return trainer_class_names[id * 13];
+			return(trainer_class_names[id].name);
+			break;
+			}
+		case 0x18:
+			// trainer class
+			{
+			u8 id = battle_mallocd_resources.battle_field->trainer_flag[3];
+			id = ai_trainer[id].trainer_class;
+			//return trainer_class_names[id * 13];
+			return(trainer_class_names[id].name);
+			break;
+			}
+		case 0x19:
+			// trainer class
+			{
+			u8 id = battle_mallocd_resources.battle_field->trainer_flag[4];
+			id = ai_trainer[id].trainer_class;
+			//return trainer_class_names[id * 13];
+			return(trainer_class_names[id].name);
+			break;
+			}
 		default:			
 			break;
 			

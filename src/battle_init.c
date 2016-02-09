@@ -147,6 +147,9 @@ void battle_intro() {
 			// load sliding opponent side
 			switch (battle_field->battle_type) {
 			case SINGLE_TRAINER:
+				{
+					decoder((char *)ca_trainer_single_intro);
+				}
 			case DOUBLE_TRAINER: // one trainer, two pkmn
 				{
 				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
@@ -157,6 +160,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				decoder((char *)ca_trainer_double_intro);
 				break;
 				}
 			case DOUBLE_WILD:
@@ -172,6 +176,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				decoder((char *)ca_wild_double_intro);
 				break;
 				}
 			case DOUBLE_TWO_AI:
@@ -187,6 +192,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				decoder((char *)ca_trainer_double_intro);
 				break;
 				}
 			case TRIPLE_WILD:
@@ -205,6 +211,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[2] = id;
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				decoder((char *)ca_wild_triple_intro);
 				break;
 				}
 			case TRIPLE_TRAINER:
@@ -223,6 +230,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[2] = id;
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				decoder((char *)ca_trainer_triple_intro);
 				break;
 				}
 			case HORDE_WILD:
@@ -242,6 +250,7 @@ void battle_intro() {
 				id = oam_pkmn_front(battle_field->b_config->opp_id[4], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0xA0;
 				battle_mallocd_resources.ids_in_use[2] = id;
+				decoder((char *)ca_wild_horde_intro);
 				break;
 				}
 			case HORDE_TRAINER:
@@ -261,6 +270,7 @@ void battle_intro() {
 				id = oam_trainer_front(battle_field->b_config->opp_id[4], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0xA0;
 				battle_mallocd_resources.ids_in_use[2] = id;
+				decoder((char *)ca_trainer_horde_intro);
 				break;
 				}
 			case SINGLE_WILD:
@@ -274,6 +284,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				decoder((char *)ca_trainer_single_intro);
 				break;
 				}
 			};
@@ -288,8 +299,6 @@ void battle_intro() {
 				u8 t_1_player = battle_mallocd_resources.ids_in_use[1];
 				u8 t_1_opponent = battle_mallocd_resources.ids_in_use[2];
 				if ((objects[t_1_opponent].private[0] == 2) && (objects[t_1_player].private[0] == 2)) {
-					// text box set textbox_set_text
-					decoder((char *)ca_trainer_single_intro);
 					textbox_set_text(string_buffer, 1, 0, 1, 3, 1);
 					task_add(waitbutton_text, 1);
 					superstate.multi_purpose_state_tracker = 0x2;
@@ -522,19 +531,19 @@ void z_battle_setup () {
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
 	
 	// set up battle properties
-	b_config->type = HORDE_WILD;
+	b_config->type = TRIPLE_TRAINER;
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
 	b_config->whiteout_switch = true; // enable whiteout 
 	b_config->money_switch = true; // enable money gain
 	b_config->exp_switch = true; // enable exp gain
 	b_config->ai_difficulty = 0xFF; // hard
 	b_config->env_by_map = 0; // grass
-	b_config->opp_id[0] = 0x14;
-	b_config->opp_id[1] = 0x77;
-	b_config->opp_id[2] = 0x61;
-	b_config->opp_id[3] = 0x66;
-	b_config->opp_id[4] = 0x24;
-	b_config->opponent_count = 0x1; // one opp 
+	b_config->opp_id[0] = 0x52;
+	b_config->opp_id[1] = 0x53;
+	b_config->opp_id[2] = 0x54;
+	b_config->opp_id[3] = 0x55;
+	b_config->opp_id[4] = 0x56;
+	b_config->opponent_count = 0x5; // one opp 
 	b_config->ally_backsprite = 0x2;
 
 	// battle_field fill battlers
