@@ -42,7 +42,33 @@ void vblank_cb_battle(void);
 void load_battle_screen_elements2(u8);
 void *malloc_and_clear(u32);
 
-
+void name_by_species_to_buffer(u16 species, u8 buff_id) {
+	char *buffer;
+	switch (buff_id) {
+		case 1:
+			{
+			buffer = buffer1;
+			break;
+			}
+		case 2:
+			{
+			buffer = buffer2;
+			break;
+			}
+		case 3:
+			{
+			buffer = buffer3;
+			break;
+			}
+		default:
+			{
+			buffer = buffer4;
+			break;
+			}
+	};
+	str_cpy(pkmn_names_table[species].name, buffer);
+	return;
+}
 
 u8 get_ability_from_bit(struct pokemon *pokemon) {
 	u8 ability = get_attr(pokemon, ATTR_ABILITY_BIT);
@@ -116,7 +142,7 @@ u8 battle_load_something(u8*, u8*);
 void battle_intro() {
 
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
-	u8 is_wild = 0;
+	u8 not_wild = 0;
 	switch (superstate.multi_purpose_state_tracker) {
 		case 0:
 		{
@@ -174,7 +200,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_wild_double_intro);
-				is_wild = 1;
+				not_wild = 1;
 				break;
 				}
 			case DOUBLE_TWO_AI:
@@ -191,7 +217,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_double_intro);
-				is_wild = 1;
+				not_wild = 1;
 				break;
 				}
 			case TRIPLE_WILD:
@@ -230,7 +256,7 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_triple_intro);
-				is_wild = 1;
+				not_wild = 1;
 				break;
 				}
 			case HORDE_WILD:
@@ -271,7 +297,7 @@ void battle_intro() {
 				objects[id].private[0] = 0xA0;
 				battle_mallocd_resources.ids_in_use[2] = id;
 				decoder((char *)ca_trainer_horde_intro);
-				is_wild = 1;
+				not_wild = 1;
 				break;
 				}
 			case SINGLE_WILD:
@@ -314,11 +340,54 @@ void battle_intro() {
 			superstate.multi_purpose_state_tracker = 0x4;
 			break;
 		case 4:
+			{
 			// if against wild, player sends out pkmn
-			if (is_wild) {
-			} else {
-				// opponent send out
+			u16 species = 0;
+			if (not_wild) {
+				switch (battle_field->battle_type) {
+					case SINGLE_TRAINER:
+						// pkmn 1
+						species = battler_field->battlers[3].species;
+						name_by_species_to_buffer(species, 1);
+					case DOUBLE_TRAINER:
+						// first
+						species = battler_field->battlers[3].species;
+						name_by_species_to_buffer(species, 1);
+						//second
+						species = battler_field->battlers[4].species;
+						name_by_species_to_buffer(species, 2);
+						break;
+					case DOUBLE_TWO_AI:
+						// 1
+						species = battler_field->battlers[3].species;
+						name_by_species_to_buffer(species, 1);
+						// 2
+						species = battler_field->battlers[4].species;
+						name_by_species_to_buffer(species, 2);
+						break;
+					case TRIPLE_TRAINER:
+						species = battler_field->battlers[3].species;
+						name_by_species_to_buffer(species, 1);
+						// 2
+						species = battler_field->battlers[4].species;
+						name_by_species_to_buffer(species, 2);
+						// 2
+						species = battler_field->battlers[5].species;
+						name_by_species_to_buffer(species, 3);
+						break;
+					case HORDE_TRAINER:
+						species = battler_field->battlers[3].species;
+						name_by_species_to_buffer(species, 1);
+						break;
+					default:
+						break;
+				}
 			}
+			superstate.multi_purpose_state_tracker = 5;
+			}
+		case 5:
+			// player send out.
+			
 		case 2:
 		default:
 			// idle state.
