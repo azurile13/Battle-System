@@ -41,7 +41,7 @@ void obj_callback_slide_down(struct object *obj) {
 void task_obj_del_delayed(u8 task_id) {
 
 	if (tasks[task_id].priv[1] <= 1) {
-		obj_delete(&objects[tasks[task_id].priv[0]]);
+		obj_delete_and_free_tiles(&objects[tasks[task_id].priv[0]]);
 		task_del(task_id);
 	} else {
 		tasks[task_id].priv[1]--;
@@ -82,14 +82,6 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_cal
 	
 	// create OAM
 	u8 obj_id = template_instanciate_forward_search(oam_template, x, y, 0x1E);
-	
-	// log used memory resources
-	u8 index = oam_resources.next_index;
-	oam_resources.resources[index].obj_id = obj_id;
-	oam_resources.resources[index].gfx_img = (u8 *)graphic_pointer;
-	oam_resources.resources[index].obj_template = (u8 *)oam_template;
-	oam_resources.resources[index].resource = (u8 *)resource;
-	oam_resources.next_index++;
 	return obj_id;
 }
 
@@ -158,7 +150,6 @@ u8 oam_trainer_back(u16 id, u16 x, u16 y, object_callback cb) {
 	objt_pokemon[2].graphics = backsprite_temp.graphics;
 	objt_pokemon[2].rotscale = backsprite_temp.rotscale;
 	objt_pokemon[2].callback = cb;
-	//backsprite_temp.callback;
 	objt_pokemon[2].animation = meta_animtable_trainer.trainer_anim[id];
 	u8 obj_id = template_instanciate_forward_search(&objt_pokemon[2], x, y, 0x1E);
 	objects[obj_id].x = x;
@@ -177,7 +168,7 @@ void display_oam(u8 id) {
 }
 
 void del_oam(u8 id) {
-	obj_delete(&objects[id]);
+	obj_delete_and_free_tiles(&objects[id]);
 	return;
 }
 
@@ -196,6 +187,30 @@ u8 slide_trainer_player() {
 	oam_trainer_back(gender, 0x50, 0x50, 0x0);
 	return 0;
 }
+
+/*
+void ball_throw(u8 task_id) {
+	if (tasks[task_id].priv[3] > 0) {
+		tasks[task_id].priv[3]--;
+	} else {
+		u8 ball_number_to_ball_processing_index(u8);
+		void ball_to_ram_setup(u8);
+		u8 type = tasks[task_id].priv[2];
+		u8 index = ball_number_to_ball_processing_index(type);
+		ball_to_ram_setup(index);
+		struct objtemplate *test = &ball_templates[type];
+
+		u8 id = template_instanciate_forward_search(test, 0, 0, 0x0);
+		struct object *ball = &objects[id];
+		ball->x = tasks[task_id].priv[0];
+		ball->y = tasks[task_id].priv[1];
+		
+		objects[id].callback = (object_callback) 0x804B685;
+		task_del(task_id);
+		return;
+	}
+}*/
+
 
 u8 ball_throw(u8 type, u16 x, u16 y) {
 	u8 ball_number_to_ball_processing_index(u8);
