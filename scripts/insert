@@ -73,35 +73,36 @@ def symbols(subtract=0):
 def insert(rom):
         where = args.offset
         rom.seek(where)
+        print("Where is: " + str(where) + str(type(where)))
         with open('build\output.bin', 'rb') as binary:
                 data = binary.read()
         rom.write(data)
+        print("data is: " + str(type(data)))
         return where
                        
-def hook(rom, space, hook_at, register=0):
+#def hook(rom, space, hook_at, register=0):
         # Align 2
-        if hook_at & 1:
-            hook_at -= 1
-            
-        rom.seek(hook_at)
-        
-        register &= 7
-        
-        if hook_at % 4:
-            data = bytes([0x01, 0x48 | register, 0x00 | (register << 3), 0x47, 0x0, 0x0])
-        else:
-            data = bytes([0x00, 0x48 | register, 0x00 | (register << 3), 0x47])
-            
-        space += 0x08000001
-        data += (space.to_bytes(4, 'little'))
-        rom.write(bytes(data))
+ #       if hook_at & 1:
+  #          hook_at -= 1
+   #         
+    #    rom.seek(hook_at)
+     #   
+      #  register &= 7
+       # 
+        #if hook_at % 4:
+         #   data = bytes([0x01, 0x48 | register, 0x00 | (register << 3), 0x47, 0x0, 0x0])
+        #else:
+         #   data = bytes([0x00, 0x48 | register, 0x00 | (register << 3), 0x47])
+         #   
+        #space += 0x08000001
+        #data += (space.to_bytes(4, 'little'))
+        #rom.write(bytes(data))
         
 shutil.copyfile(args.input, args.output)
 with open(args.output, 'rb+') as rom:
         offset = get_text_section()
         table = symbols(offset)
         where = insert(rom)
-
         # Adjust symbol table
         for entry in table:
                 table[entry] += where
@@ -120,10 +121,23 @@ with open(args.output, 'rb+') as rom:
         #                        continue
 
                        # hook(rom, code, offset, int(register))
-                                
+        last = 0;                     
         if args.debug:
                 width = max(map(len, table.keys())) + 1
                 for key in sorted(table.keys()):
                         fstr = ('{:' + str(width) + '} {:08X}')
                         print(fstr.format(key + ':', table[key] + 0x08000000))
+                        last = (table[key] + 0x08000000)
+        rom.seek(int(0x168CDB))
+        array = bytearray()
+        array.append(int("0x" + hex(last)[7:], 0))
+        array.append(int("0x" + hex(last)[5:7], 0))
+        array.append(int("0x" + hex(last)[3:5], 0))
+        array.append(int(hex(last)[:3], 0))
+
+
+
+        rom.write(array)
+
+
 

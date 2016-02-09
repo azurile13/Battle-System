@@ -1,2 +1,5 @@
+C:\\python35\\python .\\src\\Defines\\generation\\stringsToCharArray.py
 C:\\python35\\python scripts\\build
-C:\\python35\\python scripts\\insert --debug
+C:\\python35\\python scripts\\insert --debug > offsets
+cat offsets
+C:\\Users\\Dilshan\\Desktop\\VisualBoyAdvance-M C:\\Users\\Dilshan\\Desktop\\Battle-System\\test.gba
