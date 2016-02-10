@@ -11,17 +11,17 @@ def lowercase(str):
     return ""
 
 
-with open('C:/Users/Dilshan/Documents/Hack/Table.txt') as f:
+with open('src/Defines/generation/Table.txt') as f:
     lines = f.read().splitlines()
 for i in range (0, len(lines)):
     lines[i] = lines[i].split('=')
     
     
-with open('C:/Users/Dilshan/Desktop/Battle-system/src/defines/generation/battle_strings') as f:
+with open('src/Defines/generation/battle_strings') as f:
     to_convert = f.read().splitlines()
 
     
-with open('C:/Users/Dilshan/Desktop/Battle-system/src/strings.h', "w") as f:
+with open('src/strings.h', "w") as f:
     f.write("#ifndef STRINGS_STRINGS_H_" + "\n" + "#define STRINGS_STRINGS_H_" +
             ("\n" * 2))
     result = ""
