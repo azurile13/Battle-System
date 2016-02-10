@@ -211,14 +211,23 @@ extern struct objtemplate ball_templates[12];
 extern struct pkmn_name pkmn_names_table[0x19C];
  
  
-struct pokemon_battle_template_3 {
+struct battle_template_custom {
 	u8 ivs;
 	u8 filler;
 	u8 level;
 	u8 filler2;
 	u16 species;
 	u16 item;
-	u16 moves[4];
+	u16 move[4];
+}; 
+ 
+ struct battle_template {
+	u8 ivs;
+	u8 filler;
+	u8 level;
+	u8 filler2;
+	u16 species;
+	u16 item;
 }; 
  
 struct trainer {
@@ -237,12 +246,7 @@ struct trainer {
 	u8 unk3[3]; // maybe padding - doubtful though
 	u8 poke_count;
 	u8 padding[3];
-	//union {
-		struct pokemon_battle_template_3 *pkmn; // fully customized
-		//struct pokemon_battle_template_2 *pkmn1; // moves customized
-		//struct pokemon_battle_template_1 *pkmn2; // items customized
-		//struct pokemon_battle_template_0 *pkmn3; // no customizations
-	//};
+	u8 *template_ptr;
 };
 
 extern struct trainer ai_trainer[0x2E6];

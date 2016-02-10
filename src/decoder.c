@@ -49,13 +49,13 @@ char *gen_string(char c) {
 			
 		// Normal use of FD buffers
 		case 1:
-			return str_cpy(buffer1, buffer1);
+			return buffer1;
 		case 2:
-			return str_cpy(buffer2, buffer2);
+			return buffer2;
 		case 3:
-			return str_cpy(buffer3, buffer3);
+			return buffer3;
 		case 4:
-			return str_cpy(buffer4, buffer4);
+			return buffer4;
 		case 6:
 			// opponent1 name trainer
 			return (ai_trainer[battle_mallocd_resources.battle_field->trainer_flag[0]].trainer_name);
@@ -107,16 +107,15 @@ char *gen_string(char c) {
 		case 0x15:
 			// trainer class
 			{
-			u8 id = battle_mallocd_resources.battle_field->trainer_flag[0];
+			u16 id = battle_mallocd_resources.battle_field->trainer_flag[0];
 			id = ai_trainer[id].trainer_class;
-			//return trainer_class_names[id * 13];
 			return(trainer_class_names[id].name);
 			break;
 			}
 		case 0x16:
 			// trainer class
 			{
-			u8 id = battle_mallocd_resources.battle_field->trainer_flag[1];
+			u16 id = battle_mallocd_resources.battle_field->trainer_flag[1];
 			id = ai_trainer[id].trainer_class;
 			//return trainer_class_names[id * 13];
 			return(trainer_class_names[id].name);
@@ -125,7 +124,7 @@ char *gen_string(char c) {
 		case 0x17:
 			// trainer class
 			{
-			u8 id = battle_mallocd_resources.battle_field->trainer_flag[2];
+			u16 id = battle_mallocd_resources.battle_field->trainer_flag[2];
 			id = ai_trainer[id].trainer_class;
 			//return trainer_class_names[id * 13];
 			return(trainer_class_names[id].name);
@@ -134,7 +133,7 @@ char *gen_string(char c) {
 		case 0x18:
 			// trainer class
 			{
-			u8 id = battle_mallocd_resources.battle_field->trainer_flag[3];
+			u16 id = battle_mallocd_resources.battle_field->trainer_flag[3];
 			id = ai_trainer[id].trainer_class;
 			//return trainer_class_names[id * 13];
 			return(trainer_class_names[id].name);
@@ -143,7 +142,7 @@ char *gen_string(char c) {
 		case 0x19:
 			// trainer class
 			{
-			u8 id = battle_mallocd_resources.battle_field->trainer_flag[4];
+			u16 id = battle_mallocd_resources.battle_field->trainer_flag[4];
 			id = ai_trainer[id].trainer_class;
 			//return trainer_class_names[id * 13];
 			return(trainer_class_names[id].name);

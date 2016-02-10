@@ -11,7 +11,6 @@ u32 divmod_remainder(u32, u32);
 u32 div(u32, u32);
 void *malloc(u32 size);
 void free(void *ptr);
-u32 get_attribute(struct pokemon *, u8);
 void fade_and_return_progress_probably(void);
 
 void obj_sync_something(void);
@@ -37,8 +36,8 @@ u32 random(u32 end) {
 	return (divmod_remainder(result, end));
 }
 
-u32 get_attr(struct pokemon *pkmn, u8 arg) {
-	return (get_attribute(pkmn, arg));
-}
+u32 get_attr(struct pokemon *pkmn, u8 arg);
+void set_attr(struct pokemon *pkmn, u8 index, void *to_set);
 
+void create_pokemon(void *dst, u16 species, u8 lvl, u8 IV, u8 use_given_id, u32 id, u8 use_given_trainer_id, u32 trainer_id );
 #endif /* MULTIPURPOSE_H */

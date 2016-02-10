@@ -20,9 +20,6 @@ void gpu_pal_allocator_reset(void);
 void tasks_init(void);
 
 
-char ca_Tis[] = { 0xCE, 0xDD, 0xE7, 0x00, 0xD6, 0xE9, 0xE8, 0x00, 0xD5, 0x00, 0xE8, 0xD9, 0xE7, 0xE8, 0xAD, 0xFF };
-
-
 static u8 *idx_for_battle_screen_elements_by_env = (u8 *)0x02022B50;
 static u16 c_x5051 = 0x5051;
 static u32 unk_05006000 = 0x5006000;
@@ -42,31 +39,33 @@ void vblank_cb_battle(void);
 void load_battle_screen_elements2(u8);
 void *malloc_and_clear(u32);
 
+
+
+
 void name_by_species_to_buffer(u16 species, u8 buff_id) {
-	char *buffer;
 	switch (buff_id) {
 		case 1:
 			{
-			buffer = buffer1;
+			str_cpy(buffer1, pkmn_names_table[species].name);
 			break;
 			}
 		case 2:
 			{
-			buffer = buffer2;
+			str_cpy(buffer2, pkmn_names_table[species].name);
 			break;
 			}
 		case 3:
 			{
-			buffer = buffer3;
+			str_cpy(buffer3, pkmn_names_table[species].name);
 			break;
 			}
 		default:
 			{
-			buffer = buffer4;
+			str_cpy(buffer4, pkmn_names_table[species].name);
 			break;
 			}
 	};
-	str_cpy(pkmn_names_table[species].name, buffer);
+	
 	return;
 }
 
@@ -142,7 +141,6 @@ u8 battle_load_something(u8*, u8*);
 void battle_intro() {
 
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
-	u8 not_wild = 0;
 	switch (superstate.multi_purpose_state_tracker) {
 		case 0:
 		{
@@ -200,7 +198,6 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_wild_double_intro);
-				not_wild = 1;
 				break;
 				}
 			case DOUBLE_TWO_AI:
@@ -217,7 +214,6 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_double_intro);
-				not_wild = 1;
 				break;
 				}
 			case TRIPLE_WILD:
@@ -256,7 +252,6 @@ void battle_intro() {
 				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
 				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_triple_intro);
-				not_wild = 1;
 				break;
 				}
 			case HORDE_WILD:
@@ -297,7 +292,6 @@ void battle_intro() {
 				objects[id].private[0] = 0xA0;
 				battle_mallocd_resources.ids_in_use[2] = id;
 				decoder((char *)ca_trainer_horde_intro);
-				not_wild = 1;
 				break;
 				}
 			case SINGLE_WILD:
@@ -328,7 +322,7 @@ void battle_intro() {
 				if ((objects[t_1_opponent].private[0] == 2) && (objects[t_1_player].private[0] == 2)) {
 					textbox_set_text(string_buffer, 1, 0, 1, 3, 1);
 					task_add(waitbutton_text, 1);
-					superstate.multi_purpose_state_tracker = 0x2;
+					superstate.multi_purpose_state_tracker = 2;
 				}
 
 			}
@@ -336,54 +330,68 @@ void battle_intro() {
 		}
 		case 3:
 			// intro text
-			textbox_set_text((char *)0x81C55C9, 1, 0, 1, 3, 1);
-			superstate.multi_purpose_state_tracker = 0x4;
-			break;
-		case 4:
-			{
 			// if against wild, player sends out pkmn
+			{
 			u16 species = 0;
-			if (not_wild) {
+			if (battle_field->battle_type > HORDE_WILD) {
 				switch (battle_field->battle_type) {
 					case SINGLE_TRAINER:
+						{
 						// pkmn 1
-						species = battler_field->battlers[3].species;
+						species = battle_field->battlers[3].species;
 						name_by_species_to_buffer(species, 1);
+						decoder((char*)ca_trainer_single_sentout);
+						break;
+						}
 					case DOUBLE_TRAINER:
+						{
 						// first
-						species = battler_field->battlers[3].species;
+						species = battle_field->battlers[3].species;
 						name_by_species_to_buffer(species, 1);
 						//second
-						species = battler_field->battlers[4].species;
+						species = battle_field->battlers[4].species;
 						name_by_species_to_buffer(species, 2);
+						decoder((char*)ca_trainer_double_sentout);
 						break;
+						}
 					case DOUBLE_TWO_AI:
+						{
 						// 1
-						species = battler_field->battlers[3].species;
+						species = battle_field->battlers[3].species;
 						name_by_species_to_buffer(species, 1);
 						// 2
-						species = battler_field->battlers[4].species;
+						species = battle_field->battlers[4].species;
 						name_by_species_to_buffer(species, 2);
+						decoder((char*)ca_trainer_doubleai_sentout);
 						break;
+						}
 					case TRIPLE_TRAINER:
-						species = battler_field->battlers[3].species;
+						{
+						species = battle_field->battlers[3].species;
 						name_by_species_to_buffer(species, 1);
 						// 2
-						species = battler_field->battlers[4].species;
+						species = battle_field->battlers[4].species;
 						name_by_species_to_buffer(species, 2);
 						// 2
-						species = battler_field->battlers[5].species;
+						species = battle_field->battlers[5].species;
 						name_by_species_to_buffer(species, 3);
+						decoder((char*)ca_trainer_triple_sentout);
 						break;
+						}
 					case HORDE_TRAINER:
-						species = battler_field->battlers[3].species;
+						{
+						species = battle_field->battlers[3].species;
 						name_by_species_to_buffer(species, 1);
+						decoder((char*)ca_trainer_horde_sentout);
 						break;
+						}
 					default:
 						break;
-				}
+				};
+				textbox_set_text(string_buffer, 1, 0, 1, 3, 1);
 			}
-			superstate.multi_purpose_state_tracker = 5;
+			superstate.multi_purpose_state_tracker = 2;
+			break;
 			}
 		case 5:
 			// player send out.
@@ -463,7 +471,6 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 			battler_init(&battle_field->battlers[0], &pokemon_bank[6], 6); // player's first pkmn
 			battler_init(&battle_field->battlers[3], &pokemon_bank[0], 0); // opponent's first pkmn
 			battle_field->trainer_flag[0] = b_config->opp_id[0];
-			battle_field->trainer_flag[1] = b_config->opp_id[1];
 			break;
 		case DOUBLE_WILD:
 		case DOUBLE_TRAINER:
@@ -597,6 +604,34 @@ void battle_slidein_bg(struct battle_config *b_config) {
 
 }
 
+
+void instanciate_opponent_party_single_double(u16 TID) {
+	// calculate opponent party size
+	u8 poke_count = ai_trainer[TID].poke_count;
+	if (ai_trainer[TID].custom_attacks) {
+		// custom attacks ver
+		struct battle_template_custom *btemp = (struct battle_template_custom *)ai_trainer[TID].template_ptr;
+		u8 i;
+		for (i = 0; i < poke_count; i++) {
+			create_pokemon((void *)&pokemon_bank[i], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_1, &(btemp->move[0]));
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_2, &(btemp->move[1]));
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_3, &(btemp->move[2]));
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_4, &(btemp->move[3]));
+			btemp += sizeof(btemp);
+		}
+	} else {
+		// normal ver 
+		struct battle_template *btemp = (struct battle_template *)ai_trainer[TID].template_ptr;
+		u8 i;
+		for (i = 0; i < poke_count; i++) {
+			create_pokemon((void *)&pokemon_bank[i], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+			btemp += sizeof(btemp);
+		}
+	}
+}
+
 void z_battle_setup () {
 	// allocate resources @start
 	battle_malloc_resources();
@@ -613,18 +648,17 @@ void z_battle_setup () {
 	b_config->exp_switch = true; // enable exp gain
 	b_config->ai_difficulty = 0xFF; // hard
 	b_config->env_by_map = 0; // grass
-	b_config->opp_id[0] = 0x52;
-	b_config->opp_id[1] = 0x53;
-	b_config->opp_id[2] = 0x54;
-	b_config->opp_id[3] = 0x55;
-	b_config->opp_id[4] = 0x56;
+	b_config->opp_id[0] = 0x255;
+	b_config->opp_id[1] = 0x256;
+	b_config->opp_id[2] = 0x257;
+	b_config->opp_id[3] = 0x258;
+	b_config->opp_id[4] = 0x259;
 	b_config->opponent_count = 0x5; // one opp 
 	b_config->ally_backsprite = 0x2;
 
+	instanciate_opponent_party_single_double(b_config->opp_id[0]);
 	// battle_field fill battlers
 	battle_field = battle_init(b_config, battle_field);
-
-	
 	battle_slidein_bg(b_config);
 };
 

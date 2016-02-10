@@ -2,6 +2,8 @@
 /*
  * Data
  */
+ 
+sub_8094AD8 = 0x08094AD8|1;
 
 str_cpy = 0x08008D84|1;
 buffer1 = 0x02022100;
@@ -201,8 +203,9 @@ template_build_for_pokemon_or_trainer = 0x0803F864|1;
 obj_anim_image_start = 0x0800838C|1;
 obj_delete_and_free_tiles_and_free_tiles = 0x08007280|1;
 
-get_attribute = 0x0803FBE8|1;
-set_attribute = 0x0804037C|1;
+create_pokemon = 0x0803DD98|1;
+get_attr = 0x0803FBE8|1;
+set_attr = 0x0804037C|1;
 divmod_remainder = 0x081E4684|1;
 rand = 0x08044EC8|1;
 __aeabi_idiv = 0x081E4684|1;
