@@ -5,7 +5,7 @@
 #include "engine/objects.h"
 #include "engine/callback.h"
 
-/* 
+/*
  * Table size constants
  */
 #define type_total 19
@@ -28,7 +28,7 @@
  *	RAM Structs and tables
  */
 
- 
+
  struct pokemon {
 	u32 PID;
 	u32 OTID;
@@ -129,7 +129,7 @@ struct temp_vars {
 	u8 multi_purpose_state_tracker;
 	u8 gpu_sprites_upload_skip;
  };
- 
+
 extern struct super superstate;
 
 extern struct pokemon pokemon_bank[12];
@@ -140,13 +140,13 @@ extern struct temp_vars temp_vars;
 extern struct objtemplate objt_pokemon[4];
 extern struct objtemplate template_0203AD40;
 
- 
- 
- 
+
+
+
 /*
  * ROM Graphic Structs and Tables
  */
- 
+
 
 typedef struct pal_table {
 		u8 *pal_off;
@@ -160,6 +160,12 @@ typedef struct gfx_img {
 	u16 size;
 	u16 index;
 } gfx_img;
+
+typedef struct y_table {
+  u8 field1;
+  u8 height;
+  u16 padding;
+} y_table;
 
 
 
@@ -189,10 +195,16 @@ extern gfx_img gfx_table_pokemon_back[0x19C];
 extern gfx_img gfx_table_pokemon_front[0x19C];
 extern gfx_img gfx_table_trainer_front[6];
 
+extern u8*     gfx_altitude;
+extern void*   pal_altitude;
+
 extern pal_table pal_table_nonshiny[0x19C];
 extern pal_table pal_table_shiny[0x19C];
 extern pal_table pal_table_trainer_front[0x94];
 extern pal_table pal_table_trainer_back[6];
+
+extern y_table enemy_y_table[0x19C];
+extern u8 altitude_table[0x19C];
 
 extern struct trainer_animations trainer_animations;
 extern struct meta_animtable_trainer meta_animtable_trainer;
@@ -204,13 +216,13 @@ extern struct objtemplate ball_templates[12];
 /*
  * ROM Data tables
  */
- 
+
  struct pkmn_name {
 	char name[11];
 };
 extern struct pkmn_name pkmn_names_table[0x19C];
- 
- 
+
+
 struct battle_template_custom {
 	u8 ivs;
 	u8 filler;
@@ -219,8 +231,8 @@ struct battle_template_custom {
 	u16 species;
 	u16 item;
 	u16 move[4];
-}; 
- 
+};
+
  struct battle_template {
 	u8 ivs;
 	u8 filler;
@@ -228,8 +240,8 @@ struct battle_template_custom {
 	u8 filler2;
 	u16 species;
 	u16 item;
-}; 
- 
+};
+
 struct trainer {
 	u8 custom_items : 1;
 	u8 custom_attacks : 1;
@@ -385,7 +397,7 @@ struct type_name {
 };
 
 extern struct type_name typenames[18];
-/* 
+/*
 0 = normal effective
 1 = super effective
 2 = not effective
@@ -422,7 +434,7 @@ struct battle_strings {
 };
 
 typedef void(*item_func)(u8);
- 
+
 struct item {
 	char name[14];
 	u16 index;
@@ -437,7 +449,7 @@ struct item {
 	u32 battle_usage;
 	item_func battle_usage_p;
 	u32 extra_param;
-	
+
 };
 
 extern struct item items[0x178];
