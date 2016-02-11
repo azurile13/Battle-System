@@ -2,7 +2,7 @@
 /*
  * Data
  */
- 
+
 sub_8094AD8 = 0x08094AD8|1;
 
 str_cpy = 0x08008D84|1;
@@ -78,6 +78,11 @@ pal_table_trainer_front = 0x08239A1C;
 pal_table_trainer_back = 0x08239FD4;
 anim_082347F8 = 0x082347F8;
 ball_templates = 0x082606F4;
+enemy_y_table = 0x082349cc;
+altitude_table = 0x0823A004;
+gfx_altitude = 0x08E7BAD4;
+pal_altitude = 0x08D11B84;
+
 
 /*
 * Place holder data
@@ -95,7 +100,7 @@ battle_mallocd_resources = 0x0203C000;
 /*
  * Functions
  */
- 
+
 bs_exec = 0x080123E4|1;
 b_setup_bx = 0x0800D30C|1;
 cpu_set = 0x081E3B64|1;
@@ -109,7 +114,7 @@ pal_fade_control_reset_maybe = 0x08070A84|1;
 fmt_int_10 = 0x08008E78;
 tasks_init = 0x080773BC|1;
 gpu_pal_allocator_reset = 0x080088F0|1;
-oac_nullsub_0 = 0x810BB88|1; 
+oac_nullsub_0 = 0x810BB88|1;
 rboxid_clear_pixels = 0x0800445C|1;
 rboxid_08003FA0 =  0x08003FA0|1;
 rboxid_to_vram = 0x08003F20|1;
@@ -230,7 +235,7 @@ uns_builder_assign_animtable1 = 0x0810BD80|1;
 ball_number_to_ball_processing_index = 0x080EF52C|1;
 ball_to_ram_setup = 0x0804BEF4|1;
 dp13_810BB8C = 0x0810BB8C|1;
-battle_load_health_boxes_unused = 0x080347A8|1; 
+battle_load_health_boxes_unused = 0x080347A8|1;
 some_test_func = 0x080F1198|1;
 init_malloc = 0x08002B80|1;
 

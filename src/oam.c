@@ -60,7 +60,7 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_cal
 	// allocate palette
 	u8 pal_id = gpu_pal_alloc_new((id *0x10) + 0x100);
 	pal_decompress_slice_to_faded_and_unfaded(pal, (0x100 + pal_id *0x10), 0x20);
-	
+
 	// set up objtemplate structure
 	struct objtemplate *oam_template = (struct objtemplate*)malloc(sizeof(struct objtemplate));
 	oam_template->tiles_tag = 0xFFFF;
@@ -69,61 +69,76 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_cal
 	oam_template->rotscale = uns_table_pokemon_trainer[0].rotscale;
 	oam_template->callback = cb;
 	oam_template->animation = meta_animtable_trainer.trainer_anim[0];
-	
+
 	// send gfx to vram
 	u8 *graphic_pointer = (u8 *)malloc(img_size);
 	lz77_uncomp_vram(img, (void *)graphic_pointer);
-	
+
 	// set up resource struct for Objtemplate
 	struct resource *resource = (struct resource*)malloc(sizeof(struct resource));
 	resource->graphics = graphic_pointer;
 	resource->size = img_size;
 	oam_template->graphics = resource;
-	
+
 	// create OAM
 	u8 obj_id = template_instanciate_forward_search(oam_template, x, y, 0x1E);
 	return obj_id;
 }
 
+void cb_follow_sprite(struct object* obj)
+{
+	obj->x = objects[obj->private[0]].x;
+	obj->y = 60;
+}
+
 u8 oam_pkmn_front(u16 species, u8 shinyness, u16 x, u16 y, object_callback cb) {
 	void *pal;
-	
+
 	// use shiny pal if shiny
 	if (shinyness) {
 		pal = pal_table_shiny[species].pal_off;
 	} else {
 		pal = pal_table_nonshiny[species].pal_off;
 	}
-	
+
 	u8 *img = gfx_table_pokemon_front[species].ptr_img;
 	u16 img_size = 0x800;
-	
+
 	// insure pal tag will be a half word
 	if (species > 0x199) {
 		species = species - 0x199;
 	}
 	u8 id = create_oam(pal, img, img_size, x, y, species, cb);
+
+	/*if(altitude_table[species] != 0)
+	{
+		u8 shadow_id = create_oam(pal_altitude, gfx_altitude, 0x800, x,y, 0, cb_follow_sprite);
+		objects[shadow_id].private[0] = id;
+	}*/
+	objects[id].private[4] = species;
 	return id;
 }
 
+
+
 void oam_pkmn_back(u16 species, u8 shinyness, u16 x, u16 y, object_callback cb) {
 	void *pal;
-	
+
 	// use shiny pal if shiny
 	if (shinyness) {
 		pal = pal_table_shiny[species].pal_off;
 	} else {
 		pal = pal_table_nonshiny[species].pal_off;
 	}
-	
+
 	u8 *img = gfx_table_pokemon_back[species].ptr_img;
 	u16 img_size = 0x800;
-	
+
 	// insure pal tag will be a halfword
 	if (species > 0x199) {
 		species = species - 0x199;
 	}
-	
+
 	create_oam(pal, img, img_size, x, y, species, cb);
 	return;
 }
@@ -143,7 +158,7 @@ u8 oam_trainer_back(u16 id, u16 x, u16 y, object_callback cb) {
 	u8 pal_id = gpu_pal_alloc_new((id *0x10) + 0x100);
 	void *pal = pal_table_trainer_back[id].pal_off;
 	pal_decompress_slice_to_faded_and_unfaded(pal, (0x100 + pal_id *0x10), 0x20);
-	objt_pokemon[2].pal_tag = (id *0x10) + 0x100;	
+	objt_pokemon[2].pal_tag = (id *0x10) + 0x100;
 
 	struct objtemplate backsprite_temp = uns_table_pokemon_trainer[id];
 	objt_pokemon[2].tiles_tag = backsprite_temp.tiles_tag;
@@ -183,7 +198,7 @@ void oam_flip(u8 id, u8 dir) {
 	return;
 }
 
-u8 slide_trainer_player() {	
+u8 slide_trainer_player() {
 	u8 gender = saveblock2.sav2->gender;
 	oam_trainer_back(gender, 0x50, 0x50, 0x0);
 	return 0;
@@ -205,7 +220,7 @@ void ball_throw(u8 task_id) {
 		struct object *ball = &objects[id];
 		ball->x = tasks[task_id].priv[0];
 		ball->y = tasks[task_id].priv[1];
-		
+
 		objects[id].callback = (object_callback) 0x804B685;
 		task_del(task_id);
 		return;
@@ -216,7 +231,7 @@ void ball_throw(u8 task_id) {
 u8 ball_throw(u8 type, u16 x, u16 y) {
 	u8 ball_number_to_ball_processing_index(u8);
 	void ball_to_ram_setup(u8);
-	
+
 	u8 index = ball_number_to_ball_processing_index(type);
 	ball_to_ram_setup(index);
 	struct objtemplate *test = &ball_templates[type];
@@ -229,6 +244,3 @@ u8 ball_throw(u8 type, u16 x, u16 y) {
 	obj_del_delayed(id, 70);
 	return 0;
 }
-
-
-
