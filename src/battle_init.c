@@ -65,7 +65,7 @@ void name_by_species_to_buffer(u16 species, u8 buff_id) {
 			break;
 			}
 	};
-	
+
 	return;
 }
 
@@ -144,30 +144,30 @@ void battle_intro() {
 	switch (superstate.multi_purpose_state_tracker) {
 		case 0:
 		{
-			// load sliding player side first 
-			
+			// load sliding player side first
+
 			u8 gender = saveblock2.sav2->gender;
 			if (battle_field->battle_type == DOUBLE_TWO_AI) {
-			
+
 				u8 id = oam_trainer_back(gender, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
 				objects[id].private[1] = 2;
 				objects[id].private[2] = 0x20;
 				battle_mallocd_resources.ids_in_use[1] = id;
-				
+
 				id = oam_trainer_back(battle_field->b_config->ally_backsprite, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
 				objects[id].private[1] = 1;
 				objects[id].private[2] = 0x55;
 				battle_mallocd_resources.ids_in_use[0] = id;
-				
+
 			} else {
-			
+
 				u8 id =	oam_trainer_back(gender, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
 				objects[id].private[1] = 1;
 				objects[id].private[2] = 0x20;
 				battle_mallocd_resources.ids_in_use[1] = id;
 				battle_mallocd_resources.ids_in_use[0] = 0x7F; //special flag
 			}
-			
+
 			// load sliding opponent side
 			switch (battle_field->battle_type) {
 			case SINGLE_TRAINER:
@@ -309,11 +309,11 @@ void battle_intro() {
 				break;
 				}
 			};
-			
+
 			superstate.multi_purpose_state_tracker = 1;
 			break;
 		}
-		case 1: 
+		case 1:
 		{
 			if (superstate.multi_purpose_state_tracker == 1) {
 				// wait for trainers to be in positions
@@ -395,14 +395,14 @@ void battle_intro() {
 			}
 		case 5:
 			// player send out.
-			
+
 		case 2:
 		default:
 			// idle state.
 			break;
 		};
-	
-	
+
+
 
 }
 
@@ -428,7 +428,7 @@ void battle_prep() {
 		obj_sync_something();
 
 	switch(superstate.multi_purpose_state_tracker) {
-		case 0:	
+		case 0:
 			{
 			if (!sub_8001960()) {
 				gpu_sync_bg_show(0);
@@ -545,7 +545,7 @@ void store_byte_skipping(u16 *ptr, u16 pattern, u16 size) {
 	for (i = 0; i < size; i++) {
 		*ptr = pattern;
 		ptr += 1;
-	}	
+	}
 };
 
 void battle_slidein_bg(struct battle_config *b_config) {
@@ -566,10 +566,10 @@ void battle_slidein_bg(struct battle_config *b_config) {
 	store_byte_skipping(dp12_big_2038700, 0xF0, 0x4F);
 	store_byte_skipping(dp12_big1_2038700, 0xFF10, 0x4F);
 	store_byte_skipping(dp12_big2_2038700, 0xFF10, 0x4F);
-	
+
 	sub_8087EE4(c_x0400001C, c_xA2600001, 0x1);
 	pal_fade_control_and_dead_struct_reset();
-	
+
 	vblank_cb_battle_BG0HOFS = 0;
 	vblank_cb_battle_BG0VOFS = 0;
 	vblank_cb_battle_BG1HOFS = 0;
@@ -579,15 +579,15 @@ void battle_slidein_bg(struct battle_config *b_config) {
 	vblank_cb_battle_BG3HOFS = 0;
 	vblank_cb_battle_BG3VOFS = 0;
 
-	
+
 	*idx_for_battle_screen_elements_by_env = b_config->env_by_map;
 	sub_0800F34C();
 	sub_0800F420();
 	obj_and_aux_reset_all();
 	tasks_init();
-	
+
 	/*
-	
+
 	0 - grass
 	*/
 	load_battle_screen_elements2(b_config->env_by_map);
@@ -595,12 +595,12 @@ void battle_slidein_bg(struct battle_config *b_config) {
 
 	*gpu_pal_tag_search_lower_boundary = 4;
 	vblank_handler_set(vblank_cb_battle);
-	
+
 	superstate.multi_purpose_state_tracker = 0;
 	set_callback2(battle_prep);
-	
 
-	
+
+
 
 }
 
@@ -622,7 +622,7 @@ void instanciate_opponent_party_single_double(u16 TID) {
 			btemp += sizeof(btemp);
 		}
 	} else {
-		// normal ver 
+		// normal ver
 		struct battle_template *btemp = (struct battle_template *)ai_trainer[TID].template_ptr;
 		u8 i;
 		for (i = 0; i < poke_count; i++) {
@@ -636,17 +636,22 @@ void z_battle_setup () {
 	// allocate resources @start
 	battle_malloc_resources();
 
-	
+
 	struct battle_config *b_config = battle_mallocd_resources.b_config;
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
-	
+
 	// set up battle properties
+<<<<<<< HEAD
 	b_config->type = SINGLE_TRAINER; // see battle_types.h for more.
+=======
+	b_config->type = SINGLE_WILD;
+>>>>>>> 4557ad75bac90a426f2b694339b290c33b382bfd
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
-	b_config->whiteout_switch = true; // enable whiteout 
+	b_config->whiteout_switch = true; // enable whiteout
 	b_config->money_switch = true; // enable money gain
 	b_config->exp_switch = true; // enable exp gain
 	b_config->ai_difficulty = 0xFF; // hard
+<<<<<<< HEAD
 	b_config->env_by_map = 0; // grass battle backgroud
 	b_config->opp_id[0] = 0x255;
 	b_config->opp_id[1] = 0x256;
@@ -654,6 +659,15 @@ void z_battle_setup () {
 	b_config->opp_id[3] = 0x258;
 	b_config->opp_id[4] = 0x259;
 	b_config->opponent_count = 0x5; // one opp 
+=======
+	b_config->env_by_map = 0; // grass
+	b_config->opp_id[0] = 0xC;
+	b_config->opp_id[1] = 0x70;
+	b_config->opp_id[2] = 0x90;
+	b_config->opp_id[3] = 0x180;
+	b_config->opp_id[4] = 0x45;
+	b_config->opponent_count = 0x5; // one opp
+>>>>>>> 4557ad75bac90a426f2b694339b290c33b382bfd
 	b_config->ally_backsprite = 0x2;
 
 	instanciate_opponent_party_single_double(b_config->opp_id[0]);
@@ -661,4 +675,3 @@ void z_battle_setup () {
 	battle_field = battle_init(b_config, battle_field);
 	battle_slidein_bg(b_config);
 };
-
