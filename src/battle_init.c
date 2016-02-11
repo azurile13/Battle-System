@@ -641,33 +641,19 @@ void z_battle_setup () {
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
 
 	// set up battle properties
-<<<<<<< HEAD
 	b_config->type = SINGLE_TRAINER; // see battle_types.h for more.
-=======
-	b_config->type = SINGLE_WILD;
->>>>>>> 4557ad75bac90a426f2b694339b290c33b382bfd
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
 	b_config->whiteout_switch = true; // enable whiteout
 	b_config->money_switch = true; // enable money gain
 	b_config->exp_switch = true; // enable exp gain
 	b_config->ai_difficulty = 0xFF; // hard
-<<<<<<< HEAD
-	b_config->env_by_map = 0; // grass battle backgroud
-	b_config->opp_id[0] = 0x255;
-	b_config->opp_id[1] = 0x256;
-	b_config->opp_id[2] = 0x257;
-	b_config->opp_id[3] = 0x258;
-	b_config->opp_id[4] = 0x259;
-	b_config->opponent_count = 0x5; // one opp 
-=======
 	b_config->env_by_map = 0; // grass
-	b_config->opp_id[0] = 0xC;
+	b_config->opp_id[0] = 0x144;
 	b_config->opp_id[1] = 0x70;
 	b_config->opp_id[2] = 0x90;
 	b_config->opp_id[3] = 0x180;
 	b_config->opp_id[4] = 0x45;
 	b_config->opponent_count = 0x5; // one opp
->>>>>>> 4557ad75bac90a426f2b694339b290c33b382bfd
 	b_config->ally_backsprite = 0x2;
 
 	instanciate_opponent_party_single_double(b_config->opp_id[0]);
