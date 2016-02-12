@@ -21,7 +21,11 @@ struct rotscale_frame {
 };
 
 struct sprite {
-	u8 test[8];
+	u16 attr0;
+  u16 attr1;
+  u16 attr2;
+  u16 rotscale;
+	//u8 test[8];
 	/*u8 y : 8;
 	u32 rotscale : 1;
 	u32 double_size;
@@ -39,19 +43,19 @@ struct sprite {
 			u32 vflip : 1;
 		};
 	};
-	u32 size : 2; 
+	u32 size : 2;
 
 	u16 char_name : 10;
 	u16 priority : 2;
 	u16 palette : 4;
-	
+
 	u16 rotscale_info; */
 };
 
 struct resource {
 	u8 *graphics;
-	u32 size;
-	//u16 filler;
+	u16 size;
+	u16 tag;
 };
 
 struct objtemplate {

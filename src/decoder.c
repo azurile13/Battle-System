@@ -46,7 +46,7 @@ char *gen_string(char c) {
 		// Player name
 		case 0:
 			return (saveblock2.sav2->name);
-			
+
 		// Normal use of FD buffers
 		case 1:
 			return buffer1;
@@ -102,7 +102,7 @@ char *gen_string(char c) {
 			return (items[item_index].name);
 			}
 		case 0x14:
-			// Buffered number 
+			// Buffered number
 			return int_to_str(buffer1, buffer2);
 		case 0x15:
 			// trainer class
@@ -148,9 +148,9 @@ char *gen_string(char c) {
 			return(trainer_class_names[id].name);
 			break;
 			}
-		default:			
+		default:
 			break;
-			
+
 	};
 	return ((char *)0x08415A20); // empty string
 }
