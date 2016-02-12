@@ -532,6 +532,7 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 
 
 void battle_malloc_resources() {
+	 //Alloc flying graphic
 
 	 battle_mallocd_resources.b_config = malloc_and_clear(sizeof(struct battle_config));
 	 battle_mallocd_resources.battle_field = malloc_and_clear(sizeof(struct battle_field));
@@ -598,7 +599,7 @@ void battle_slidein_bg(struct battle_config *b_config) {
 
 	superstate.multi_purpose_state_tracker = 0;
 	set_callback2(battle_prep);
-
+	alloc_alt_resources();
 
 
 
@@ -641,14 +642,14 @@ void z_battle_setup () {
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
 
 	// set up battle properties
-	b_config->type = SINGLE_TRAINER; // see battle_types.h for more.
+	b_config->type = SINGLE_WILD; // see battle_types.h for more.
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
 	b_config->whiteout_switch = true; // enable whiteout
 	b_config->money_switch = true; // enable money gain
 	b_config->exp_switch = true; // enable exp gain
 	b_config->ai_difficulty = 0xFF; // hard
 	b_config->env_by_map = 0; // grass
-	b_config->opp_id[0] = 0x144;
+	b_config->opp_id[0] = 0xC;
 	b_config->opp_id[1] = 0x70;
 	b_config->opp_id[2] = 0x90;
 	b_config->opp_id[3] = 0x180;

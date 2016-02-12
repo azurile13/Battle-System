@@ -114,6 +114,8 @@ pal_fade_control_reset_maybe = 0x08070A84|1;
 fmt_int_10 = 0x08008E78;
 tasks_init = 0x080773BC|1;
 gpu_pal_allocator_reset = 0x080088F0|1;
+gpu_tile_obj_decompress_alloc_tag_and_upload = 0x0800F035;
+gpu_pal_obj_alloc_tag_and_apply = 0x08008929;
 oac_nullsub_0 = 0x810BB88|1;
 rboxid_clear_pixels = 0x0800445C|1;
 rboxid_08003FA0 =  0x08003FA0|1;
@@ -200,6 +202,7 @@ gpu_pal_alloc_new = 0x080089B8|1;
 bgid_set_tilemap = 0x08001FA0|1;
 bg_vram_setup = 0x08001658|1;
 mem_set = 0x081E5ED8|1;
+memset = 0x081E5ED8|1;
 
 template_instanciate_forward_search = 0x08006F8C|1;
 obj_delete_and_free_tiles = 0x080073DC|1;
