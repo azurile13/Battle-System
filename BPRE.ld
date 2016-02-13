@@ -2,6 +2,8 @@
 /*
  * Data
  */
+ 
+givepokemon = 0x080A011C|1;
 
 sub_8094AD8 = 0x08094AD8|1;
 

@@ -7,3 +7,4 @@
 *.ss*
 *.bak
 build
+src/testing.c

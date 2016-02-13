@@ -243,9 +243,7 @@ struct battle_template_custom {
 };
 
 struct trainer {
-	u8 custom_items : 1;
-	u8 custom_attacks : 1;
-	u8 padding1 : 6; // unknown, maybe padding.
+	u8 custom;
 	u8 trainer_class;
 	u8 gender : 1;
 	u8 intro_music : 7;

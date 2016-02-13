@@ -380,7 +380,7 @@ void battle_intro() {
 						}
 					case HORDE_TRAINER:
 						{
-						species = battle_field->battlers[3].species;
+						species = battle_field->battlers[1].species;
 						name_by_species_to_buffer(species, 1);
 						decoder((char*)ca_trainer_horde_sentout);
 						break;
@@ -389,6 +389,9 @@ void battle_intro() {
 						break;
 				};
 				textbox_set_text(string_buffer, 1, 0, 1, 3, 1);
+			} else {
+				// battle is against wild pkmn
+				
 			}
 			superstate.multi_purpose_state_tracker = 2;
 			break;
@@ -498,8 +501,8 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 			battler_init(&battle_field->battlers[1], &pokemon_bank[7], 7); // player's 2nd pkmn
 			battler_init(&battle_field->battlers[2], &pokemon_bank[8], 8); // player's 3rd pkmn
 			battler_init(&battle_field->battlers[3], &pokemon_bank[0], 0); // opponent's 1st pkmn
-			battler_init(&battle_field->battlers[4], &pokemon_bank[1], 1); // opponent's 1st pkmn
-			battler_init(&battle_field->battlers[5], &pokemon_bank[2], 2); // opponent's 2nd pkmn
+			battler_init(&battle_field->battlers[4], &pokemon_bank[2], 1); // opponent's 1st pkmn
+			battler_init(&battle_field->battlers[5], &pokemon_bank[4], 2); // opponent's 2nd pkmn
 			battle_field->trainer_flag[0] = b_config->opp_id[0];
 			battle_field->trainer_flag[1] = b_config->opp_id[1];
 			battle_field->trainer_flag[2] = b_config->opp_id[2];
@@ -510,12 +513,12 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 		case HORDE_WILD:
 		case HORDE_TRAINER:
 			battle_field->active_battler_count_max = 6;
-			battler_init(&battle_field->battlers[1], &pokemon_bank[6], 6); // player's 1st pkmn
-			battler_init(&battle_field->battlers[0], &pokemon_bank[0], 0); // opponent's 1st pkmn
+			battler_init(&battle_field->battlers[0], &pokemon_bank[6], 6); // player's 1st pkmn
+			battler_init(&battle_field->battlers[1], &pokemon_bank[0], 0); // opponent's 1st pkmn
 			battler_init(&battle_field->battlers[2], &pokemon_bank[1], 1); // opponent's 2nd pkmn
 			battler_init(&battle_field->battlers[3], &pokemon_bank[2], 2); // opponent's 3rd pkmn
-			battler_init(&battle_field->battlers[4], &pokemon_bank[1], 1); // opponent's 4th pkmn
-			battler_init(&battle_field->battlers[5], &pokemon_bank[2], 2); // opponent's 5th pkmn
+			battler_init(&battle_field->battlers[4], &pokemon_bank[3], 3); // opponent's 4th pkmn
+			battler_init(&battle_field->battlers[5], &pokemon_bank[4], 4); // opponent's 5th pkmn
 			battle_field->trainer_flag[0] = b_config->opp_id[0];
 			battle_field->trainer_flag[1] = b_config->opp_id[1];
 			battle_field->trainer_flag[2] = b_config->opp_id[2];
@@ -608,7 +611,7 @@ void battle_slidein_bg(struct battle_config *b_config) {
 void instanciate_opponent_party_single_double(u16 TID) {
 	// calculate opponent party size
 	u8 poke_count = ai_trainer[TID].poke_count;
-	if (ai_trainer[TID].custom_attacks) {
+	if ((ai_trainer[TID].custom == 3) || (ai_trainer[TID].custom == 1)) {
 		// custom attacks ver
 		struct battle_template_custom *btemp = (struct battle_template_custom *)ai_trainer[TID].template_ptr;
 		u8 i;
@@ -632,6 +635,126 @@ void instanciate_opponent_party_single_double(u16 TID) {
 	}
 }
 
+
+void instanciate_opponent_party_triple(u16 TID1, u16 TID2, u16 TID3) {
+
+	u16 i, TID;
+	for (i = 0; i < 3; i++) {
+		if (i == 0) {
+			TID = TID1;
+		} else if (i == 1) {
+			TID = TID2;
+		} else {
+			TID = TID3;
+		}
+		if ((ai_trainer[TID].custom == 3) || (ai_trainer[TID].custom == 1)) {
+			// custom attacks ver
+			struct battle_template_custom *btemp = (struct battle_template_custom *)ai_trainer[TID].template_ptr;
+			u8 count;
+			for (count = 0; count < 3; count++) {
+				create_pokemon((void *)&pokemon_bank[count + (i * 2)], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+
+				set_attr(&pokemon_bank[count + (i * 2)], ATTR_ATTACK_1, &(btemp->move[0]));
+				set_attr(&pokemon_bank[count + (i * 2)], ATTR_ATTACK_2, &(btemp->move[1]));
+				set_attr(&pokemon_bank[count + (i * 2)], ATTR_ATTACK_3, &(btemp->move[2]));
+				set_attr(&pokemon_bank[count + (i * 2)], ATTR_ATTACK_4, &(btemp->move[3]));
+				btemp += sizeof(btemp);
+			}
+		} else {
+			struct battle_template *btemp = (struct battle_template *)ai_trainer[TID].template_ptr;
+			u8 count;
+			temp_vars.var_8002 = i * 2;
+			for (count = 0; count < 2; count++) {
+				create_pokemon((void *)&pokemon_bank[count + (i *2)], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+				btemp += sizeof(btemp);
+			}
+		}
+	}
+}
+
+void instanciate_opponent_party_doubleai(u16 TID1, u16 TID2) {
+
+	u16 i, TID;
+	for (i = 0; i < 2; i++) {
+		if (i == 0) {
+			TID = TID1;
+		} else {
+			TID = TID2;
+		}
+		if ((ai_trainer[TID].custom == 3) || (ai_trainer[TID].custom == 1)) {
+			// custom attacks ver
+			struct battle_template_custom *btemp = (struct battle_template_custom *)ai_trainer[TID].template_ptr;
+			u8 count;
+			for (count = 0; count < 4; count++) {
+				create_pokemon((void *)&pokemon_bank[count + (i * 3)], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+
+				set_attr(&pokemon_bank[count + (i * 3)], ATTR_ATTACK_1, &(btemp->move[0]));
+				set_attr(&pokemon_bank[count + (i * 3)], ATTR_ATTACK_2, &(btemp->move[1]));
+				set_attr(&pokemon_bank[count + (i * 3)], ATTR_ATTACK_3, &(btemp->move[2]));
+				set_attr(&pokemon_bank[count + (i * 3)], ATTR_ATTACK_4, &(btemp->move[3]));
+				btemp += sizeof(btemp);
+			}
+		} else {
+			struct battle_template *btemp = (struct battle_template *)ai_trainer[TID].template_ptr;
+			u8 count;
+			for (count = 0; count < 4; count++) {
+				create_pokemon((void *)&pokemon_bank[count + (i *3)], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+				btemp += sizeof(btemp);
+			}
+		}
+	}
+}
+
+void instanciate_opponent_party_horde(u16 TID1, u16 TID2, u16 TID3, u16 TID4, u16 TID5) {
+
+	u16 i, TID;
+	for (i = 0; i < 6; i++) {
+		switch (i) {
+			case 0:
+			{
+				TID = TID1;
+				break;
+			}
+			case 1:
+			{
+				TID = TID2;
+				break;
+			}
+			case 2:
+			{
+				TID = TID3;
+				break;
+			}
+			case 3:
+			{
+				TID = TID4;
+				break;
+			}
+			default:
+			{
+				TID = TID5;
+				break;
+			}
+		};
+		if ((ai_trainer[TID].custom == 3) || (ai_trainer[TID].custom == 1)) {
+			// custom attacks ver
+			struct battle_template_custom *btemp = (struct battle_template_custom *)ai_trainer[TID].template_ptr;
+			create_pokemon((void *)&pokemon_bank[i], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_1, &(btemp->move[0]));
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_2, &(btemp->move[1]));
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_3, &(btemp->move[2]));
+			set_attr(&pokemon_bank[i], ATTR_ATTACK_4, &(btemp->move[3]));
+			btemp += sizeof(btemp);
+
+		} else {
+			struct battle_template *btemp = (struct battle_template *)ai_trainer[TID].template_ptr;
+
+			create_pokemon((void *)&pokemon_bank[i], btemp->species, btemp->level, 0, 0, 0, 0, 0);
+			btemp += sizeof(btemp);
+		}
+	}
+}
+
 void z_battle_setup () {
 	// allocate resources @start
 	battle_malloc_resources();
@@ -641,7 +764,7 @@ void z_battle_setup () {
 	struct battle_field *battle_field = battle_mallocd_resources.battle_field;
 
 	// set up battle properties
-	b_config->type = SINGLE_TRAINER; // see battle_types.h for more.
+	b_config->type = HORDE_TRAINER; // see battle_types.h for more.
 	b_config->callback_return = c2_exit_to_overworld_1_continue_scripts_and_music;
 	b_config->whiteout_switch = true; // enable whiteout
 	b_config->money_switch = true; // enable money gain
@@ -649,14 +772,17 @@ void z_battle_setup () {
 	b_config->ai_difficulty = 0xFF; // hard
 	b_config->env_by_map = 0; // grass
 	b_config->opp_id[0] = 0x144;
-	b_config->opp_id[1] = 0x70;
-	b_config->opp_id[2] = 0x90;
+	b_config->opp_id[1] = 0x6D;
+	b_config->opp_id[2] = 0x6F;
 	b_config->opp_id[3] = 0x180;
-	b_config->opp_id[4] = 0x45;
-	b_config->opponent_count = 0x5; // one opp
+	b_config->opp_id[4] = 0x75;
+	b_config->opponent_count = 0x6; // one opp
 	b_config->ally_backsprite = 0x2;
 
-	instanciate_opponent_party_single_double(b_config->opp_id[0]);
+	//instanciate_opponent_party_single_double(b_config->opp_id[0]);
+	//instanciate_opponent_party_triple(b_config->opp_id[0], b_config->opp_id[1], b_config->opp_id[2]);
+	//instanciate_opponent_party_doubleai(b_config->opp_id[0], b_config->opp_id[1]);
+	instanciate_opponent_party_horde(b_config->opp_id[0], b_config->opp_id[1], b_config->opp_id[2], b_config->opp_id[3], b_config->opp_id[4]);
 	// battle_field fill battlers
 	battle_field = battle_init(b_config, battle_field);
 	battle_slidein_bg(b_config);
