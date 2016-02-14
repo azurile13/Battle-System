@@ -11,9 +11,20 @@ u8 oamt_spawn_poke_or_trainer_picture(u16, u32, u32, u8, u16, u16, u8, u16, u8, 
 void sub_08034750(u8, u8);
 void template_build_for_pokemon_or_trainer(u8, u8);
 object_callback oac_poke_opponent();
+void gpu_pal_obj_alloc_tag_and_apply();
+void gpu_tile_obj_decompress_alloc_tag_and_upload();
 struct sprite *oam_poke_ally;
 object_callback oac_nullsub_0();
 struct rotscale_frame **anim_082347F8;
+
+void cb_follow_sprite();
+struct sprite sprite_alt = {0x4000, 0x4000, 0x0000, 0x0000};
+
+struct resource gfx_alt = {(void*)0x08E7BAD4, 0x80, 0x2000};
+struct resource pal_alt = {(void*)0x08D11B84, 0x2000};
+
+struct objtemplate template_alt = {0x2000, 0x2000, &sprite_alt, (struct frame **) 0x08231CF0,
+			       0, (struct rotscale_frame **) 0x08231CFC, cb_follow_sprite};
 
 
 void oam_free_mem(u8 id) {
@@ -79,6 +90,7 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_cal
 	pal_decompress_slice_to_faded_and_unfaded(pal, (0x100 + pal_id *0x10), 0x20);
 
 	// set up objtemplate structure
+
 	struct objtemplate *oam_template = (struct objtemplate*)malloc(sizeof(struct objtemplate));
 	oam_template->tiles_tag = 0xFFFF;
 	oam_template->pal_tag = (id *0x10) + 0x100;
@@ -115,8 +127,22 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_cal
 void cb_follow_sprite(struct object* obj)
 {
 	obj->x = objects[obj->private[0]].x;
-	obj->y = 60;
+	obj->y = 69;
 }
+
+u8 create_alt_object(u8 linked_object)
+{
+	u8 obj_id = template_instanciate_forward_search(&template_alt, 0,0, 0x1E);
+	objects[obj_id].private[0] = linked_object;
+	return obj_id;
+}
+
+void alloc_alt_resources()
+{
+	gpu_pal_obj_alloc_tag_and_apply(&pal_alt);
+	gpu_tile_obj_decompress_alloc_tag_and_upload(&gfx_alt);
+}
+
 
 u8 oam_pkmn_front(u16 species, u8 shinyness, u16 x, u16 y, object_callback cb) {
 	void *pal;
@@ -137,11 +163,10 @@ u8 oam_pkmn_front(u16 species, u8 shinyness, u16 x, u16 y, object_callback cb) {
 	}
 	u8 id = create_oam(pal, img, img_size, x, y, species, cb);
 
-	/*if(altitude_table[species] != 0)
+	if(altitude_table[species] != 0)
 	{
-		u8 shadow_id = create_oam(pal_altitude, gfx_altitude, 0x800, x,y, 0, cb_follow_sprite);
-		objects[shadow_id].private[0] = id;
-	}*/
+		 create_alt_object(id);
+	}
 	objects[id].private[4] = species;
 	return id;
 }

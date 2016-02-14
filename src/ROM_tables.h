@@ -195,7 +195,7 @@ extern gfx_img gfx_table_pokemon_back[0x19C];
 extern gfx_img gfx_table_pokemon_front[0x19C];
 extern gfx_img gfx_table_trainer_front[6];
 
-extern u8*     gfx_altitude;
+extern void*   gfx_altitude;
 extern void*   pal_altitude;
 
 extern pal_table pal_table_nonshiny[0x19C];

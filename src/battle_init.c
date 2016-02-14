@@ -547,6 +547,7 @@ struct battle_field* battle_init(struct battle_config *b_config, struct battle_f
 
 
 void battle_malloc_resources() {
+	 //Alloc flying graphic
 
 	 battle_mallocd_resources.b_config = malloc_and_clear(sizeof(struct battle_config));
 	 battle_mallocd_resources.battle_field = malloc_and_clear(sizeof(struct battle_field));
@@ -617,7 +618,7 @@ void battle_slidein_bg(struct battle_config *b_config) {
 
 	superstate.multi_purpose_state_tracker = 0;
 	set_callback2(battle_prep);
-
+	alloc_alt_resources();
 
 
 
