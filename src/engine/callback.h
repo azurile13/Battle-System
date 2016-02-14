@@ -19,8 +19,12 @@ u8 task_add(task_callback func, u8 priority);
 void task_del(u8 id);
 void task_exec(void);
 
+void objc_exec(void);
+void obj_sync_something(void);
+
 void set_callback2(super_callback func);
 void set_callback1(super_callback func);
+void callback_clear_and_init(void);
 
 void vblank_handler_set(super_callback func);
 void hblank_handler_set(super_callback func);
@@ -30,5 +34,6 @@ void callback_clear_and_init(void);
 void mem_cpy(void *dst, void *src, u32 size);
 
 extern struct task tasks[16];
+void fade_and_return_progress_probably(void);
 
 #endif /* ENGINE_CALLBACK_H */

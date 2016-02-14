@@ -152,20 +152,20 @@ void battle_intro() {
 				u8 id = oam_trainer_back(gender, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
 				objects[id].private[1] = 2;
 				objects[id].private[2] = 0x20;
-				battle_mallocd_resources.ids_in_use[1] = id;
+				battle_mallocd_resources.free_use_flags[1] = id;
 
 				id = oam_trainer_back(battle_field->b_config->ally_backsprite, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
 				objects[id].private[1] = 1;
 				objects[id].private[2] = 0x55;
-				battle_mallocd_resources.ids_in_use[0] = id;
+				battle_mallocd_resources.free_use_flags[0] = id;
 
 			} else {
 
 				u8 id =	oam_trainer_back(gender, PLAYER1_OAM_START_POS_X, PLAYER1_OAM_START_POS_Y, (object_callback) obj_callback_slide_left);
 				objects[id].private[1] = 1;
 				objects[id].private[2] = 0x20;
-				battle_mallocd_resources.ids_in_use[1] = id;
-				battle_mallocd_resources.ids_in_use[0] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[1] = id;
+				battle_mallocd_resources.free_use_flags[0] = 0x7F; //special flag
 			}
 
 			// load sliding opponent side
@@ -176,11 +176,11 @@ void battle_intro() {
 				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
 				objects[id].private[0] = 0x20;
 				objects[id].private[1] = 1;
-				battle_mallocd_resources.ids_in_use[2] = id;
-				battle_mallocd_resources.ids_in_use[3] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[2] = id;
+				battle_mallocd_resources.free_use_flags[3] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[4] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[5] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_single_intro);
 				break;
 				}
@@ -189,14 +189,14 @@ void battle_intro() {
 				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
 				objects[id].private[0] = 0x20;
 				objects[id].private[1] = 1;
-				battle_mallocd_resources.ids_in_use[3] = id;
+				battle_mallocd_resources.free_use_flags[3] = id;
 				id = oam_pkmn_front(battle_field->b_config->opp_id[1], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
 				objects[id].private[0] = 0x50;
 				objects[id].private[1] = 2;
-				battle_mallocd_resources.ids_in_use[2] = id;
-				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[2] = id;
+				battle_mallocd_resources.free_use_flags[4] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[5] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[6] = 0x7F; //special flag
 				decoder((char *)ca_wild_double_intro);
 				break;
 				}
@@ -205,14 +205,14 @@ void battle_intro() {
 				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
 				objects[id].private[0] = 0x20;
 				objects[id].private[1] = 1;
-				battle_mallocd_resources.ids_in_use[3] = id;
+				battle_mallocd_resources.free_use_flags[3] = id;
 				id = oam_trainer_front(battle_field->b_config->opp_id[1], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
 				objects[id].private[0] = 0x50;
 				objects[id].private[1] = 2;
-				battle_mallocd_resources.ids_in_use[2] = id;
-				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[2] = id;
+				battle_mallocd_resources.free_use_flags[4] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[5] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_double_intro);
 				break;
 				}
@@ -221,17 +221,17 @@ void battle_intro() {
 				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X - 20, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
 				objects[id].private[0] = 0x20;
 				objects[id].private[1] = 1;
-				battle_mallocd_resources.ids_in_use[4] = id;
+				battle_mallocd_resources.free_use_flags[4] = id;
 				id = oam_pkmn_front(battle_field->b_config->opp_id[1], 0, OPPONENT1_OAM_START_POS_X - 30, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
 				objects[id].private[0] = 0x50;
 				objects[id].private[1] = 2;
-				battle_mallocd_resources.ids_in_use[3] = id;
+				battle_mallocd_resources.free_use_flags[3] = id;
 				id = oam_pkmn_front(battle_field->b_config->opp_id[2], 0, OPPONENT1_OAM_START_POS_X - 40, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
 				objects[id].private[0] = 0x80;
 				objects[id].private[1] = 3;
-				battle_mallocd_resources.ids_in_use[2] = id;
-				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[2] = id;
+				battle_mallocd_resources.free_use_flags[5] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[6] = 0x7F; //special flag
 				decoder((char *)ca_wild_triple_intro);
 				break;
 				}
@@ -240,17 +240,17 @@ void battle_intro() {
 				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X - 20, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
 				objects[id].private[0] = 0x20;
 				objects[id].private[1] = 6;
-				battle_mallocd_resources.ids_in_use[4] = id;
+				battle_mallocd_resources.free_use_flags[4] = id;
 				id = oam_trainer_front(battle_field->b_config->opp_id[1], OPPONENT1_OAM_START_POS_X - 25, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
 				objects[id].private[0] = 0x40;
 				objects[id].private[1] = 7;
-				battle_mallocd_resources.ids_in_use[3] = id;
+				battle_mallocd_resources.free_use_flags[3] = id;
 				id = oam_trainer_front(battle_field->b_config->opp_id[2], OPPONENT1_OAM_START_POS_X - 0x2F, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_triple);
 				objects[id].private[0] = 0x60;
 				objects[id].private[1] = 8;
-				battle_mallocd_resources.ids_in_use[2] = id;
-				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[2] = id;
+				battle_mallocd_resources.free_use_flags[5] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[6] = 0x7F; //special flag
 				decoder((char *)ca_trainer_triple_intro);
 				break;
 				}
@@ -258,19 +258,19 @@ void battle_intro() {
 				{
 				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x30;
-				battle_mallocd_resources.ids_in_use[6] = id;
+				battle_mallocd_resources.free_use_flags[6] = id;
 				id = oam_pkmn_front(battle_field->b_config->opp_id[1], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x50;
-				battle_mallocd_resources.ids_in_use[5] = id;
+				battle_mallocd_resources.free_use_flags[5] = id;
 				id = oam_pkmn_front(battle_field->b_config->opp_id[2], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x70;
-				battle_mallocd_resources.ids_in_use[4] = id;
+				battle_mallocd_resources.free_use_flags[4] = id;
 				id = oam_pkmn_front(battle_field->b_config->opp_id[3], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x90;
-				battle_mallocd_resources.ids_in_use[3] = id;
+				battle_mallocd_resources.free_use_flags[3] = id;
 				id = oam_pkmn_front(battle_field->b_config->opp_id[4], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0xA0;
-				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.free_use_flags[2] = id;
 				decoder((char *)ca_wild_horde_intro);
 				break;
 				}
@@ -278,19 +278,19 @@ void battle_intro() {
 				{
 				u8 id = oam_trainer_front(battle_field->b_config->opp_id[0], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x30;
-				battle_mallocd_resources.ids_in_use[6] = id;
+				battle_mallocd_resources.free_use_flags[6] = id;
 				id = oam_trainer_front(battle_field->b_config->opp_id[1], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x50;
-				battle_mallocd_resources.ids_in_use[5] = id;
+				battle_mallocd_resources.free_use_flags[5] = id;
 				id = oam_trainer_front(battle_field->b_config->opp_id[2], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x70;
-				battle_mallocd_resources.ids_in_use[4] = id;
+				battle_mallocd_resources.free_use_flags[4] = id;
 				id = oam_trainer_front(battle_field->b_config->opp_id[3], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0x90;
-				battle_mallocd_resources.ids_in_use[3] = id;
+				battle_mallocd_resources.free_use_flags[3] = id;
 				id = oam_trainer_front(battle_field->b_config->opp_id[4], OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_slide_right);
 				objects[id].private[0] = 0xA0;
-				battle_mallocd_resources.ids_in_use[2] = id;
+				battle_mallocd_resources.free_use_flags[2] = id;
 				decoder((char *)ca_trainer_horde_intro);
 				break;
 				}
@@ -300,11 +300,11 @@ void battle_intro() {
 				u8 id = oam_pkmn_front(battle_field->b_config->opp_id[0], 0, OPPONENT1_OAM_START_POS_X, OPPONENT1_OAM_START_POS_Y, (object_callback) obj_callback_hide_double);
 				objects[id].private[0] = 0x20;
 				objects[id].private[1] = 6;
-				battle_mallocd_resources.ids_in_use[2] = id;
-				battle_mallocd_resources.ids_in_use[3] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[4] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[5] = 0x7F; //special flag
-				battle_mallocd_resources.ids_in_use[6] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[2] = id;
+				battle_mallocd_resources.free_use_flags[3] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[4] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[5] = 0x7F; //special flag
+				battle_mallocd_resources.free_use_flags[6] = 0x7F; //special flag
 				decoder((char *)ca_wild_single_intro);
 				break;
 				}
@@ -317,11 +317,12 @@ void battle_intro() {
 		{
 			if (superstate.multi_purpose_state_tracker == 1) {
 				// wait for trainers to be in positions
-				u8 t_1_player = battle_mallocd_resources.ids_in_use[1];
-				u8 t_1_opponent = battle_mallocd_resources.ids_in_use[2];
+				u8 t_1_player = battle_mallocd_resources.free_use_flags[1];
+				u8 t_1_opponent = battle_mallocd_resources.free_use_flags[2];
 				if ((objects[t_1_opponent].private[0] == 2) && (objects[t_1_player].private[0] == 2)) {
 					textbox_set_text(string_buffer, 1, 0, 1, 3, 1);
-					task_add(waitbutton_text, 1);
+					u8 task_id = task_add(waitbutton_text, 1);
+					tasks[task_id].priv[0] = 3;
 					superstate.multi_purpose_state_tracker = 2;
 				}
 
@@ -389,15 +390,26 @@ void battle_intro() {
 						break;
 				};
 				textbox_set_text(string_buffer, 1, 0, 1, 3, 1);
-			} else {
-				// battle is against wild pkmn
-				
+				u8 task_id = task_add(waitbutton_text, 1);
+				tasks[task_id].priv[0] = 4;
 			}
 			superstate.multi_purpose_state_tracker = 2;
 			break;
 			}
-		case 5:
+		case 4:
+			//opponents slide out and del, send mons
+			{
+			u8 i;
+			for (i = 2; i < 7; i++) {
+				if (battle_mallocd_resources.free_use_flags[i] < 0x3F) {
+					objects[battle_mallocd_resources.free_use_flags[i]].callback = (object_callback) move_off_and_delete;
+				}
+			}
+			break;
+			}
+		case 6:
 			// player send out.
+			superstate.multi_purpose_state_tracker = 2;
 
 		case 2:
 		default:
@@ -538,7 +550,11 @@ void battle_malloc_resources() {
 
 	 battle_mallocd_resources.b_config = malloc_and_clear(sizeof(struct battle_config));
 	 battle_mallocd_resources.battle_field = malloc_and_clear(sizeof(struct battle_field));
-	 // more to come, maybe.
+	 u8 i;
+	 for (i = 0; i < 20; i++) {
+		battle_mallocd_resources.ids_in_use[i] = 0xFF;
+		battle_mallocd_resources.free_use_flags[i] = 0xFF;
+	}
 }
 
 
@@ -663,7 +679,6 @@ void instanciate_opponent_party_triple(u16 TID1, u16 TID2, u16 TID3) {
 		} else {
 			struct battle_template *btemp = (struct battle_template *)ai_trainer[TID].template_ptr;
 			u8 count;
-			temp_vars.var_8002 = i * 2;
 			for (count = 0; count < 2; count++) {
 				create_pokemon((void *)&pokemon_bank[count + (i *2)], btemp->species, btemp->level, 0, 0, 0, 0, 0);
 				btemp += sizeof(btemp);
