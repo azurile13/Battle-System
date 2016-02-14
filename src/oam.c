@@ -82,6 +82,16 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_cal
 
 	// create OAM
 	u8 obj_id = template_instanciate_forward_search(oam_template, x, y, 0x1E);
+	
+	u8 id_to_use;
+	for (id_to_use = 0; id_to_use < 20; id_to_use++) {
+		if (!(battle_mallocd_resources.ids_in_use == 0xFF)) {
+			battle_mallocd_resources.obj_temp[id_to_use] = &oam_template;
+			battle_mallocd_resources.resources[id_to_use] = &resource;
+			battle_mallocd_resources.ids_in_use[id_to_use] = obj_id;
+			break;
+		}
+	}
 	return obj_id;
 }
 

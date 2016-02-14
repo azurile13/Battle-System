@@ -214,24 +214,9 @@ struct battle_field {
 struct battle_mallocd_resources {
 	struct battle_config *b_config;
 	struct battle_field *battle_field;
-	struct objtemplate objtemp[10]; // ten templates maybe too much
-	struct resource resources[10];
-	u8 *oams[10];
-	u8 ids_in_use[10];
-	u16 consumed1 : 1;
-	u16 consumed2 : 1;
-	u16 consumed3 : 1;
-	u16 consumed4 : 1;
-	u16 consumed5 : 1;
-	u16 consumed6 : 1;
-	u16 consumed7 : 1;
-	u16 consumed8 : 1;
-	u16 consumed9 : 1;
-	u16 consumed10 : 1;
-
-	u16 filler : 6;
-	
-
+	struct objtemplate *objtemp[20]; // ten templates maybe too much
+	struct resource *resources[20];
+	u8 ids_in_use[20];
 	
 };
 
