@@ -8,3 +8,5 @@
 *.bak
 build
 src/testing.c
+offsets
+offsets

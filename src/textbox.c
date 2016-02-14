@@ -30,8 +30,7 @@ void display_textbox() {
 
 void waitbutton_text(u8 task_id) {
 	if (!remoid_a_pressed_maybe(0)) {
-		temp_vars.var_8000 = 0xAA;
-		superstate.multi_purpose_state_tracker = 3;
+		superstate.multi_purpose_state_tracker = tasks[task_id].priv[0];
 		task_del(task_id);
 	}
 }
