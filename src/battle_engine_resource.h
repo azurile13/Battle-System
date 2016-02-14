@@ -48,8 +48,9 @@ struct battle_config {
 };
 
 struct battler {
-	u16 species; // for my laziness
+	u8 obj_id;
 	u8 ability;
+	u16 species; // for my laziness
 	u16 weight;
 	u8 level;
 	u8 types[3]; // 3 types, yay gen 6!
@@ -214,9 +215,10 @@ struct battle_field {
 struct battle_mallocd_resources {
 	struct battle_config *b_config;
 	struct battle_field *battle_field;
-	struct objtemplate *objtemp[20]; // ten templates maybe too much
+	struct objtemplate *objtemp[20]; // maybe too much
 	struct resource *resources[20];
 	u8 ids_in_use[20];
+	u8 free_use_flags[20];
 	
 };
 

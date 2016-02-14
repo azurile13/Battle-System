@@ -15,10 +15,11 @@
 
 // Player single obj callbacks below
 void move_off_and_delete(struct object *obj) {
-	if (obj->x < 0x1E0) {
+	if (obj->x < 0x30A) {
 		obj->x++;
 	} else {
-		obj_delete_and_free_tiles(obj);
+		oam_free_mem(obj_id_from_obj(obj));
+		//obj_delete_and_free_tiles(obj);
 	}
 	return;
 }

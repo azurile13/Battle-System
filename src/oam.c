@@ -16,6 +16,23 @@ object_callback oac_nullsub_0();
 struct rotscale_frame **anim_082347F8;
 
 
+void oam_free_mem(u8 id) {
+	
+	u8 i;
+	for (i = 0; i < 20; i++) {
+		u8 *var = (u8 *)0x20370B8;
+		*var = id;
+		if (battle_mallocd_resources.ids_in_use[i] == id) {
+			free(battle_mallocd_resources.objtemp[i]);
+			free(battle_mallocd_resources.resources[i]);
+			battle_mallocd_resources.ids_in_use[i] = 0xFF;
+			obj_delete_and_free_tiles(&objects[id]);
+			return;
+		}
+	}
+	return;
+}
+
 void do_anim(u8 obj_id) {
 	void obj_anim_image_start(struct object*, u8);
 	obj_anim_image_start(&objects[obj_id], 1);
@@ -85,9 +102,9 @@ u8 create_oam(void *pal, u8 *img, u32 img_size, u16 x, u16 y, u16 id, object_cal
 	
 	u8 id_to_use;
 	for (id_to_use = 0; id_to_use < 20; id_to_use++) {
-		if (!(battle_mallocd_resources.ids_in_use == 0xFF)) {
-			battle_mallocd_resources.obj_temp[id_to_use] = &oam_template;
-			battle_mallocd_resources.resources[id_to_use] = &resource;
+		if (battle_mallocd_resources.ids_in_use[id_to_use] == 0xFF) {
+			battle_mallocd_resources.objtemp[id_to_use] = oam_template;
+			battle_mallocd_resources.resources[id_to_use] = resource;
 			battle_mallocd_resources.ids_in_use[id_to_use] = obj_id;
 			break;
 		}
