@@ -16,10 +16,11 @@
 // Player single obj callbacks below
 void move_off_and_delete(struct object *obj) {
 	if (obj->x < 0x30A) {
-		obj->x++;
+		obj->x+= 3;
 	} else {
-		oam_free_mem(obj_id_from_obj(obj));
-		//obj_delete_and_free_tiles(obj);
+		oam_free_mem(obj->private[5]);	
+		obj_delete(obj);
+		obj->callback = (object_callback) oac_nullsub_0;
 	}
 	return;
 }
@@ -123,7 +124,6 @@ void obj_callback_hide_double(struct object *obj) {
 		obj->y = 0x130;
 		obj->private[0]--;
 	} else {
-		//obj->x = 0x0;
 		obj->y = 0x28 + enemy_y_table[obj->private[4]].height - altitude_table[obj->private[4]];
 		obj->callback = obj_callback_slide_right_double;
 	}
