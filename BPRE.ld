@@ -6,13 +6,18 @@
 givepokemon = 0x080A011C|1;
 
 sub_8094AD8 = 0x08094AD8|1;
-
+affine_coefficients = 0x2021BCC;
 str_cpy = 0x08008D84|1;
 buffer1 = 0x02022100;
 buffer2 = 0x02021CD0;
 buffer3 = 0x02021CF0;
 buffer4 = 0x02021D04;
 string_buffer = 0x02021D18;
+
+enemyYTable = 0x082349CC;
+playerYTable = 0x08235E6C;
+
+set_enemy_y = 0x08076494|1;
 
 pkmn_names_table = 0x08245EE0;
 move_names = 0x8247094;
@@ -212,6 +217,11 @@ sub_08034750 = 0x08034750|1;
 template_build_for_pokemon_or_trainer = 0x0803F864|1;
 obj_anim_image_start = 0x0800838C|1;
 obj_delete_and_free_tiles_and_free_tiles = 0x08007280|1;
+obj_delete = 0x080073DC|1;
+object_new_hidden_with_callback = 0x08044EF8|1;
+sub_8037A2A = 0x08038C80|1;
+sub_0804B908 = 0x0804B908|1;
+
 
 create_pokemon = 0x0803DD98|1;
 get_attr = 0x0803FBE8|1;
@@ -221,7 +231,7 @@ rand = 0x08044EC8|1;
 __aeabi_idiv = 0x081E4684|1;
 __aeabi_uidiv = 0x081E4684|1;
 mem_cpy = 0x081E5E78|1;
-
+sub_8037A28 = 0x08037A28|1;
 species_to_dex_index = 0x08043298|1;
 
 strcpy_xFF_terminated = 0x08008D84|1;

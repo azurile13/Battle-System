@@ -4,6 +4,7 @@
 #include "engine/callback.h"
 #include "multipurpose_resources.h"
 #include "engine/objects.h"
+#include "battle_engine_resource.h"
 
 void LZ77UnCompAnyRAM(u8 *src, u8 *dst, u8 id);
 void uns_builder_assign_animtable1(u8);
@@ -18,7 +19,8 @@ object_callback oac_nullsub_0();
 struct rotscale_frame **anim_082347F8;
 
 void cb_follow_sprite();
-struct sprite sprite_alt = {0x4000, 0x4000, 0x0000, 0x0000};
+void sub_0804B908(u8, u8, u16, u16, u8, u8, u8, u32);
+struct sprite sprite_alt = {0, 0x40, 0x0, 0x40, 0x0, 0x0};
 
 struct resource gfx_alt = {(void*)0x08E7BAD4, 0x80, 0x2000};
 struct resource pal_alt = {(void*)0x08D11B84, 0x2000};
@@ -34,10 +36,10 @@ void oam_free_mem(u8 id) {
 		u8 *var = (u8 *)0x20370B8;
 		*var = id;
 		if (battle_mallocd_resources.ids_in_use[i] == id) {
+			obj_delete_and_free_tiles(&objects[id]);
 			free(battle_mallocd_resources.objtemp[i]);
 			free(battle_mallocd_resources.resources[i]);
 			battle_mallocd_resources.ids_in_use[i] = 0xFF;
-			obj_delete_and_free_tiles(&objects[id]);
 			return;
 		}
 	}
@@ -290,9 +292,36 @@ u8 ball_throw(u8 type, u16 x, u16 y) {
 	test->callback = (object_callback) oac_nullsub_0;
 	u8 id = template_instanciate_forward_search(test, x, y, 0x0);
 	struct object *ball = &objects[id];
-	ball->x = 32;
-	ball->y = 64;
+	ball->x = x;
+	ball->y = y;
 	objects[id].callback = (object_callback) 0x804B685;
 	obj_del_delayed(id, 70);
 	return 0;
 }
+
+void task_send_opponent (u8 task_id) {
+	if (!tasks[task_id].priv[0]) {
+		u8 id = tasks[task_id].priv[1];
+		u8 species = battle_mallocd_resources.battle_field->battlers[id].species;
+		u8 y = 0x28 + enemyYTable[species].y;
+		u8 x = tasks[task_id].priv[2];
+		id = oam_pkmn_front(species, 0, x, y, (object_callback)oac_nullsub_0);
+		sub_0804B908(id, 0, objects[id].x, objects[id].y, 0xAE, x - 15, 0x20, -57345);
+		task_del(task_id);
+	} else {
+		tasks[task_id].priv[0]--;
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
