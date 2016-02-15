@@ -189,7 +189,22 @@ struct animtable1_pokemon {
 	struct frame ** anim[4];
 };
 
+struct enemy_position {
+	u8 x_maybe;
+	u8 y;
+	u16 filler;
+};
 
+struct rotscale_coeff {
+	u16 a;
+	u16 b;
+	u16 c;
+	u16 d;
+};
+
+extern struct rotscale_coeff affine_coefficients[32];
+
+extern struct enemy_position enemyYTable[0x19C];
 
 extern gfx_img gfx_table_pokemon_back[0x19C];
 extern gfx_img gfx_table_pokemon_front[0x19C];
@@ -217,6 +232,7 @@ extern struct objtemplate ball_templates[12];
  * ROM Data tables
  */
 
+ 
  struct pkmn_name {
 	char name[11];
 };

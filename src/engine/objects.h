@@ -21,10 +21,12 @@ struct rotscale_frame {
 };
 
 struct sprite {
-	u16 attr0;
-  u16 attr1;
-  u16 attr2;
-  u16 rotscale;
+	u8 y;
+	u8 flags1;
+	u8 x;
+	u8 msb_of_x;
+	u16 attr2;
+	u16 rotscale;
 	//u8 test[8];
 	/*u8 y : 8;
 	u32 rotscale : 1;
