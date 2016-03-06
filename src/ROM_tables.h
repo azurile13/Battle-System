@@ -55,6 +55,30 @@ struct textflags {
 	u8 unknown[4];// No idea, but controls text continue
 };
 
+struct saveblock_mapdata {
+	struct sav1 *sav1;
+};
+
+struct sav1 {
+    u16 player_map_x;
+    u16 player_map_y;
+    u8 player_bank;
+    u8 player_map;
+    u16 field_x6;
+    u8 do_later[0x30C8];
+    u32 roamer_ivs;
+    u32 roamer_pid;
+    u16 roamer_species;
+    u16 roamer_current_hp;
+    u8 roamer_level;
+    u8 roamer_status;
+    u16 roamer_contest_stats;
+    u8 roamer_exists;
+    u32 roamer_something1;
+    u32 roamer_something2;
+};
+
+
 struct saveblock_trainerdata {
 	struct sav2 *sav2;
 };
@@ -130,9 +154,11 @@ struct temp_vars {
 	u8 gpu_sprites_upload_skip;
  };
 
+
 extern struct super superstate;
 
 extern struct pokemon pokemon_bank[12];
+extern struct saveblock_mapdata saveblock1;
 extern struct saveblock_trainerdata saveblock2;
 extern struct textflags textflags;
 extern struct temp_vars temp_vars;
@@ -465,6 +491,63 @@ struct item {
 	u32 extra_param;
 
 };
+
+struct wild_pokemon {
+    u8 min_level;
+    u8 max_level;
+    u16 species;
+};
+
+
+struct list_of_grass {
+    struct wild_pokemon wild_pkmn[12];
+};
+
+struct data_grass {
+    u32 encounter_chance;
+    struct list_of_grass *grass_list;
+};
+
+struct list_of_water {
+    struct wild_pokemon wild_pkmn[5];
+};
+
+struct data_water {
+    u32 encounter_chance;
+    struct list_of_water *water_list;
+};
+    
+struct list_of_fishing {
+    struct wild_pokemon wild_pkmn[10];
+};
+
+struct data_fishing {
+    u32 encounter_chance;
+    struct list_of_fishing *fishing_list;
+};
+
+struct list_of_tree {
+    struct wild_pokemon wild_pkmn[5];
+};
+    
+struct data_tree {
+    u32 encounter_chance;
+    struct list_of_tree *tree_list;
+};
+
+struct map_wild_data {
+    u8 map_bank;
+    u8 map_number;
+    u16 padding;
+    struct data_grass *grass;
+    struct data_water *water;
+    struct data_tree *tree;
+    struct data_fishing *fishing;
+    
+};
+
+
+extern struct map_wild_data wild_pokemon_data[133];
 
 extern struct item items[0x178];
 
