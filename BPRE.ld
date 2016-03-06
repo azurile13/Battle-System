@@ -64,6 +64,7 @@ battle_load_global = 0x0203F000; /*Free RAM space*/
 superstate = 0x030030F0;
 
 textflags = 0x03003E50;
+saveblock1 = 0x03005008;
 saveblock2 = 0x0300500C;
 objt_pokemon = 0x020244DC;
 animtable1_pokemon = 0x082349BC|1;
@@ -89,6 +90,8 @@ enemy_y_table = 0x082349cc;
 altitude_table = 0x0823A004;
 gfx_altitude = 0x08E7BAD4;
 pal_altitude = 0x08D11B84;
+
+wild_pokemon_data = 0x083C9CB8;
 
 
 /*
@@ -255,6 +258,30 @@ some_test_func = 0x080F1198|1;
 init_malloc = 0x08002B80|1;
 
 pal_fade_control_and_dead_struct_reset = 0x08070528|1;
+
+
+
+
+wild_pokemon_rand_grass = 0x0808274C|1;
+wild_pokemon_rand_water = 0x08082808|1;
+wild_pokemon_gen_level = 0x080828F8|1;
+repel_check_lead_level = 0x0808310C|1;
+pokemon_purge_opponent = 0x0803DA34|1;
+pokemon_make_2 = 0x0803DA54|1;
+gen_unown_pid = 0x08082A88|1;
+is_it_battle_time_1 = 0x080832E4|1;
+roll_sixty_percent = 0x08082C98|1;
+repel_something = 0x08083410|1;
+roamer_roll = 0x08141FAC|1;
+check_if_in_safari = 0x0807F704|1;
+get_wild_data_index = 0x08082934|1;
+blockinfo_get_field = 0x08058F1C|1;
+walkrun_bitfield_and_r0 = 0x0805C74C|1;
+is_tile_XX_no_water_battles = 0x08059F58|1;
+wild_roll_prob = 0x08082BCC|1;
+set_battle_style_roam = 0x0807F78C|1;
+
+
 
 /*
  * IO
